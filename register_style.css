@@ -58,7 +58,7 @@ body {
 
 .right-panel {
     flex: 1;
-    background: #ffffff;
+    background: ghostwhite;
     padding: 40px;
     display: flex;
     flex-direction: column;
@@ -93,8 +93,15 @@ body {
 }
 
 .social-icons a:hover {
-    background-color: #845EC2;
+    background-color: #dddddd;
     color: white;
+}
+
+.social-icons a img {
+    width: 60%;
+    height: 60%;
+    object-fit: cover;
+    border-radius: 50%;
 }
 
 .right-panel form {

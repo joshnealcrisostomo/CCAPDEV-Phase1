@@ -10,7 +10,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: ghostwhite;
+    background-color: #DFDAC8;
 }
 
 .container {
@@ -20,13 +20,13 @@ body {
 }
 
 .left-panel {
-    flex: 1;
+    flex: 0.4;
     background: #DFDAC8;
     padding: 40px;
     display: flex;
     flex-direction: column;
     align-items: left;
-    box-shadow: 4px 0 8px rgba(0, 0, 0, 0.1);
+    margin-left: 100px;
 }
 
 .middle-panel {
@@ -36,26 +36,29 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    border: 0.1px solid #0C5FB3;
+    border-top: 0px;
+    border-bottom: 0px;
     align-items: center;
-    box-shadow: 4px 0 8px rgba(0, 0, 0, 0.1);
 }
 
 .right-panel {
-    flex: 1;
+    flex: 0.4;
     background: #DFDAC8;
-    padding: 40px;
+    padding: 20px;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: right;
-    box-shadow: 4px 0 8px rgba(0, 0, 0, 0.1);
+    margin-right: 100px;
 }
 
 .menu-icons {
     margin: 20px;
+    width: 100%;
 }
 
 .menu-item {
+    width: 100%;
     display: flex;
     align-items: center;
     text-decoration: none;
@@ -84,3 +87,65 @@ body {
     font-size: 20px;
     font-weight: bold;
 }
+
+.btn-post {
+    width: 100%;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 100px;
+    background-color: #0C5FB3;
+    color: white;
+    font-size: 20px;
+    color: ghostwhite;
+    font-weight: bold;
+    cursor: pointer;
+    text-align: center;
+    transition: background 0.3s, transform 0.2s;
+}
+
+.btn-post:hover {
+    background: linear-gradient(135deg, #764aa6, #B04898);
+    transform: scale(1.05);
+}
+
+.btn-post:active {
+    transform: scale(1);
+}
+
+.search-form {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.search-form input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #0C5FB3;
+    border-radius: 30px 0 0 30px; 
+    font-size: 12px; 
+    outline: none;
+}
+
+.search-form button {
+    background-color: #0C5FB3;
+    border: none;
+    padding: 10px;
+    border-radius: 0 30px 30px 0; 
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease;
+}
+
+.search-form button:hover {
+    background-color: #074a8d;
+}
+
+.search-form img {
+    width: 16px;
+    height: 16px;
+    filter: invert(1);
+}
+

@@ -258,3 +258,58 @@ body {
     font-size: 12px;
     opacity: 0.6;
 }
+
+.profile-menu {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 7px 0;
+    border-bottom: 0.5px solid #292623;
+    background-color: #DFDAC8;
+    margin-top: 10px;
+}
+
+.prof-menu-btn span {
+    flex: 1;
+    text-align: center;
+}
+
+.prof-menu-btn a {
+    display: inline-block;
+    padding: 10px 20px;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: lighter;
+    color: #292623;
+    border-radius: 5px;
+    transition: all 0.3s;
+}
+
+.prof-menu-btn a:hover {
+    background-color: rgba(12, 95, 179, 0.1); 
+    color: #0C5FB3;
+}
+
+.prof-menu-btn a.active {
+    color: #0C5FB3;
+    border-bottom: 2px solid #0C5FB3;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.content p {
+    opacity: 0.5;
+}
+
+.empty-icon {
+    width: 30px;
+    height: 30px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}

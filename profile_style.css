@@ -32,17 +32,17 @@ body {
 .middle-panel {
     flex: 1;
     background: #DFDAC8;
-    padding: 40px;
+    padding: 0px;
     display: flex;
     flex-direction: column;
-    border: 0.1px solid #0C5FB3;
-    align-items: center;
+    border: 0.5px solid #292623;
+    border-top: 0px;
 }
 
 .right-panel {
     flex: 0.4;
     background: #DFDAC8;
-    padding: 20px;
+    padding: 40px;
     display: flex;
     flex-direction: column;
     align-items: right;
@@ -62,7 +62,7 @@ body {
     padding: 10px 15px;
     border-radius: 100px;
     background-color: #DFDAC8;
-    color: #333;
+    color: #292623;
     transition: background-color 0.3s, color 0.3s;
     cursor: pointer;
     margin-top: 10px;
@@ -71,7 +71,7 @@ body {
 
 .menu-item:hover {
     background-color: rgba(12, 95, 179, 0.2); 
-    color: #000; 
+    color: #292623; 
 }
 
 .icon {
@@ -91,7 +91,6 @@ body {
     border: none;
     border-radius: 100px;
     background-color: #0C5FB3;
-    color: white;
     font-size: 20px;
     color: ghostwhite;
     font-weight: bold;
@@ -151,28 +150,111 @@ body {
     align-items: center;
     background-color: #DFDAC8;
     padding: 10px;
+    position: relative;
+    border-bottom: 0.5px solid #292623;
+    border-top: 0.5px solid #292623;
+    margin-top: 30px;
 }
 
 .top-menu button {
-    width: 24px;
-    height: 24px;
     background-color: transparent;
     border: none;
-    padding: 10px;
+    padding: 5px;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px;
+}     
+
+.top-menu button:hover {
+    background-color: rgba(12, 95, 179, 0.2); 
+    border-radius: 100%;
+}
+
+.top-menu button img {
+    width: 20px;
+    height: 20px;
+}
+
+.top-menu span {
+    font-size: 14px;
+    color: black;
+}
+
+.header-profile {
+    position: relative;
+    width: 100%;
+    height: 160px;
+    background-color: gray;
+    border-bottom: 4px solid ghostwhite;
+}
+
+.header-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.pfp {
+    position: absolute;
+    bottom: -50px;
+    left: 30px; 
+    width: 120px; 
+    height: 120px;
+    border-radius: 50%;
+    border: 4px solid ghostwhite;
+    overflow: hidden; 
+    background-color: #DFDAC8; 
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.top-menu span {
-    margin-left: 10px;
-    font-size: 18px;
-    font-weight: bold;
+.pfp img {
+    width: 80%;
+    height: 80%;
+    object-fit: cover;
 }
 
+.user-info {
+    background-color: #DFDAC8;
+}
 
-.header-profile {
-    background: linear-gradient(135deg, #0C5FB3, #DFDAC8);
-    
+.edit-prof-btn {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.edit-btn {
+    margin: 15px;
+    background-color: #292623; 
+    color: ghostwhite; 
+    border: 1px solid #292623; 
+    padding: 6px 12px;
+    border-radius: 100px; 
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.1s ease;
+    margin-left: 525px;
+}
+
+.edit-btn:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: #292623;
+}
+
+.basic-info h3{
+    color: #292623;
+    margin-left: 25px;
+    margin-top: 3px;
+}
+
+.basic-info p {
+    color: #292623;
+    margin-left: 25px;
+    margin-top: 3px;
+    font-size: 12px;
+    opacity: 0.6;
 }

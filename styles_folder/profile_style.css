@@ -394,3 +394,8 @@ body {
     height: 20px;
     display: block;
 }
+
+.bio-box {
+    width: 40%;
+    margin-left: 20px;
+}

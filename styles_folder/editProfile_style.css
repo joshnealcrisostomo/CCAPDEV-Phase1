@@ -11,7 +11,7 @@ body {
     align-items: center;
     justify-content: center;
     background-color: #DFDAC8;
-    position: relative; /* Ensure the container is positioned relative to body */
+    position: relative;
 }
 
 .overlay {
@@ -51,14 +51,60 @@ body {
     display: flex;
     padding: 10px;
     background-color: #DFDAC8;
-    height: 30px;
+    border-radius: 25px;
+    height: 50px;
     width: 100%;
     opacity: 1;
     position: relative;
 }
 
-.edit-top-menu .button {
-    
+.edit-top-menu button {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: none;
+    background: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
 }
 
+.edit-top-menu .exit-btn img {
+    width: 25px; 
+    height: 25px;
+}
 
+.edit-top-menu .exit-btn:hover {
+    background-color: rgba(12, 95, 179, 0.1); 
+    border-radius: 100%;
+}
+
+.edit-top-menu span h3 {
+    font-size: 20px;
+    margin-left: 20px;
+    margin-top: 10px;
+}
+
+.save-prof-btn {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.save-btn {
+    margin: 10px;
+    background-color: #292623; 
+    color: ghostwhite; 
+    border: 1px solid #292623; 
+    padding: 6px 12px;
+    border-radius: 100px; 
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.1s ease;
+    margin-left: 270px;
+}
+
+.save-btn:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: #292623;
+}

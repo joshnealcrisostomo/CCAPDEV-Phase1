@@ -251,12 +251,20 @@ body {
     margin-top: 3px;
 }
 
-.basic-info p {
+.username {
     color: #292623;
     margin-left: 25px;
     margin-top: 3px;
     font-size: 12px;
-    opacity: 0.6;
+    opacity: 0.5;
+}
+
+.bio {
+    color: #292623;
+    margin-left: 25px;
+    margin-top: 3px;
+    font-size: 12px;
+    opacity: 0.8;
 }
 
 .profile-menu {
@@ -386,4 +394,3 @@ body {
     height: 20px;
     display: block;
 }
-

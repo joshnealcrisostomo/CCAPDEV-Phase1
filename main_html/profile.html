@@ -1,157 +1,141 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="../styles_folder/profile_style.css">
-        <title>User Profile</title>
-    </head>
-    <body>
-        <div class="container">
-            <div class="left-panel">
-                <h1>LOGO PLS</h1>
-                <div class="menu-icons">
-                    <a href="#" class="menu-item">
-                        <img src="../icons/home.png" alt="home-btn" class="icon">
-                        <span class="menu-text">Home</span>
-                    </a>
-                    <a href="#" class="menu-item">
-                        <img src="../icons/search.png" alt="explore-btn" class="icon">
-                        <span class="menu-text">Explore</span>
-                    </a>
-                    <a href="#" class="menu-item">
-                        <img src="../icons/notification.png" alt="notif-bell" class="icon">
-                        <span class="menu-text">Notifications</span>
-                    </a>
-                    <a href="#" class="menu-item">
-                        <img src="../icons/user.png" alt="profile-icon" class="icon">
-                        <span class="menu-text">Profile</span>
-                    </a>
-                    <a href="#" class="menu-item">
-                        <img src="../icons/settings.png" alt="setting-icon" class="icon">
-                        <span class="menu-text">Settings</span>
-                    </a>
-    
-                    <div class="menu-item">
-                        <button type="button" class="btn-post">Post!</button>
-                    </div>
-                </div>
-                
-            </div>
-            <div class="middle-panel">
-                <div class="top-menu">
-                    <button type="button">
-                        <img src="../icons/left_arrow.png" alt="return-btn">
-                    </button>
-                    <span>
-                        display name
-                    </span>
-                </div>
-                <div class="header-profile">
-                    <div class="header-img">
-                        
-                    </div>
-                    <div class="pfp">
-                        <img src="../icons/user.png" alt="Profile picture">
-                    </div>
-                </div>
-                <div class="user-info">
-                    <div class="edit-prof-btn">
-                        <div class="edit-profile">
-                            <button type="button" class="edit-btn">
-                                Edit Profile
-                            </button>
-                        </div>
-                    </div>
-                    <div class="basic-info">
-                        <h3>Display Name</h3>
-                        <p>@username</p>
-                    </div>
-                    <div class="profile-menu">
-                        <div class="prof-menu-btn">
-                            <span>
-                                <a href="../main_html/profile.html" class="posts-btn active">
-                                    Posts
-                                </a>
-                            </span>
-                            <span>
-                                <a href="../empty_contents/empty_comments.html" class="comments-btn">
-                                    Comments
-                                </a>
-                            </span>
-                            <span>
-                                <a href="../empty_contents/empty_bookmarks.html" class="bookmark-btn">
-                                    Bookmarks
-                                </a>
-                            </span>
-                            <span>
-                                <a href="../empty_contents/empty_upvote.html" class="upvoted-btn">
-                                    Upvoted
-                                </a>
-                            </span>
-                            <span>
-                                <a href="../empty_contents/empty_downvote.html" class="downvoted-btn">
-                                    Downvoted
-                                </a>
-                            </span>
-                        </div>
-                    </div>
-                    <div class="content">
-                        <img src="../icons/pin.png" alt="pin-icon" class="empty-icon">
-                        <p>@username hasn't posted yet.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="right-panel">
-                <div class="search-form">
-                    <input type="text" id="search" placeholder="Search...">
-                    <button type="button">
-                        <img src="../icons/search.png" alt="search-btn">
-                    </button>
-                </div>
-                
-                <div class="title">
-                    <h3>Transportation Types</h3>
-                    <span>
-                        <div class="filter-icon">
-                            <img src="../icons/filter.png" alt="filter-icon">
-                        </div>
-                    </span>
-                </div>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../styles_folder/profile_style.css">
+    <title>User Profile</title>
+</head>
+<body>
+    <div class="container">
+        <div class="left-panel">
+            <h1>LOGO PLS</h1>
+            <div class="menu-icons">
+                <a href="#" class="menu-item">
+                    <img src="../icons/home.png" alt="home-btn" class="icon">
+                    <span class="menu-text">Home</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <img src="../icons/search.png" alt="explore-btn" class="icon">
+                    <span class="menu-text">Explore</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <img src="../icons/notification.png" alt="notif-bell" class="icon">
+                    <span class="menu-text">Notifications</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <img src="../icons/user.png" alt="profile-icon" class="icon">
+                    <span class="menu-text">Profile</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <img src="../icons/settings.png" alt="setting-icon" class="icon">
+                    <span class="menu-text">Settings</span>
+                </a>
 
-                <div class="transpo-types">
-                    <div class="transpo-option">
-                        <input type="checkbox" id="Tricycle" class="switch">
-                        <label for="Tricycle"></label>
-                        <p>Tricycle</p>
-                    </div>
-                    <div class="transpo-option">
-                        <input type="checkbox" id="Jeep" class="switch">
-                        <label for="Jeep"></label>
-                        <p>Jeep</p>
-                    </div>
-                    <div class="transpo-option">
-                        <input type="checkbox" id="E-Jeep" class="switch">
-                        <label for="E-Jeep"></label>
-                        <p>E-Jeep</p>
-                    </div>
-                    <div class="transpo-option">
-                        <input type="checkbox" id="Bus" class="switch">
-                        <label for="Bus"></label>
-                        <p>Bus</p>
-                    </div>
-                    <div class="transpo-option">
-                        <input type="checkbox" id="P2P" class="switch">
-                        <label for="P2P"></label>
-                        <p>Point-To-Point Bus</p>
-                    </div>
-                    <div class="transpo-option">
-                        <input type="checkbox" id="Train" class="switch">
-                        <label for="Train"></label>
-                        <p>Train</p>
+                <div class="menu-item">
+                    <button type="button" class="btn-post">Post!</button>
+                </div>
+            </div>
+        </div>
+        <div class="middle-panel">
+            <div class="top-menu">
+                <button type="button">
+                    <img src="../icons/left_arrow.png" alt="return-btn">
+                </button>
+                <span>
+                    display name
+                </span>
+            </div>
+            <div class="header-profile">
+                <div class="header-img"></div>
+                <div class="pfp">
+                    <img src="../icons/user.png" alt="Profile picture">
+                </div>
+            </div>
+            <div class="user-info">
+                <div class="edit-prof-btn">
+                    <div class="edit-profile">
+                        <button type="button" class="edit-btn">Edit Profile</button>
                     </div>
                 </div>
-            </div>            
+                <div class="basic-info">
+                    <h3>Display Name</h3>
+                    <p>@username</p>
+                </div>
+                <div class="profile-menu">
+                    <div class="prof-menu-btn">
+                        <span>
+                            <a href="#" class="posts-btn active">Posts</a>
+                        </span>
+                        <span>
+                            <a href="#" class="comments-btn">Comments</a>
+                        </span>
+                        <span>
+                            <a href="#" class="bookmark-btn">Bookmarks</a>
+                        </span>
+                        <span>
+                            <a href="#" class="upvoted-btn">Upvoted</a>
+                        </span>
+                        <span>
+                            <a href="#" class="downvoted-btn">Downvoted</a>
+                        </span>
+                    </div>
+                </div>
+                <div class="content">
+                    <img src="../icons/pin.png" alt="pin-icon" class="empty-icon">
+                    <p>@username hasn't posted yet.</p>
+                </div>
+            </div>
         </div>
-    </body>
+        <div class="right-panel">
+            <div class="search-form">
+                <input type="text" id="search" placeholder="Search...">
+                <button type="button">
+                    <img src="../icons/search.png" alt="search-btn">
+                </button>
+            </div>
+            <div class="title">
+                <h3>Transportation Types</h3>
+                <span>
+                    <div class="filter-icon">
+                        <img src="../icons/filter.png" alt="filter-icon">
+                    </div>
+                </span>
+            </div>
+            <div class="transpo-types">
+                <div class="transpo-option">
+                    <input type="checkbox" id="Tricycle" class="switch">
+                    <label for="Tricycle"></label>
+                    <p>Tricycle</p>
+                </div>
+                <div class="transpo-option">
+                    <input type="checkbox" id="Jeep" class="switch">
+                    <label for="Jeep"></label>
+                    <p>Jeep</p>
+                </div>
+                <div class="transpo-option">
+                    <input type="checkbox" id="E-Jeep" class="switch">
+                    <label for="E-Jeep"></label>
+                    <p>E-Jeep</p>
+                </div>
+                <div class="transpo-option">
+                    <input type="checkbox" id="Bus" class="switch">
+                    <label for="Bus"></label>
+                    <p>Bus</p>
+                </div>
+                <div class="transpo-option">
+                    <input type="checkbox" id="P2P" class="switch">
+                    <label for="P2P"></label>
+                    <p>Point-To-Point Bus</p>
+                </div>
+                <div class="transpo-option">
+                    <input type="checkbox" id="Train" class="switch">
+                    <label for="Train"></label>
+                    <p>Train</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="../javascript/empty_profile/switchContents.js"></script>
+</body>
 </html>

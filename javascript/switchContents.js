@@ -19,6 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     <p>@username hasn't downvoted anything yet.</p>`,
     };
 
+    /*
     // Set the active section and content on load
     menuButtons.forEach((btn) => btn.classList.remove("active"));
     const activeButton = document.querySelector(`.${lastViewedSection}-btn`);
@@ -72,4 +73,21 @@ document.addEventListener("DOMContentLoaded", () => {
             window.location.href = "../main_html/profile.html";
         });
     }
+*/        
 });
+
+function redirectToEditProfile() {
+    window.location.href = 'editProfile.html';  
+}
+
+function redirectToUserProfile() {
+    window.location.href = 'profile.html'; 
+}
+
+function redirectToRegister() {
+    window.location.href = 'register.html'; 
+}
+
+function redirectToLogin() {
+    window.location.href = 'login.html'; 
+}

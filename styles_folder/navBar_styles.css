@@ -66,3 +66,16 @@
 .btn-post:active {
     transform: scale(1);
 }
+
+.logout {
+    width: 100%;
+    padding: 4px 15px;
+    border: 1px solid #8E1600;
+    border-radius: 100px;
+    background-color: #DFDAC8;
+    font-size: 14px;
+    color: #8E1600;
+    font-weight: bold;
+    cursor: pointer;
+    text-align: center;
+}

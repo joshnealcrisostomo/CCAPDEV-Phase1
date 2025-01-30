@@ -99,3 +99,8 @@ function redirectToExplore() {
 function redirectToHome() {
     window.location.href = 'dashboard.html';
 }
+
+function redirectToProfile() {
+    window.location.href = 'profile.html';
+
+}

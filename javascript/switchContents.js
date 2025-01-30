@@ -91,3 +91,11 @@ function redirectToRegister() {
 function redirectToLogin() {
     window.location.href = 'login.html'; 
 }
+
+function redirectToExplore() {
+    window.location.href = 'try.html';
+}
+
+function redirectToHome() {
+    window.location.href = 'dashboard.html';
+}

@@ -19,6 +19,40 @@ body {
     height: 100%;
 }
 
+.return-container {
+    display: flex;
+    align-items: center;
+    background-color: #DFDAC8;
+    padding: 10px;
+    position: relative;
+}
+
+.return-container button {
+    background-color: transparent;
+    border: none;
+    padding: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px;
+}     
+
+.return-container button:hover {
+    background-color: rgba(12, 95, 179, 0.2); 
+    border-radius: 100%;
+}
+
+.return-container button img {
+    width: 20px;
+    height: 20px;
+}
+
+.return-container span {
+    font-size: 14px;
+    color: black;
+}
+
 .middle-panel {
     flex: 1;
     background: #4A4742;

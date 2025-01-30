@@ -93,7 +93,7 @@ function redirectToLogin() {
 }
 
 function redirectToExplore() {
-    window.location.href = 'try.html';
+    window.location.href = 'explore.html';
 }
 
 function redirectToHome() {

@@ -3,71 +3,106 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Search Page</title>
     <link rel="stylesheet" href="../styles_folder/explore.css">
+    <title>Explore</title>
 </head>
 <body>
-    <div id="left-panel"></div> 
-    <div class="middle-panel">
-        <div class="search-container">
-            <h2>Search</h2>
-            <div class="search-section">
-                <input type="text" id="search" placeholder="Search by Keyword">
-                <button type="button" class="btn-login">Search</button>
-            </div>
-            <div class="search-options">
-                <label><input type="checkbox"> Search online post</label>
-                <label><input type="checkbox"> Search this only</label>
-                <label><input type="checkbox"> Search by Username</label>
-                <label><input type="checkbox"> Main card username</label>
-                <label><input type="checkbox"> Search in Form(c)</label>
-            </div>
-            <div class="advanced-options">
-                <select>
-                    <option>Sociability</option>
-                    <option>Assessments</option>
-                    <option>Lungs</option>
-                    <option>Media</option>
-                    <option>Service</option>
-                </select>
-                <input type="text" placeholder="Find friends with a kind... replies">
-                <select>
-                    <option>Newer</option>
-                    <option>Other</option>
-                </select>
-                <select>
-                    <option>Sort Results</option>
-                    <option>According</option>
-                    <option>Display Results As</option>
-                    <option>Threats</option>
-                    <option>Posts</option>
-                </select>
-            </div>
-    
-            <!-- Latest Posts Section -->
-            <div class="latest-posts">
-                <h2>Latest Posts</h2>
-                <div class="post">
-                    <div class="post-title">Pedro Gil to Alabang Town Center</div>
-                    <div class="post-meta">
-                        <span class="username">by IsaCutie</span>
-                        <span class="upvotes">▲ 14 Upvotes</span>
-                        <span class="comments">💬 20 Comments</span>
+    <div class="container">
+        <div id="left-panel"></div>
+        <div class="middle-panel">
+            <div class="search-container">
+                <div class="return-container">
+                    <button type="button" onclick="redirectToHome()">
+                        <img src="../icons/left_arrow.png" alt="return-btn">
+                    </button>
+                    <span>
+                        Home
+                    </span>
+                </div>
+                <hr>
+                <br>
+                <h2>Search</h2>
+                <div class="search-section">
+                    <input type="text" id="search" placeholder="Search by Keyword">
+                    <button type="button" class="btn-login">Search</button>
+                </div>
+                <div class="search-options">
+                    <label><input type="checkbox"> Search online post</label>
+                    <label><input type="checkbox"> Search this only</label>
+                    <label><input type="checkbox"> Search by Username</label>
+                    <label><input type="checkbox"> Main card username</label>
+                    <label><input type="checkbox"> Search in Form(c)</label>
+                </div>
+                <div class="advanced-options">
+                    <select>
+                        <option>Sociability</option>
+                        <option>Assessments</option>
+                        <option>Lungs</option>
+                        <option>Media</option>
+                        <option>Service</option>
+                    </select>
+                    <input type="text" placeholder="Find friends with a kind... replies">
+                    <select>
+                        <option>Newer</option>
+                        <option>Other</option>
+                    </select>
+                    <select>
+                        <option>Sort Results</option>
+                        <option>According</option>
+                        <option>Display Results As</option>
+                        <option>Threats</option>
+                        <option>Posts</option>
+                    </select>
+                </div>
+                <br>
+                <hr>
+
+                <div class="latest-posts">
+                    <h2>Latest Posts</h2>
+                    <div class="post">
+                        <div class="post-title">Pedro Gil to Alabang Town Center</div>
+                        <div class="post-meta">
+                            <span class="username">by IsaCutie</span>
+                            <span class="upvotes">▲ 14 Upvotes</span>
+                            <span class="comments">💬 20 Comments</span>
+                        </div>
+                    </div>
+                    <div class="post">
+                        <div class="post-title">Best Coffee Shops in Manila</div>
+                        <div class="post-meta">
+                            <span class="username">by CoffeeLover</span>
+                            <span class="upvotes">▲ 8 Upvotes</span>
+                            <span class="comments">💬 12 Comments</span>
+                        </div>
+                    </div>
+                    <div class="post">
+                        <div class="post-title">DLSU to Bulacan</div>
+                        <div class="post-meta">
+                            <span class="username">by Sir_Balero</span>
+                            <span class="upvotes">▲ 60 Upvotes</span>
+                            <span class="comments">💬 10 Comments</span>
+                        </div>
+                    </div>
+                    <div class="post">
+                        <div class="post-title">Is there a bus going to BGC?</div>
+                        <div class="post-meta">
+                            <span class="username">by trashcan09</span>
+                            <span class="upvotes">▲ 8 Upvotes</span>
+                            <span class="comments">💬 20 Comments</span>
+                        </div>
+                    </div>
+                    <div class="post">
+                        <div class="post-title">How to find a way into her heart</div>
+                        <div class="post-meta">
+                            <span class="username">by JN</span>
+                            <span class="upvotes">▲ 1.4k Upvotes</span>
+                            <span class="comments">💬 213 Comments</span>
+                        </div>
                     </div>
                 </div>
-                <div class="post">
-                    <div class="post-title">Best Coffee Shops in Manila</div>
-                    <div class="post-meta">
-                        <span class="username">by CoffeeLover</span>
-                        <span class="upvotes">▲ 8 Upvotes</span>
-                        <span class="comments">💬 12 Comments</span>
-                    </div>
-                </div>
-                <!-- Add more posts as needed -->
             </div>
-        </div>
+            </div>
     </div>
-    <div id="right-panel"></div>
     <script src="../javascript/loadPanels.js"></script>
+    <script src="../javascript/switchContents.js"></script>
 </body>
-</html>

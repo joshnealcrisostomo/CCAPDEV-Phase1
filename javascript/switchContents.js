@@ -19,7 +19,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     <p>@username hasn't downvoted anything yet.</p>`,
     };
 
-    /*
     // Set the active section and content on load
     menuButtons.forEach((btn) => btn.classList.remove("active"));
     const activeButton = document.querySelector(`.${lastViewedSection}-btn`);
@@ -42,6 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
+/*
     // Handle the "Edit Profile" button click
     if (editProfileButton) {
         editProfileButton.addEventListener("click", () => {

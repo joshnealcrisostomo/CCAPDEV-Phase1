@@ -141,8 +141,8 @@ body {
 
 .btn-signup {
     padding: 10px 20px;
-    background: white;
-    color: #845EC2;
+    background: linear-gradient(135deg, #fefefe, #DFDAC8);
+    color: #000000;
     font-size: 16px;
     border: none;
     border-radius: 5px;
@@ -150,7 +150,7 @@ body {
 }
 
 .btn-signup:hover {
-    background: #f3f3f3;
+    background:  linear-gradient(135deg, #d6afff, #B04898);
 }
 
 .remember-me {

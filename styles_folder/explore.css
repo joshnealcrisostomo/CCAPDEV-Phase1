@@ -55,7 +55,7 @@ body {
 
 .middle-panel {
     flex: 1;
-    background: #4A4742;
+    background: #DFDAC8;
     padding: 0px;
     display: flex;
     flex-direction: column;
@@ -69,7 +69,7 @@ body {
     background-color: #DFDAC8;
     padding: 40px;
     border-radius: 10px;
-    box-shadow: 0 1px 15px ghostwhite;
+    box-shadow: 0 1px 15px #4A4742;
     width: 990px;
     max-width: 90%;
     margin: 0 auto;

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="../styles_folder/create_style.css">
+        <title>Create Post</title>
+    </head>
+    <body>
+        <div class="container">
+            <div id="left-panel"></div>
+
+            <div class="middle-panel">
+                <h2>Create a Post!</h2>
+                
+                <div class="creatt-post-container">
+                    <div class="post-title-container">
+                        <textarea class="post-title-text-area" placeholder="Post Title"></textarea>
+                        <div class="char-count">
+                            0/200
+                        </div>
+                    </div>
+                    <div class="tags-btn-container">
+                        <label for="tags">Tags: </label>
+                        <select class="tag-options" name="tags" id="tags">
+                            <option value="commute">Commute</option>
+                            <option value="price">Price</option>
+                            <option value="route">Route</option>
+                            <option value="location">Location</option>
+                            <option value="weather">Weather</option>
+                        </select>
+                    </div>
+                    <div class="body-post-container">
+                        <div class="body-container">
+                            <div class="body-options-container">
+                                <a href="#" class="body-item" onclick="">
+                                    B
+                                </a>
+                                <a href="#" class="body-item" onclick="">
+                                    I
+                                </a>
+                                <a href="#" class="body-item" onclick="">
+                                    U
+                                </a>
+                                <a href="#" class="body-item" onclick="">
+                                    S
+                                </a>
+                                <a href="#" class="body-item" onclick="">
+                                    A^
+                                </a>
+                                |
+                                <a href="#" class="body-item" onclick="">
+                                    link
+                                </a>
+                                <a href="#" class="body-item" onclick="">
+                                    *-
+                                </a>
+                                <a href="#" class="body-item" onclick="">
+                                    1-
+                                </a>
+                            </div>
+                            <div class="body-text-container">
+                                <textarea class="body-text-area" placeholder="Body"></textarea>
+                            </div>
+                            <div class="create-post-btns">
+                                <a href="#" class="post-item" onclick="">Drafts</a>
+                                <button type="button" class="save-draft-btn">Save as draft</button>
+                                <button type="button" class="post-btn">Post</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="right-panel"></div>
+        </div>
+
+        <script src="../javascript/loadPanels.js"></script>
+        <script src="../javascript/switchContents.js"></script>
+        <script src="../javascript/navBar.js"></script> 
+    </body>
+</html>

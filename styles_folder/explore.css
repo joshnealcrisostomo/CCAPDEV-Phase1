@@ -72,11 +72,11 @@ body {
     box-shadow: 0 1px 15px #4A4742;
     width: 990px;
     max-width: 90%;
-    margin: 0 auto;
+    margin: 25px;
 }
 
 .search-container h2 {
-    font-size: 32px;
+    font-size: 28px;
     color: #000000;
     margin-bottom: 20px;
 }
@@ -147,7 +147,7 @@ body {
     padding: 15px;
     margin-bottom: 10px;
     border: 1px solid #ddd;
-    border-radius: 5px;
+    border-radius: 20px;
     color: #555;
 }
 

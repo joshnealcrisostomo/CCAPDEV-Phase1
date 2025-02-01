@@ -78,8 +78,6 @@ body {
     width: 40%; 
 }
 
-
-
 .btn-post {
     width: 100%;
     padding: 10px 15px;
@@ -93,9 +91,6 @@ body {
     transition: background 0.3s, transform 0.2s;
     justify-content: space-between;
 }
-
-
-
 
 .post-box h2 {
     font-size: 20px;
@@ -331,8 +326,8 @@ body {
 }
 
 .switch {
-    opacity: 0;  /* Hide the checkbox */
-    position: absolute; /* Remove it from the normal flow */
+    opacity: 0; 
+    position: absolute;
 }
 
 .switch + label {
@@ -390,7 +385,6 @@ body {
     display: block;
 }
 
-/*post*/
 .post_avatar img {
     border-radius: 50%;
     height: 40px;
@@ -401,13 +395,13 @@ body {
     padding-left: 10px;
     align-items: flex-start;
     padding-top: 10px;
-    border-bottom: 1px solid;
+    border-bottom: 0.5px solid;
     padding: 20px;
     width: 100%;
 }
 
 .post_body img {
-    width: 700px;
+    width: 600px;
     object-fit: contain;
     border-radius: 20px;
 }

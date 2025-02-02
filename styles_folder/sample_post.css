@@ -193,6 +193,10 @@ textarea {
     margin-bottom: 20px;
 }
 
+.nested-comment{
+    margin-left: 40px;
+}
+
 .user-comment {
     padding: 20px;
 }

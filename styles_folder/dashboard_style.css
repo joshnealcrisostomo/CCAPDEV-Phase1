@@ -47,6 +47,7 @@ body {
     padding: 20px;
     width: 100%;
     justify-content: space-between;
+    cursor: pointer;
 }
 
 .post-image {

@@ -112,3 +112,7 @@ function redirectToVisitor() {
 function redirectToCreate() {
     window.location.href = 'create.html';
 }
+
+function redirectToSamplePost1() {
+    window.location.href = 'sample_post.html'
+}

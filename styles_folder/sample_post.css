@@ -134,10 +134,16 @@ body {
     width: 25px;
 }
 
+.comment-section-container {
+    padding: 20px;
+    height: 100%; 
+    width: 100%;   
+    padding: 30px;
+    background-color: #DFDAC8;
+}
+
 .add-comment-section {
-    margin-left: 30px;
-    margin-top: 20px;
-    width: 90%;
+    width: 100%;
     display: flex;
 }
 
@@ -157,7 +163,7 @@ textarea {
     border: none;
     border-radius: 6px;
     cursor: pointer;
-    margin-left: 10px;
+    margin-left: 25px;
 }
 
 .sort-section {
@@ -170,4 +176,66 @@ textarea {
     border: none;
     border-radius: 25px;
     padding: 5px;
+}
+
+.comments-section {
+    height: 100%;
+    overflow-y: auto;
+    background-color: #dfdac8;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.comment {
+    background-color: #dfdac8;
+    border: 1.5px solid #c7b9b9;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.user-comment {
+    padding: 20px;
+}
+
+.user-comment strong {
+    font-size: 18px;
+}
+
+.user-comment span {
+    font-size: 12px;
+    opacity: 0.5;
+}
+
+.main-comment {
+    margin-left: 30px;
+    font-size: smaller;
+}
+
+.comment-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 20px;
+    margin-left: 10px;
+    border: none;
+    outline: none;
+}
+
+.vote-btn {
+    background: none;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.vote-count {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.action-btn {
+    background: none;
+    border: none;
+    font-size: 14px;
+    cursor: pointer;
 }

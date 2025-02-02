@@ -108,3 +108,7 @@ function redirectToProfile() {
 function redirectToVisitor() {
     window.location.href = 'visitor_dashboard.html';
 }
+
+function redirectToCreate() {
+    window.location.href = 'create.html';
+}

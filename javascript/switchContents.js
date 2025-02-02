@@ -116,3 +116,7 @@ function redirectToCreate() {
 function redirectToSamplePost1() {
     window.location.href = 'sample_post.html'
 }
+
+function redirectToSettings() {
+    window.location.href = 'settings.html';
+}

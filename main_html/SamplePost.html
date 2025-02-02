@@ -10,9 +10,11 @@
   <div class="container">
     <div id="left-panel"></div>
     <div class="middle-panel">
-      <br>
+      <div class="view-post-container">
+        <br>
         <div class="post-header">
-          <div class="user-avatar"></div>
+          <div class="user-avatar">
+          </div>
           <div class="user-info">
             <div class="username">IsaCutie</div>
             <div class="timestamp">5 weeks ago</div>
@@ -36,13 +38,13 @@
         </div>
     
         <div class="add-comment-section">
-          <textarea placeholder="Add a comment..."></textarea>
+          <textarea placeholder="  Add a comment..."></textarea>
           <button class="add-comment-btn">Comment</button>
         </div>
     
         <div class="sort-section">
           <label for="sort-comments">Sort by:</label>
-          <select id="sort-comments">
+          <select class="sort-options" name="sorts" id="sort-comments">
             <option value="best">Best</option>
             <option value="newest">Newest</option>
             <option value="oldest">Oldest</option>
@@ -86,9 +88,11 @@
                   <button class="action-btn">Share</button>
                 </div>
               </div>
+
             </div>
           </div>
         </div>
+      </div>
 
       <div id="right-panel"></div>
 

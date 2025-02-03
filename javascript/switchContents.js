@@ -121,6 +121,18 @@ function redirectToSamplePost2() {
     window.location.href = 'sample2.html'
 }
 
+function redirectToSamplePost3() {
+    window.location.href = 'sample3.html'
+}
+
+function redirectToSamplePost4() {
+    window.location.href = 'sample4.html'
+}
+
+function redirectToSamplePost5() {
+    window.location.href = 'sample5.html'
+}
+
 function redirectToSettings() {
     window.location.href = 'settings.html';
 }

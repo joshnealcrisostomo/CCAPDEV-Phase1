@@ -21,31 +21,26 @@
                 </div>
                 <div class="post">
                     <div class="post_avatar">
-                        <img
-                            src="https://i.pinimg.com/originals/a6/58/32/a65832155622ac173337874f02b218fb.png"
-                            alt=""
-                        />
+                        <img id="posterpfp" src=""/>
                     </div>
 
                     <div class="post_body">
                         <div class="post_header">
                             <div class="post_headerText">
-                                <h3>
-                                    Pareng sheesh
-                                </h3>
-                                <span class="post-username">@paresMami6</span>
+                                <h3 id="displayName"></h3>
+                                <span class="post-username" id="postusername"></span>
                             </div>
-                            <span class="post-duration">3 hours ago</span>
+                            <span class="post-duration" id="postduration"></span>
 
                             <div class="post_headerDescription">
-                                <h2>Taft finds!!</h2>
-                                <p>Tara mga broskies, let's make gimik near taft!!</p>
+                                <h2 id="postTitle"></h2>
+                                <p id="postContent"></p>
                             </div>
                         </div>
 
-                        <img 
-                            src="https://www.dlsu.edu.ph/wp-content/uploads/2018/08/campus-manila.jpg"
-                            alt=""
+                        <img id="postImage"
+                            src=""
+                            alt="img"
                             class="post-image"
                         />
 
@@ -54,7 +49,7 @@
                                 <a href="#" class="vote-btn" onclick="">
                                     <img src="../icons/up.png" alt="upvote">
                                 </a>
-                                <span class="vote-count">1</span>
+                                <span class="vote-count" id="votes"></span>
                                 <a href="#" class="vote-btn" onclick="">
                                     <img src="../icons/down.png" alt="upvote">
                                 </a>
@@ -85,5 +80,7 @@
         </div>
         <script src="../javascript/switchContents.js"></script>
         <script src="../javascript/loadPanels.js"></script>
+        <script src="../javascript/contents.js"></script>
+        <script src="../javascript/viewPost.js"></script>
     </body>
 </html>

@@ -97,7 +97,7 @@ input[type="range"] {
     margin-top: 8px;
 }
 
-button {
+.return-container button {
     background-color: transparent;
     border: none;
     padding: 5px;
@@ -108,12 +108,21 @@ button {
     margin-right: 10px;
 }
 
-button:hover {
+.return-container button:hover {
     background-color: rgba(12, 95, 179, 0.2);
     border-radius: 100%;
 }
 
-button img {
+.return-container button img {
     width: 20px;
     height: 20px;
+}
+
+.return-container {
+    display: flex;
+    margin-bottom: 10px;
+}
+
+.return-container span {
+    margin-top: 5px;
 }

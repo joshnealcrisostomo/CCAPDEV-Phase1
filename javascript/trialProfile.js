@@ -118,28 +118,20 @@ function redirectToSamplePost1() {
 
 function toggleOptionsMenu(event) {
     const menu = document.getElementById("optionsMenu");
-    const position = event.target.getBoundingClientRect();
-
-    // Calculate the available space on the screen for the menu
-    const spaceBelow = window.innerHeight - position.bottom;
-    const spaceAbove = position.top;
-    const spaceRight = window.innerWidth - position.right;
-
-    // Set menu position dynamically
-    if (spaceBelow >= menu.offsetHeight) {
-        menu.style.top = position.bottom + 'px';
-    } else if (spaceAbove >= menu.offsetHeight) {
-        menu.style.top = position.top - menu.offsetHeight + 'px';
-    } else {
-        menu.style.top = position.top + 'px';
-    }
-
-    if (spaceRight >= menu.offsetWidth) {
-        menu.style.left = position.left + 'px';
-    } else {
-        menu.style.left = position.left - menu.offsetWidth + 'px'; // Menu will appear to the left
-    }
+    const dots = event.target;
 
     // Toggle the display of the menu
-    menu.style.display = (menu.style.display === "block") ? "none" : "block";
+    if (menu.style.display === "block") {
+        menu.style.display = "none";
+    } else {
+        // Position the menu relative to the dots
+        const rect = dots.getBoundingClientRect();
+        menu.style.position = "absolute";
+        menu.style.top = `${rect.bottom + window.scrollY}px`;
+        menu.style.left = `${rect.left + window.scrollX}px`;
+        menu.style.display = "block";
+    }
+
+    // Prevent the event from bubbling up to the window click listener
+    event.stopPropagation();
 }

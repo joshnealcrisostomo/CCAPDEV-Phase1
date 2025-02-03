@@ -52,11 +52,11 @@
                             <div class="dots" onclick="toggleOptionsMenu(event)">⋮</div>
                             <h3 id="post-title">
                                 Help out a Probinsyana!
-                                <div id="optionsMenu" class="dots-menu" style="display:none;">
-                                    <a href="#" onclick="editPost()">Edit</a>
-                                    <a href="#" onclick="deletePost()">Delete</a>
-                                </div>
                             </h3>
+                            <div id="optionsMenu" class="dots-menu">
+                                <a href="#" onclick="editPost()">Edit</a>
+                                <a href="#" onclick="deletePost()">Delete</a>
+                            </div>
                         </div>
                         <div class="post-body" id="post-body">
                             <p>
@@ -104,13 +104,23 @@
     <script src="../javascript/loadPanels.js"></script>
     <script src="../javascript/trialProfile.js"></script>
     <script>
-        function toggleOptionsMenu(event) {
-            const menu = document.getElementById("optionsMenu");
-            const position = event.target.getBoundingClientRect();
-            menu.style.top = position.bottom + 'px';
-            menu.style.left = position.left + 'px';
-            menu.style.display = (menu.style.display === "block") ? "none" : "block";
+    function toggleOptionsMenu(event) {
+        const menu = document.getElementById("optionsMenu");
+        const dots = event.target;
+
+        // Toggle the display of the menu
+        if (menu.style.display === "block") {
+            menu.style.display = "none";
+        } else {
+            
+            const rect = dots.getBoundingClientRect();
+            menu.style.position = "fixed"; 
+            menu.style.top = `${rect.bottom}px`; 
+            menu.style.left = `${rect.left}px`; 
+            menu.style.display = "block";
         }
+    
+    }
 
         function editPost() {
             alert('Edit post functionality');
@@ -121,8 +131,9 @@
         }
 
         window.addEventListener('click', function(event) {
+            const menu = document.getElementById("optionsMenu");
             if (!event.target.closest('.dots') && !event.target.closest('.dots-menu')) {
-                document.getElementById("optionsMenu").style.display = "none";
+                menu.style.display = "none";
             }
         });
     </script>

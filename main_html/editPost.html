@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="../styles_folder/editPost_style.css">
+        <title>Edit Post</title>
+    </head>
+    <body>
+        <div class="container">
+            <div id="left-panel"></div>
+
+            <div class="middle-panel">
+                <br>
+                <br>
+                <h2>Edit Post</h2>
+                <form id="edit-form">
+                    <div class="create-post-container">
+                        <div class="post-title-container">
+                            <label for="edit-title">Post Title</label>
+                            <textarea id="edit-title" class="post-title-text-area" rows="2" placeholder="Post Title"></textarea>
+                            <div class="char-count" id="char-count">
+                                0/200
+                            </div>
+                        </div>
+
+                        <div class="tags-btn-container">
+                            <label for="tags">Tags: </label>
+                            <select class="tag-options" name="tags" id="edit-tags">
+                                <option value="commute">Commute</option>
+                                <option value="price">Price</option>
+                                <option value="route">Route</option>
+                                <option value="location">Location</option>
+                                <option value="weather">Weather</option>
+                            </select>
+                        </div>
+
+                        <div class="body-post-container">
+                            <div class="body-container">
+                                <div class="body-icons">
+                                    <div class="body-options-container">
+                                        <a href="#" class="body-item" onclick="">
+                                            <img src="../icons/bold.png" alt="bold-btn" class="icon-body">
+                                        </a>
+                                        <a href="#" class="body-item" onclick="">
+                                            <img src="../icons/italics.png" alt="italics-btn" class="icon-body">
+                                        </a>
+                                        <a href="#" class="body-item" onclick="">
+                                            <img src="../icons/underline.png" alt="underline-btn" class="icon-body">
+                                        </a>
+                                        <a href="#" class="body-item" onclick="">
+                                            <img src="../icons/strikethrough.png" alt="strike-btn" class="icon-body">
+                                        </a>
+                                        <a href="#" class="body-item" onclick="">
+                                            <img src="../icons/superscript.png" alt="superscript-btn" class="icon-body">
+                                        </a>
+                                        <a href="#" class="body-item" onclick="">
+                                            <img src="../icons/link.png" alt="link-btn" class="icon-body">
+                                        </a>
+                                        <a href="#" class="body-item" onclick="">
+                                            <img src="../icons/bullets.png" alt="bullets-btn" class="icon-body">
+                                        </a>
+                                        <a href="#" class="body-item" onclick="">
+                                            <img src="../icons/list.png" alt="list-btn" class="icon-body">
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <div class="body-text-container">
+                                    <textarea id="edit-body" class="body-text-area" rows="5" placeholder="Body"></textarea>
+                                </div>
+                            </div>
+
+                            <div class="create-post-btns">
+                                <button type="submit" class="post-btn">Save Changes!</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div id="right-panel"></div>
+        </div>
+
+        <script src="../javascript/loadPanels.js"></script>
+        <script src="../javascript/switchContents.js"></script>
+        <script src="../javascript/navBar.js"></script> 
+        <script src="../javascript/editPostJS.js"></script>
+
+        <script>
+            const form = document.getElementById('edit-form');
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                window.location.href = 'TestProfile.html';
+            });
+        </script>
+    </body>
+</html>

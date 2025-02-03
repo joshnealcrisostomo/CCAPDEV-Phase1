@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../styles_folder/triaProfile_Style.css">
+    <title>Test User Post Profile</title>
+</head>
+<body>
+    <div class="container">
+        <div id="left-panel"></div>
+
+        <div class="middle-panel">
+            <div class="top-menu">
+                <button type="button" onclick="redirectToHome()">
+                    <img src="../icons/left_arrow.png" alt="Return to previous page">
+                </button>
+                <span>Display Name</span>
+            </div>
+            <header class="header-profile">
+                <div class="header-img"></div>
+                <div class="pfp">
+                    <img src="../icons/user.png" alt="Profile picture">
+                </div>
+            </header>
+            <div class="user-info">
+                <div class="edit-prof-btn">
+                    <div class="edit-profile">
+                        <button type="button" class="edit-btn" onclick="redirectToEditProfile()">Edit Profile</button>
+                    </div>
+                </div>
+                <section class="basic-info">
+                    <h3>Display Name</h3>
+                    <p class="username">@username</p>
+                    <br>
+                    <div class="bio-box">
+                        <p class="bio">No bio yet.</p>
+                    </div>
+                </section>
+                <nav class="profile-menu">
+                    <div class="prof-menu-btn">
+                        <span><a href="#" class="posts-btn active">Posts</a></span>
+                        <span><a href="#" class="comments-btn">Comments</a></span>
+                        <span><a href="#" class="bookmark-btn">Bookmarks</a></span>
+                        <span><a href="#" class="upvoted-btn">Upvoted</a></span>
+                        <span><a href="#" class="downvoted-btn">Downvoted</a></span>
+                    </div>
+                </nav>
+                <section class="content">
+                    <article class="post">
+                        <div class="post-header">
+                            <div class="dots" onclick="toggleOptionsMenu(event)">⋮</div>
+                            <h3 id="post-title">
+                                Help out a Probinsyana!
+                                <div id="optionsMenu" class="dots-menu" style="display:none;">
+                                    <a href="#" onclick="editPost()">Edit</a>
+                                    <a href="#" onclick="deletePost()">Delete</a>
+                                </div>
+                            </h3>
+                        </div>
+                        <div class="post-body" id="post-body">
+                            <p>
+                                We will have a short trip in Metro Manila but we don't have any idea where the most convenient place to stay is or how to commute around. Below are the places we are initially planning to go to. We would really appreciate tips & suggestions. Thank you so much in advance.
+                            </p>
+                            <br>
+                            Day 1: NAIA, Binondo, National Museum, Taft, Dlsu
+                            <em>(Where to stay for one night in Manila that's accessible?)</em><br><br>
+                            Day 2: Doroteo Jose, then heading to Antipolo, Rizal
+                            <em>(How to commute to Antipolo?)</em>
+                        </div>
+
+                        <div class="post-footer">
+                            <div class="post-actions">
+                                <div class="vote-container">
+                                    <a href="#" class="vote-btn">
+                                        <img src="../icons/up.png" alt="Upvote">
+                                    </a>
+                                    <span class="vote-count">1.3k</span>
+                                    <a href="#" class="vote-btn">
+                                        <img src="../icons/down.png" alt="Downvote">
+                                    </a>
+                                </div>
+                            <div class="post-item-container">
+                                <a href="#" class="post-item">
+                                    <img src="../icons/comment.png" alt="Comment">
+                                </a>
+                                <a href="#" class="post-item">
+                                    <img src="../icons/share.png" alt="Share">
+                                </a>
+                                <a href="#" class="post-item">
+                                    <img src="../icons/bookmark.png" alt="Bookmark">
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    </article>
+                </section>
+            </div>
+        </div>
+        <div id="right-panel"></div>
+    </div>
+
+    <script src="../javascript/navBar.js"></script>
+    <script src="../javascript/loadPanels.js"></script>
+    <script src="../javascript/trialProfile.js"></script>
+    <script>
+        function toggleOptionsMenu(event) {
+            const menu = document.getElementById("optionsMenu");
+            const position = event.target.getBoundingClientRect();
+            menu.style.top = position.bottom + 'px';
+            menu.style.left = position.left + 'px';
+            menu.style.display = (menu.style.display === "block") ? "none" : "block";
+        }
+
+        function editPost() {
+            alert('Edit post functionality');
+        }
+
+        function deletePost() {
+            alert('Delete post functionality');
+        }
+
+        window.addEventListener('click', function(event) {
+            if (!event.target.closest('.dots') && !event.target.closest('.dots-menu')) {
+                document.getElementById("optionsMenu").style.display = "none";
+            }
+        });
+    </script>
+</body>
+</html>

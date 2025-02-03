@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="../styles_folder/sample_post.css">
+        <title>@pat111's Post</title>
+    </head>
+    <body>
+        <div class="container">
+            <div id="left-panel"></div>
+    
+            <div class="middle-panel">
+                <div class="top-menu">
+                    <button type="button" onclick="redirectTo('dashboard')">
+                        <img src="../icons/left_arrow.png" alt="return-btn">
+                    </button>
+                    <span>
+                        Post
+                    </span>
+                </div>
+                <div class="post">
+                    <div class="post_avatar">
+                        <img
+                            src="https://i.pinimg.com/originals/a6/58/32/a65832155622ac173337874f02b218fb.png"
+                            alt=""
+                        />
+                    </div>
+
+                    <div class="post_body">
+                        <div class="post_header">
+                            <div class="post_headerText">
+                                <h3>
+                                    Isabella Ross
+                                </h3>
+                                <span class="post-username">@IsaChuChu</span>
+                            </div>
+                            <span class="post-duration">6 days ago</span>
+
+                            <div class="post_headerDescription">
+                                <h2>Help out a Probinsyana!</h2>
+                                <p>Pampanga to Tagaytay commute pls</p>
+                            </div>
+                        </div>
+
+                        <div class="post-actions">
+                            <div class="vote-container">
+                                <a href="#" class="vote-btn" onclick="">
+                                    <img src="../icons/up.png" alt="upvote">
+                                </a>
+                                <span class="vote-count">5</span>
+                                <a href="#" class="vote-btn" onclick="">
+                                    <img src="../icons/down.png" alt="upvote">
+                                </a>
+                            </div>
+
+                            <div class="post-item-container">
+                                <a href="#" class="post-item" onclick="">
+                                    <img src="../icons/share.png" alt="upvote">
+                                </a>
+                                <a href="#" class="post-item" onclick="">
+                                    <img src="../icons/bookmark.png" alt="upvote">
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="comment-section-container">
+                    <div class="add-comment-section">
+                        <textarea placeholder="  Add a comment..."></textarea>
+                        <button class="add-comment-btn">Comment</button>
+                    </div>
+
+                    <div class="sort-section">
+
+                    </div>
+
+                    <div class="comments-section">
+
+                    </div>    
+                </div>
+            </div>
+            
+            <div id="right-panel"></div>
+    
+        </div>
+        <script src="../javascript/switchContents.js"></script>
+        <script src="../javascript/loadPanels.js"></script>
+    </body>
+</html>

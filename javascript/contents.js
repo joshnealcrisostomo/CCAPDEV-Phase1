@@ -38,5 +38,15 @@ const posts = {
         postImage: 'https://th.bing.com/th/id/R.a2dec5ab8518cc8c8e1a07c4a64b85d9?rik=7IFDWlmvwrGGqw&pid=ImgRaw&r=0',
         displayName: 'Eulysis Dimailig',
         votes: '1.3k',
+    },
+    "@IsaChuChu": {
+        postusername: '@IsaChuChu',
+        postTitle: 'Help out a Probinsyana!',
+        postduration: '6 days ago',
+        posterpfp: 'https://i.pinimg.com/originals/a6/58/32/a65832155622ac173337874f02b218fb.png',
+        postContent: 'Pampanga to Tagaytay commute pls',
+        postImage: '',
+        displayName: 'Isabella Ross',
+        votes: '5',
     }
 };

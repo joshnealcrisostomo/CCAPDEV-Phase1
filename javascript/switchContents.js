@@ -68,4 +68,3 @@ function redirectToPost(username) {
     window.location.href = `sample3.html?user=${username}`;
 }
 
-

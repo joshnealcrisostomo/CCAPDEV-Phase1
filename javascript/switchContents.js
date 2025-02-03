@@ -117,6 +117,10 @@ function redirectToSamplePost1() {
     window.location.href = 'sample_post.html'
 }
 
+function redirectToSamplePost2() {
+    window.location.href = 'sample2.html'
+}
+
 function redirectToSettings() {
     window.location.href = 'settings.html';
 }

@@ -20,6 +20,10 @@ body {
     overflow: hidden ;
 }
 
+.main-comment h2 {
+    margin-bottom: 10px;
+}
+
 .middle-panel {
     flex: 1;
     height: 100%;

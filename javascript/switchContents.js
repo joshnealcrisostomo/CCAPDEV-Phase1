@@ -41,3 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
 function redirectTo(page) {
     window.location.href = `../main_html/${page}.html`;
 }
+
+function redirectToProfile(username) {
+    window.location.href = `profile.html?user=${username}`;
+}

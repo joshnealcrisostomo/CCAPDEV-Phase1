@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../styles_folder/profile_style.css">
-    <title>User Profile</title>
+    <title>Profile</title>
 </head>
 <body>
     <div class="container">
@@ -15,14 +15,12 @@
                 <button type="button" onclick="redirectTo('dashboard')">
                     <img src="../icons/left_arrow.png" alt="return-btn">
                 </button>
-                <span>
-                    display name
-                </span>
+                <span id="profile-name"></span>
             </div>
             <div class="header-profile">
                 <div class="header-img"></div>
                 <div class="pfp">
-                    <img src="https://i.pinimg.com/originals/a6/58/32/a65832155622ac173337874f02b218fb.png" alt="Profile picture">
+                    <img id="profile-pic" alt="Profile picture">
                 </div>
             </div>
             <div class="user-info">
@@ -32,11 +30,11 @@
                     </div>
                 </div>
                 <div class="basic-info">
-                    <h3>Display Name</h3>
-                    <p class="username">@username</p>
+                    <h3 id="display-name"></h3>
+                    <p class="username" id="username"></p>
                     <br>
                     <div class="bio-box">
-                        <p class="bio">No bio yet.</p>
+                        <p class="bio" id="bio"></p>
                     </div>
                 </div>
                 <div class="profile-menu">
@@ -67,8 +65,9 @@
         
         <div id="right-panel"></div>
     </div>
-    <script src="../javascript/switchContents.js"></script>
-    <script src="../javascript/navBar.js"></script>
+    <script src="../javascript/users.js"></script>
+    <script src="../javascript/profile.js"></script>
     <script src="../javascript/loadPanels.js"></script>
+    <script src="../javascript/switchContents.js"></script>
 </body>
 </html>

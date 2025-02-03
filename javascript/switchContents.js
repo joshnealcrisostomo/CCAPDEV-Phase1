@@ -45,3 +45,23 @@ function redirectTo(page) {
 function redirectToProfile(username) {
     window.location.href = `profile.html?user=${username}`;
 }
+
+function redirectToProfileVisitor(username) {
+    window.location.href = `profile_visitor.html?user=${username}`;
+}
+
+function redirectToPublicProfile(username) {
+    window.location.href = `publicProfile.html?user=${username}`;
+
+}
+
+function redirectToEditProfile() {
+    const username = document.getElementById("username").textContent.trim();
+    if (username) {
+        window.location.href = `editProfile.html?user=${username}`;
+    } else {
+        console.error("Username not found.");
+    }
+}
+
+

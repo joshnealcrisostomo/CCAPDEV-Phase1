@@ -3,8 +3,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const username = params.get("user");
 
     if (users[username]) {
+        // Populating the profile page
         document.getElementById("profile-name").textContent = users[username].displayName;
-        document.getElementById("display-name").textContent = users[username].displayName;
+        document.getElementById("display-name").textContent = users[username].displayName;  // for header display
         document.getElementById("username").textContent = users[username].username;
         document.getElementById("bio").textContent = users[username].bio;
         document.getElementById("profile-pic").src = users[username].profilePic;

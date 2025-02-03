@@ -11,7 +11,7 @@
         <div class="container">
             <div class="changes-container">
                 <div class="edit-top-menu">
-                    <button type="button" class="exit-btn" onclick="redirectTo('profile')">
+                    <button type="button" class="exit-btn" onclick="redirectToProfile()">
                         <img src="../icons/delete.png" alt="close-btn">
                     </button>
                     <span>
@@ -19,7 +19,7 @@
                     </span>
                     <span>
                         <div class="save-prof-btn">
-                            <button type="button" class="save-btn" onclick="redirectTo('profile')">
+                            <button type="button" class="save-btn" onclick="redirectToProfile()">
                                 Save
                             </button>
                         </div>
@@ -36,7 +36,7 @@
                         <div class="edit-header-img"></div>
                     </div>
                     <div class="edit-pfp">
-                        <img src="../icons/user.png" alt="Profile picture">
+                        <img src="" id="profile-pic" alt="Profile picture">
                         <div class="edit-pfp-overlay"></div>
                         <div class="edit-pfp-btn">
                             <button type="button" class="edit-for-pfp">
@@ -48,15 +48,16 @@
                 </div>
                 <div class="edit-fields">
                     <div class="name-field">
-                        <input type="text" id="display-name" placeholder="Display Name">
+                        <input type="text" class="name-input" id="display-name" placeholder="Display Name">
                     </div>
                     <div class="bio-field">
-                        <input type="text" id="bio-input" placeholder="Bio">
+                        <input type="text" class="name-input" id="bio-input" placeholder="Bio">
                     </div>
                 </div>
             </div>
         </div>
-
+        <script src="../javascript/users.js"></script>
         <script src="../javascript/switchContents.js"></script>
+        <script src="../javascript/editProfile.js"></script>
     </body>
 </html>

@@ -47,43 +47,49 @@
                     </div>
                 </nav>
                 <section class="content">
-                    <!-- Comment 1 -->
-                    <article class="comment">
-                        <div class="comment-header">
-                            <h3 class="comment-title">Title of the Post 1</h3>
-                            <span class="comment-date">October 10, 2023</span>
+                    <article class="post">
+                        <div class="post-header">
+                            <div class="dots" onclick="toggleOptionsMenu(event)">⋮</div>
+                            <div id="optionsMenu" class="dots-menu">
+                                <a href="#" onclick="editPost()">Edit</a>
+                                <a href="#" onclick="deletePost()">Delete</a>
+                            </div>
                         </div>
-                        <div class="comment-body">
-                            <p>This is the first comment. It provides some feedback or response to the post.</p>
+                        <div class="post-body" id="post-body">
+                            <p>
+                                Tho if nasaraduhan po ng LRT what are the other options po?
+                            </p>
+
+                            <div class="post-footer">
+                                <div class="post-actions">
+                                    <div class="vote-container">
+                                        <a href="#" class="vote-btn">
+                                            <img src="../icons/up.png" alt="Upvote">
+                                        </a>
+                                        <span class="vote-count">1.3k</span>
+                                        <a href="#" class="vote-btn">
+                                            <img src="../icons/down.png" alt="Downvote">
+                                        </a>
+                                    </div>
+                                <div class="post-item-container">
+                                    <a href="#" class="post-item">
+                                        <img src="../icons/comment.png" alt="Comment">
+                                    </a>
+                                    <a href="#" class="post-item">
+                                        <img src="../icons/share.png" alt="Share">
+                                    </a>
+                                    <a href="#" class="post-item">
+                                        <img src="../icons/bookmark.png" alt="Bookmark">
+                                    </a>
+                                </div>
+                            </div>
                         </div>
-                    </article>
-                
-                    <!-- Comment 2 -->
-                    <article class="comment">
-                        <div class="comment-header">
-                            <h3 class="comment-title">Title of the Post 2</h3>
-                            <span class="comment-date">October 11, 2023</span>
-                        </div>
-                        <div class="comment-body">
-                            <p>This is the second comment. It provides additional feedback or response to the post.</p>
-                        </div>
-                    </article>
-                
-                    <!-- Comment 3 -->
-                    <article class="comment">
-                        <div class="comment-header">
-                            <h3 class="comment-title">Title of the Post 3</h3>
-                            <span class="comment-date">October 12, 2023</span>
-                        </div>
-                        <div class="comment-body">
-                            <p>This is the third comment. It provides further feedback or response to the post.</p>
-                        </div>
-                    </article>
-                </section>
+                        </article>
+                    </section>
+                </div>
             </div>
+            <div id="right-panel"></div>
         </div>
-        <div id="right-panel"></div>
-    </div>
 
     <script src="../javascript/navBar.js"></script>
     <script src="../javascript/loadPanels.js"></script>
@@ -106,15 +112,6 @@
         }
     
     }
-
-        function editPost() {
-            alert('Edit post functionality');
-        }
-
-        function deletePost() {
-            alert('Delete post functionality');
-        }
-
         window.addEventListener('click', function(event) {
             const menu = document.getElementById("optionsMenu");
             if (!event.target.closest('.dots') && !event.target.closest('.dots-menu')) {

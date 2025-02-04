@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../styles_folder/sample_comment.css">
+    <title>Test User Comments Profile</title>
+</head>
+<body>
+    <div class="container">
+        <div id="left-panel"></div>
+
+        <div class="middle-panel">
+            <div class="top-menu">
+                <button type="button" onclick="redirectToHome()">
+                    <img src="../icons/left_arrow.png" alt="Return to previous page">
+                </button>
+                <span>Display Name</span>
+            </div>
+            <header class="header-profile">
+                <div class="header-img"></div>
+                <div class="pfp">
+                    <img src="../icons/user.png" alt="Profile picture">
+                </div>
+            </header>
+            <div class="user-info">
+                <div class="edit-prof-btn">
+                    <div class="edit-profile">
+                        <button type="button" class="edit-btn" onclick="redirectToEditProfile()">Edit Profile</button>
+                    </div>
+                </div>
+                <section class="basic-info">
+                    <h3>Display Name</h3>
+                    <p class="username">@username</p>
+                    <br>
+                    <div class="bio-box">
+                        <p class="bio">No bio yet.</p>
+                    </div>
+                </section>
+                <nav class="profile-menu">
+                    <div class="prof-menu-btn">
+                        <span><a href="#" class="posts-btn">Posts</a></span>
+                        <span><a href="#" class="comments-btn active">Comments</a></span>
+                        <span><a href="#" class="bookmark-btn">Bookmarks</a></span>
+                        <span><a href="#" class="upvoted-btn">Upvoted</a></span>
+                        <span><a href="#" class="downvoted-btn">Downvoted</a></span>
+                    </div>
+                </nav>
+                <section class="content">
+                    <!-- Comment 1 -->
+                    <article class="comment">
+                        <div class="comment-header">
+                            <h3 class="comment-title">Title of the Post 1</h3>
+                            <span class="comment-date">October 10, 2023</span>
+                        </div>
+                        <div class="comment-body">
+                            <p>This is the first comment. It provides some feedback or response to the post.</p>
+                        </div>
+                    </article>
+                
+                    <!-- Comment 2 -->
+                    <article class="comment">
+                        <div class="comment-header">
+                            <h3 class="comment-title">Title of the Post 2</h3>
+                            <span class="comment-date">October 11, 2023</span>
+                        </div>
+                        <div class="comment-body">
+                            <p>This is the second comment. It provides additional feedback or response to the post.</p>
+                        </div>
+                    </article>
+                
+                    <!-- Comment 3 -->
+                    <article class="comment">
+                        <div class="comment-header">
+                            <h3 class="comment-title">Title of the Post 3</h3>
+                            <span class="comment-date">October 12, 2023</span>
+                        </div>
+                        <div class="comment-body">
+                            <p>This is the third comment. It provides further feedback or response to the post.</p>
+                        </div>
+                    </article>
+                </section>
+            </div>
+        </div>
+        <div id="right-panel"></div>
+    </div>
+
+    <script src="../javascript/navBar.js"></script>
+    <script src="../javascript/loadPanels.js"></script>
+    <script src="../javascript/trialProfile.js"></script>
+    <script>
+    function toggleOptionsMenu(event) {
+        const menu = document.getElementById("optionsMenu");
+        const dots = event.target;
+
+        // Toggle the display of the menu
+        if (menu.style.display === "block") {
+            menu.style.display = "none";
+        } else {
+            
+            const rect = dots.getBoundingClientRect();
+            menu.style.position = "fixed"; 
+            menu.style.top = `${rect.bottom}px`; 
+            menu.style.left = `${rect.left}px`; 
+            menu.style.display = "block";
+        }
+    
+    }
+
+        function editPost() {
+            alert('Edit post functionality');
+        }
+
+        function deletePost() {
+            alert('Delete post functionality');
+        }
+
+        window.addEventListener('click', function(event) {
+            const menu = document.getElementById("optionsMenu");
+            if (!event.target.closest('.dots') && !event.target.closest('.dots-menu')) {
+                menu.style.display = "none";
+            }
+        });
+    </script>
+</body>
+</html>

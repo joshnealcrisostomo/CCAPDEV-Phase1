@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (event.target && event.target.matches('.logout')) {
                 const isConfirmed = confirm("Are you sure you want to logout?");
                 if (isConfirmed) {
-                    window.location.href = '../main_html/login.html'; // Redirect to login
+                    window.location.href = '../main_html/login.html';
                 }
             }
         });

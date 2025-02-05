@@ -67,3 +67,8 @@ function redirectToEditProfile() {
 function redirectToPost(username) {
     window.location.href = `sample3.html?user=${username}`;
 }
+
+function redirectToEditPost() {
+    window.location.href = `editPost.html`;
+}
+

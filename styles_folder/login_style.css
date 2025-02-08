@@ -130,6 +130,7 @@ body {
     align-items: left;
     text-align: left;
     padding: 40px;
+    transition: all 0.3s;
 }
 
 .right-panel h2 {
@@ -171,4 +172,11 @@ body {
 .right-panel h2 {
     font-size: 70px; 
     text-align: left;
+}
+
+@media (max-width: 700px) {
+    .right-panel {
+        display: none;
+        transition: all 0.3s;
+    }
 }

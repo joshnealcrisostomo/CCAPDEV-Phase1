@@ -29,6 +29,7 @@ body {
     align-items: left;
     text-align: left;
     padding: 40px;
+    transition: all 0.3s;
 }
 
 .left-panel h2 {
@@ -66,6 +67,7 @@ body {
     justify-content: center;
     align-items: center;
     box-shadow: 4px 0 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s;
 }
 
 .right-panel h2 {
@@ -152,4 +154,11 @@ body {
 .form-group input[type="checkbox"] {
     width: auto;
     margin-right: 10px;
+}
+
+@media (max-width: 700px) {
+    .left-panel {
+        display: none;
+        transition: all 0.3s;
+    }
 }

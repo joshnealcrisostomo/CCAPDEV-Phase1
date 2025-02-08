@@ -33,6 +33,7 @@ body {
     align-items: flex-start;
     transition: all 0.3s;
     border: 0.5px solid #292623;
+    transition: all 0.3s;
     border-top: 0px;
     width: 100%;
 }

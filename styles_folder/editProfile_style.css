@@ -8,10 +8,10 @@
 body {
     height: 100vh;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     background-color: #DFDAC8;
-    position: relative;
 }
 
 .overlay {
@@ -36,6 +36,8 @@ body {
     height: 100%;
     z-index: 2;
     position: relative;
+    overflow: hidden;
+    max-width: 1300px;
 }
 
 .changes-container {
@@ -45,6 +47,7 @@ body {
     border-radius: 25px;
     opacity: 1;
     z-index: 3;
+    transition: all 0.3s;
 }
 
 .edit-top-menu {
@@ -84,6 +87,7 @@ body {
     font-size: 20px;
     margin-left: 15px;
     margin-top: 15px;
+    transition: all 0.2s;
 }
 
 .save-prof-btn {
@@ -290,3 +294,18 @@ body {
     color: #292623;
     outline: none;
 }
+
+@media (max-width: 500px) {
+    .changes-container {
+        width: 100%;
+        height: 100%;
+        border-radius: 0;
+    }
+
+    .edit-top-menu span h3 {
+        font-size: 14px;
+        margin-left: 15px;
+        margin-top: 20px;
+    }
+}
+

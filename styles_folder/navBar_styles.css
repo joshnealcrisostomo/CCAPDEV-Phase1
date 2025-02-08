@@ -23,6 +23,7 @@ body {
     align-items: center;
     transition: all 0.3s;
     margin-left: 60px;
+    margin-right: 20px;
 }
 
 .menu-icons {
@@ -106,22 +107,25 @@ body {
 }
 
 @media (max-width: 800px) {
-    .container {
-        flex-direction: column;
-        align-items: flex-start;
-    }
     .left-panel {
         flex: none;
-        width: 90px;
+        width: 60px;
         align-items: center;
         justify-content: center;
         padding: 10px;
+        margin-left: 20px;
     }
+
     .menu-item {
         justify-content: center;
         flex-direction: column;        
-        font-size: 14px;
         align-items: center;
+    }
+
+    .menu-item:hover {
+        background-color: unset; /* Remove hover background change */
+        color: unset; /* Remove hover color change */
+        transform: none; /* Remove scaling effect */ 
     }
 
     .menu-text {

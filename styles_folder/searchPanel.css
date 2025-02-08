@@ -178,7 +178,7 @@ body {
     transform: scale(1.2); /* Slightly enlarge the button on hover */
 }
 
-@media (max-width: 800px) {
+@media (max-width: 1000px) {
     .right-panel {
         display: none;
     }

@@ -1,20 +1,39 @@
-.left-panel {
-    flex: 0.4;
-    background: #DFDAC8;
-    padding: 35px;
+body {
     display: flex;
     flex-direction: column;
-    align-items: left;
-    margin-left: 100px;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    display: flex;
+    width: 100%;
+    max-width: 1300px;
+}
+
+.left-panel {
+    margin-top: 30px;
+    flex: 0.3;
+    background: #DFDAC8;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: all 0.3s;
 }
 
 .menu-icons {
-    margin: 20px;
+    margin: 10px;
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .logo img {
-    margin-left: 60px;
+    margin-left: 20px;
     width: 130px;
     height: 80px;
     cursor: pointer;
@@ -83,4 +102,76 @@
     font-weight: bold;
     cursor: pointer;
     text-align: center;
+}
+
+@media (max-width: 800px) {
+    .container {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .left-panel {
+        flex: none;
+        width: 90px;
+        align-items: center;
+        justify-content: center;
+        padding: 10px;
+    }
+    .menu-item {
+        justify-content: center;
+        flex-direction: column;        
+        font-size: 14px;
+        align-items: center;
+    }
+
+    .menu-text {
+        display: none;
+    }
+
+    .logo img {
+        width: 50px; /* Shrink the logo */
+        height: auto;
+        margin-left: 0;
+    }
+
+    .btn-post span {
+        display: none; /* Hide original text */
+    }
+
+    .btn-post {
+        width: 50px; /* Adjust width to fit the + sign */
+        height: 50px;
+        font-size: 30px; /* Make the plus sign larger */
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+    }
+
+    .btn-post::before {
+        content: "+"; /* Show only the plus sign */
+        font-size: 25px;
+        font-weight: 200;
+    }
+
+    .logout span {
+        display: none;
+    }
+
+    .logout {
+        width: 50px; /* Adjust width to fit the + sign */
+        height: 50px;
+        font-size: 30px; /* Make the plus sign larger */
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+    }
+
+    .logout::before {
+        content: "x"; /* Show only the plus sign */
+        font-size: 25px;
+        font-weight: 200;
+    }
 }

@@ -21,7 +21,7 @@ body {
 
 .left-panel {
     flex: 1;
-    background: linear-gradient(135deg, #0C5FB3, #DFDAC8);
+    background: linear-gradient(215deg, #0C5FB3, #DFDAC8);
     color: white;
     display: flex;
     flex-direction: column;
@@ -45,7 +45,7 @@ body {
 .btn-signup {
     padding: 10px 20px;
     background: linear-gradient(135deg, #fefefe, #DFDAC8);
-    color: #21035b;
+    color: #292623;
     font-size: 16px;
     border: none;
     border-radius: 5px;
@@ -53,12 +53,13 @@ body {
 }
 
 .btn-signup:hover {
-    background:  linear-gradient(135deg, #dcc3f8, #B04898);
+    background: linear-gradient(135deg, #d6afff, #B04898);
+    color: ghostwhite;
 }
 
 .right-panel {
     flex: 1;
-    background: ghostwhite;
+    background: #DFDAC8;
     padding: 40px;
     display: flex;
     flex-direction: column;
@@ -69,7 +70,7 @@ body {
 
 .right-panel h2 {
     font-size: 32px;
-    color: #000000;
+    color: #292623;
     margin-bottom: 20px;
 }
 
@@ -85,11 +86,12 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    border: 1px solid #ddd;
+    border: 1px solid ghostwhite;
     border-radius: 50%;
     font-size: 18px;
-    color: #555;
+    color: #292623;
     text-decoration: none;
+    background: ghostwhite;
 }
 
 .social-icons a:hover {
@@ -126,23 +128,11 @@ body {
     border-radius: 5px;
 }
 
-.forgot-password {
-    display: block;
-    text-align: right;
-    margin: 10px 0;
-    color: #888;
-    text-decoration: none;
-}
-
-.forgot-password:hover {
-    color: #845EC2;
-}
-
 .btn-login {
     width: 100%;
     padding: 10px;
-    background: linear-gradient(135deg, #845EC2, #D65DB1);
-    color: white;
+    background: #0C5FB3;
+    color: ghostwhite;
     font-size: 16px;
     border: none;
     border-radius: 5px;

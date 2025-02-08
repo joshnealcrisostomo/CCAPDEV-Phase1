@@ -21,7 +21,7 @@ body {
 
 .left-panel {
     flex: 1;
-    background: ghostwhite;
+    background: #DFDAC8;
     padding: 40px;
     display: flex;
     flex-direction: column;
@@ -32,7 +32,7 @@ body {
 
 .left-panel h2 {
     font-size: 32px;
-    color: #000000;
+    color: #292623;
     margin-bottom: 20px;
 }
 
@@ -48,11 +48,12 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    border: 1px solid #ddd;
+    border: 1px solid ghostwhite;
     border-radius: 50%;
     font-size: 18px;
-    color: #555;
+    color: #292623;
     text-decoration: none;
+    background: ghostwhite;
 }
 
 .social-icons a:hover {
@@ -80,6 +81,7 @@ body {
     display: block;
     font-weight: bold;
     margin-bottom: 5px;
+    color: #292623;
 }
 
 .form-group input {
@@ -93,19 +95,21 @@ body {
     display: block;
     text-align: right;
     margin: 10px 0;
-    color: #888;
+    color: #292623;
+    opacity: 0.5;
     text-decoration: none;
+    font-size: 14px;
 }
 
 .forgot-password:hover {
-    color: #845EC2;
+    color: #0C5FB3;
 }
 
 .btn-login {
     width: 100%;
     padding: 10px;
-    background: linear-gradient(135deg, #DFDAC8, #242b6d);
-    color: white;
+    background: #0C5FB3;
+    color: ghostwhite;
     font-size: 16px;
     border: none;
     border-radius: 5px;
@@ -142,7 +146,7 @@ body {
 .btn-signup {
     padding: 10px 20px;
     background: linear-gradient(135deg, #fefefe, #DFDAC8);
-    color: #000000;
+    color: #292623;
     font-size: 16px;
     border: none;
     border-radius: 5px;
@@ -150,7 +154,8 @@ body {
 }
 
 .btn-signup:hover {
-    background:  linear-gradient(135deg, #d6afff, #B04898);
+    background: linear-gradient(135deg, #d6afff, #B04898);
+    color: ghostwhite;
 }
 
 .remember-me {

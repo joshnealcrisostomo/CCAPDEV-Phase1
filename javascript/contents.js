@@ -7,7 +7,8 @@ const posts = {
         postContent: 'Tara mga broskies, let\'s make gimik near taft!!',
         postImage: 'https://www.dlsu.edu.ph/wp-content/uploads/2018/08/campus-manila.jpg',
         displayName: 'Pareng Sheeesh',
-        votes: '1'
+        votes: '1',
+        comments: []
     },
     "@juicekneel": {
         postusername: '@juicekneel',
@@ -17,7 +18,8 @@ const posts = {
         postContent: 'hatdog',
         postImage: '',
         displayName: 'jn',
-        votes: '1'
+        votes: '1',
+        comments: []
     },
     "@pat111": {
         postusername: '@pat111',
@@ -27,7 +29,8 @@ const posts = {
         postContent: 'How to commute from taguig to taft using the LRT?',
         postImage: '',
         displayName: 'PatLim',
-        votes: '5'
+        votes: '5',
+        comments: []
     },
     "@euly123": {
         postusername: '@euly123',
@@ -38,6 +41,36 @@ const posts = {
         postImage: 'https://th.bing.com/th/id/R.a2dec5ab8518cc8c8e1a07c4a64b85d9?rik=7IFDWlmvwrGGqw&pid=ImgRaw&r=0',
         displayName: 'Eulysis Dimailig',
         votes: '1.3k',
+        comments: [
+            {
+                username: 'EulyIsaJnPat',
+                duration: '13h ago',
+                title: 'My Route',
+                content: [
+                    'From Pedro Gil, ride the LRT going to EDSA.',
+                    'From EDSA, ride the Alabang EXPRESS jeep (located in front of Mahal Kita Inn/Dunkin) for faster travel time.',
+                    'Go down at Alabang Palengke.',
+                    'Walk towards South Station terminal.',
+                    'Ride a jeep or e-jeepney going to ATC and inform the driver to drop you there.'
+                ],
+                votes: 5,
+                nestedComments: [
+                    {
+                        username: 'IsaCutie',
+                        duration: '2h ago',
+                        content: 'Hello po! Big help po ito! Maraming Salamat',
+                        votes: 3
+                    }
+                ]
+            },
+            {
+                username: 'John',
+                duration: '1h ago',
+                content: 'UP UP UP!',
+                votes: 1,
+                nestedComments: []
+            }
+        ]
     },
     "@IsaChuChu": {
         postusername: '@IsaChuChu',
@@ -48,5 +81,6 @@ const posts = {
         postImage: '',
         displayName: 'Isabella Ross',
         votes: '5',
+        comments: []
     }
 };

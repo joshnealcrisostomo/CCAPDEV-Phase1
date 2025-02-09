@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../styles_folder/sample_post.css">
+    <title>Post View</title>
+</head>
+<body>
+    <div class="container">
+        <div id="left-panel"></div>
+        <div class="middle-panel">
+            <div id="post-container"></div>
+        </div>
+        <div id="right-panel"></div>
+    </div>
+
+    <!-- Handlebars Template -->
+
+        <script id="post-template" type="text/x-handlebars-template">
+            <div class="top-menu">
+                <button type="button" onclick="redirectTo('dashboard')">
+                    <img src="../icons/left_arrow.png" alt="return-btn">
+                </button>
+                <span>Post</span>
+            </div>
+            <div class="post">
+                <div class="post_avatar">
+                    <img src="{{posterpfp}}" alt="Profile Picture"/>
+                </div>
+                <div class="post_body">
+                    <div class="post_header">
+                        <div class="post_headerText">
+                            <h3>{{displayName}}</h3>
+                            <span class="post-username">{{postusername}}</span>
+                            <span>
+                                <div class="dots" onclick="toggleOptionsMenu(event)">⋮</div>
+                                <div id="dotOptions" class="dots-menu">
+                                    <a href="#" onclick="">Report</a>
+                                </div>
+                            </span>
+                        </div>
+                        <span class="post-duration">{{postduration}}</span>
+        
+                        <div class="post_headerDescription">
+                            <h2>{{postTitle}}</h2>
+                            <p>{{postContent}}</p>
+                        </div>
+                    </div>
+        
+                    {{#if postImage}}
+                    <img src="{{postImage}}" alt="Post Image" class="post-image"/>
+                    {{/if}}
+        
+                    <div class="post-actions">
+                        <div class="vote-container">
+                            <a href="#" class="vote-btn">
+                                <img src="../icons/up.png" alt="upvote">
+                            </a>
+                            <span class="vote-count">{{votes}}</span>
+                            <a href="#" class="vote-btn">
+                                <img src="../icons/down.png" alt="downvote">
+                            </a>
+                        </div>
+                        <div class="post-item-container">
+                            <a href="#" class="post-item">
+                                <img src="../icons/share.png" alt="share">
+                            </a>
+                            <a href="#" class="post-item">
+                                <img src="../icons/bookmark.png" alt="bookmark">
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+            <!-- Comment Section -->
+            <div class="comment-section-container">
+                <div class="add-comment-section">
+                    <textarea placeholder="  Add a comment..."></textarea>
+                    <button class="add-comment-btn">Comment</button>
+                </div>
+        
+                <div class="sort-section">
+                    <label for="sort-comments">Sort by:</label>
+                    <select class="sort-options" id="sort-comments">
+                        <option value="best">Best</option>
+                        <option value="newest">Newest</option>
+                        <option value="oldest">Oldest</option>
+                    </select>
+                </div>
+        
+                <div class="comments-section">
+                    {{#each comments}}
+                    <div class="comment">
+                        <div class="user-comment">
+                            <strong>{{username}}</strong>
+                            <span>{{duration}}</span>
+                        </div>
+                        <div class="main-comment">
+                            {{#if title}}
+                            <h2>{{title}}</h2>
+                            {{/if}}
+                            {{#if content}}
+                                {{#if (isArray content)}}
+                                    <ul>
+                                        {{#each content}}
+                                            <li>{{this}}</li>
+                                        {{/each}}
+                                    </ul>
+                                {{else}}
+                                    <p>{{content}}</p>
+                                {{/if}}
+                            {{/if}}
+                        </div>
+                        <div class="comment-actions">
+                            <button class="vote-btn upvote">▲</button>
+                            <span class="vote-count">{{votes}}</span>
+                            <button class="vote-btn downvote">▼</button>
+                            <button class="action-btn">Reply</button>
+                            <button class="action-btn">Share</button>
+                        </div>
+        
+                        <!-- Nested Comments -->
+                        {{#if nestedComments.length}}
+                        <div class="nested-comments">
+                            {{#each nestedComments}}
+                            <div class="comment nested-comment">
+                                <div class="user-comment">
+                                    <strong>{{username}}</strong>
+                                    <span>{{duration}}</span>
+                                </div>
+                                <div class="main-comment">
+                                    <p>{{content}}</p>
+                                </div>
+                                <div class="comment-actions">
+                                    <button class="vote-btn upvote">▲</button>
+                                    <span class="vote-count">{{votes}}</span>
+                                    <button class="vote-btn downvote">▼</button>
+                                    <button class="action-btn">Reply</button>
+                                    <button class="action-btn">Share</button>
+                                </div>
+                            </div>
+                            {{/each}}
+                        </div>
+                        {{/if}}
+        
+                    </div>
+                    {{/each}}
+                </div>
+            </div>
+        </script>        
+
+    <script src="../javascript/switchContents.js"></script>
+    <script src="../javascript/loadPanels.js"></script>
+    <script src="../javascript/preserveScroll.js"></script>
+    <script src="../javascript/editDelete.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.min.js"></script>
+    <script src="../javascript/renderIndivPost.js"></script>
+    <script src="../javascript/contents.js"></script>
+</body>
+</html>

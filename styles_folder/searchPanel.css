@@ -21,7 +21,6 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    transition: all 0.3s;
     margin-right: 60px;
     margin-left: 10px;
 }

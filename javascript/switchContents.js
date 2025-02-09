@@ -64,9 +64,10 @@ function redirectToEditProfile() {
     }
 }
 
-function redirectToPost(username) {
-    window.location.href = `sample3.html?user=${username}`;
+function redirectToPost(postId) {
+    window.location.href = `try_indiv.html?post=${postId}`;
 }
+
 
 function redirectToEditPost() {
     window.location.href = `editPost.html`;

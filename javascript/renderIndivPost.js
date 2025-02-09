@@ -16,8 +16,10 @@ document.addEventListener("DOMContentLoaded", function () {
         comment.nestedComments = comment.nestedComments || [];
     });
 
-    // Debugging Output
-    alert(JSON.stringify(postData, null, 2));
+    // Register Handlebars helper for checking if a value is an array
+    Handlebars.registerHelper('isArray', function (value) {
+        return Array.isArray(value);
+    });
 
     // Compile Handlebars template
     const templateSource = document.getElementById("post-template").innerHTML.trim();

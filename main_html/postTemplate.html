@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../styles_folder/sample_post.css">
+    <link rel="stylesheet" href="../styles_folder/post_style.css">
     <title>Post View</title>
 </head>
 <body>
@@ -17,7 +17,7 @@
                     </button>
                     <span>Post</span>
                 </div>
-                
+
                 <div class="post">
                     <div class="post_avatar">
                         <img src="{{posterpfp}}" alt="Profile Picture"/>
@@ -27,15 +27,16 @@
                             <div class="post_headerText">
                                 <h3>{{displayName}}</h3>
                                 <span class="post-username">{{postusername}}</span>
-                                <span>
+                                <div class="dots-container">
                                     <div class="dots" onclick="toggleOptionsMenu(event)">⋮</div>
-                                    <div id="dotOptions" class="dots-menu">
-                                        <a href="#" onclick="">Report</a>
+                                    <div id="dotOptions" class="dots-menu"> 
+                                        <a href="#">Report</a>
                                     </div>
-                                </span>
+                                </div>
                             </div>
                             <span class="post-duration">{{postduration}}</span>
             
+
                             <div class="post_headerDescription">
                                 <h2>{{postTitle}}</h2>
                                 <p>{{postContent}}</p>

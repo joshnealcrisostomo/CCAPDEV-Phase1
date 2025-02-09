@@ -1,9 +1,9 @@
 document.addEventListener("DOMContentLoaded", function () {
-    document.querySelectorAll(".dots").forEach(dots => {
-        dots.addEventListener("click", function (event) {
-            event.stopPropagation(); // Prevents the click from bubbling up
-            let menu = this.nextElementSibling;
-            
+    document.getElementById("post-container").addEventListener("click", function (event) {
+        if (event.target.classList.contains("dots")) {
+            event.stopPropagation(); // Prevents bubbling
+            let menu = event.target.nextElementSibling;
+
             // Close other open menus
             document.querySelectorAll(".dots-menu").forEach(m => {
                 if (m !== menu) m.style.display = "none";
@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // Toggle the clicked menu
             menu.style.display = (menu.style.display === "block") ? "none" : "block";
-        });
+        }
     });
 
     // Close menu when clicking outside
@@ -22,9 +22,9 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     // Prevent closing when clicking inside the menu
-    document.querySelectorAll(".dots-menu").forEach(menu => {
-        menu.addEventListener("click", function (event) {
+    document.getElementById("post-container").addEventListener("click", function (event) {
+        if (event.target.classList.contains("dots-menu")) {
             event.stopPropagation();
-        });
+        }
     });
 });

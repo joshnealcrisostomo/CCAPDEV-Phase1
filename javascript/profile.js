@@ -66,4 +66,3 @@ function updateProfileContent(activeTab) {
 
     contentContainer.innerHTML = contentHTML;
 }
-

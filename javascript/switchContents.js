@@ -14,8 +14,6 @@ function goBack() {
     }
 }
 
-// Modify existing redirect functions to use navigateTo
-
 function redirectTo(page) {
     navigateTo(`../main_html/${page}.html`);
 }

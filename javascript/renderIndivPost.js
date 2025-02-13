@@ -28,6 +28,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Insert compiled HTML into page
     document.getElementById("post-container").innerHTML = compiledHtml;
+
+    document.title = `${postData.postusername}'s Post`;
 });
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -40,7 +42,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         // Add scrollbar if height reaches max
-        if (this.scrollHeight >= 150) {
+        if (this.scrollHeight >= 100) {
             this.style.overflowY = "auto";
         } else {
             this.style.overflowY = "hidden";

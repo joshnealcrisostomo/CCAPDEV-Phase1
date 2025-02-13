@@ -68,6 +68,10 @@ function redirectToPost(postId) {
     window.location.href = `postTemplate.html?post=${postId}`;
 }
 
+function redirectToVisitorPost(postId) {
+    window.location.href = `visitorPostTemplate.html?post=${postId}`;
+}
+
 
 function redirectToEditPost() {
     window.location.href = `editPost.html`;

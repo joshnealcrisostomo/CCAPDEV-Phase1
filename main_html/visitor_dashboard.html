@@ -1,268 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="../styles_folder/dashboard_style.css">
-        <title>ByaHero!</title>
-    </head>
-    <body>
-        <div class="container">
-            <div id="left-panel"></div>
-    
-            <div class="middle-panel">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../styles_folder/dashboard_style.css">
+    <title>ByaHero!</title>
+</head>
+<body>
+    <div class="container">
+        <div id="left-panel"></div>
+
+        <div class="middle-panel">
+            <!-- Handlebars Template for Visitor Posts -->
+            <script id="visitor-post-template" type="text/x-handlebars-template">
+                {{#each posts}}
                 <div class="post">
-                    <div class="post_avatar" onclick="redirectToProfileVisitor('@euly123')">
-                        <img
-                            src="https://i.pinimg.com/originals/a6/58/32/a65832155622ac173337874f02b218fb.png"
-                            alt=""
-                        />
+                    <div class="post_avatar" onclick="redirectToProfileVisitor('{{postusername}}')">
+                        <img src="{{posterpfp}}" alt="Profile Picture" />
                     </div>
 
                     <div class="post_body">
                         <div class="post_header">
                             <div class="post_headerText">
-                                <h3>
-                                    Eulysis Dimailig
-                                </h3>
-                                <span class="post-username">@euly123</span>
+                                <h3>{{displayName}}</h3>
+                                <span class="post-username">{{postusername}}</span>
                             </div>
-                            <span class="post-duration">1 day ago</span>
+                            <span class="post-duration">{{postduration}}</span>
 
                             <div class="post_headerDescription">
-                                <h2 onclick="redirectTo('visitor_post1')" >Cubao Saan?</h2>
-                                <p>Eto and sakyan niyo papuntang cubao hehehehehehe</p>
+                                <h2 onclick="redirectToVisitorPost('{{postusername}}')">{{postTitle}}</h2>
+                                <p>{{postContent}}</p>
                             </div>
                         </div>
 
-                        <img 
-                            src="https://th.bing.com/th/id/R.a2dec5ab8518cc8c8e1a07c4a64b85d9?rik=7IFDWlmvwrGGqw&pid=ImgRaw&r=0"
-                            alt=""
-                            class="post-image"
-                        />
+                        {{#if postImage}}
+                        <img src="{{postImage}}" alt="Post Image" class="post-image" />
+                        {{/if}}
 
                         <div class="post-actions">
                             <div class="vote-container">
-                                <a href="#" class="vote-btn" onclick="">
-                                    <img src="../icons/up.png" alt="upvote">
-                                </a>
-                                <span class="vote-count">1.3k</span>
-                                <a href="#" class="vote-btn" onclick="">
-                                    <img src="../icons/down.png" alt="upvote">
-                                </a>
+                                <a href="#" class="vote-btn"><img src="../icons/up.png" alt="upvote"></a>
+                                <span class="vote-count">{{votes}}</span>
+                                <a href="#" class="vote-btn"><img src="../icons/down.png" alt="downvote"></a>
                             </div>
 
                             <div class="post-item-container">
-                                <a href="#" class="post-item" onclick="">
-                                    <img src="../icons/comment.png" alt="upvote">
-                                </a>
-                                <a href="#" class="post-item" onclick="">
-                                    <img src="../icons/share.png" alt="upvote">
-                                </a>
+                                <a href="#" class="post-item"><img src="../icons/comment.png" alt="comment"></a>
+                                <a href="#" class="post-item"><img src="../icons/share.png" alt="share"></a>
                             </div>
                         </div>
                     </div>
                 </div>
+                {{/each}}
+            </script>
 
-                <div class="post">
-                    <div class="post_avatar" onclick="redirectToProfileVisitor('@juicekneel')">
-                        <img
-                            src="https://i.pinimg.com/originals/a6/58/32/a65832155622ac173337874f02b218fb.png"
-                            alt=""
-                        />
-                    </div>
-
-                    <div class="post_body">
-                        <div class="post_header">
-                            <div class="post_headerText">
-                                <h3>
-                                    jn <!--name of poster-->
-                                </h3>
-                                <span class="post-username">@juicekneel</span>
-                            </div>
-                            <span class="post-duration">17 hours ago</span>
-
-                            <div class="post_headerDescription">
-                                <h2 onclick="redirectTo('visitor_post2')">Commute to Bulacan</h2>
-                                <p>hatdog</p>
-                            </div>
-                        </div>
-
-                        <div class="post-actions">
-                            <div class="vote-container">
-                                <a href="#" class="vote-btn" onclick="">
-                                    <img src="../icons/up.png" alt="upvote">
-                                </a>
-                                <span class="vote-count">1</span>
-                                <a href="#" class="vote-btn" onclick="">
-                                    <img src="../icons/down.png" alt="upvote">
-                                </a>
-                            </div>
-
-                            <div class="post-item-container">
-                                <a href="#" class="post-item" onclick="">
-                                    <img src="../icons/comment.png" alt="upvote">
-                                </a>
-                                <a href="#" class="post-item" onclick="">
-                                    <img src="../icons/share.png" alt="upvote">
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="post">
-                    <div class="post_avatar" onclick="redirectToProfileVisitor('@paresMami16')">
-                        <img
-                            src="https://i.pinimg.com/originals/a6/58/32/a65832155622ac173337874f02b218fb.png"
-                            alt=""
-                        />
-                    </div>
-
-                    <div class="post_body">
-                        <div class="post_header">
-                            <div class="post_headerText">
-                                <h3>
-                                    Pareng sheesh
-                                </h3>
-                                <span class="post-username">@paresMami6</span>
-                            </div>
-                            <span class="post-duration">3 hours ago</span>
-
-                            <div class="post_headerDescription">
-                                <h2 onclick="redirectTo('visitor_post3')">Taft finds!!</h2>
-                                <p>Tara mga broskies, let's make gimik near taft!!</p>
-                            </div>
-                        </div>
-
-                        <img 
-                            src="https://www.dlsu.edu.ph/wp-content/uploads/2018/08/campus-manila.jpg"
-                            alt=""
-                            class="post-image"
-                        />
-                        <div class="post-actions">
-                            <div class="vote-container">
-                                <a href="#" class="vote-btn" onclick="">
-                                    <img src="../icons/up.png" alt="upvote">
-                                </a>
-                                <span class="vote-count">14</span>
-                                <a href="#" class="vote-btn" onclick="">
-                                    <img src="../icons/down.png" alt="upvote">
-                                </a>
-                            </div>
-
-                            <div class="post-item-container">
-                                <a href="#" class="post-item" onclick="">
-                                    <img src="../icons/comment.png" alt="upvote">
-                                </a>
-                                <a href="#" class="post-item" onclick="">
-                                    <img src="../icons/share.png" alt="upvote">
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="post">
-                    <div class="post_avatar" onclick="redirectToProfileVisitor('@pat111')">
-                        <img
-                            src="https://i.pinimg.com/originals/a6/58/32/a65832155622ac173337874f02b218fb.png"
-                            alt=""
-                        />
-                    </div>
-
-                    <div class="post_body">
-                        <div class="post_header">
-                            <div class="post_headerText">
-                                <h3>
-                                    PatLim
-                                </h3>
-                                <span class="post-username">@pat111</span>
-                            </div>
-                            <span class="post-duration">5 days ago</span>
-
-                            <div class="post_headerDescription">
-                                <h2 onclick="redirectTo('visitor_post4')">Taguig to Taft LRT</h2>
-                                <p>How to commute from taguig to taft using the LRT?</p>
-                            </div>
-                        </div>
-
-                        <div class="post-actions">
-                            <div class="vote-container">
-                                <a href="#" class="vote-btn" onclick="">
-                                    <img src="../icons/up.png" alt="upvote">
-                                </a>
-                                <span class="vote-count">5</span>
-                                <a href="#" class="vote-btn" onclick="">
-                                    <img src="../icons/down.png" alt="upvote">
-                                </a>
-                            </div>
-
-                            <div class="post-item-container">
-                                <a href="#" class="post-item" onclick="">
-                                    <img src="../icons/comment.png" alt="upvote">
-                                </a>
-                                <a href="#" class="post-item" onclick="">
-                                    <img src="../icons/share.png" alt="upvote">
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="post">
-                    <div class="post_avatar" onclick="redirectToProfileVisitor('@IsaChuChu')">
-                        <img
-                            src="https://i.pinimg.com/originals/a6/58/32/a65832155622ac173337874f02b218fb.png"
-                            alt=""
-                        />
-                    </div>
-
-                    <div class="post_body">
-                        <div class="post_header">
-                            <div class="post_headerText">
-                                <h3>
-                                    Isabella Ross
-                                </h3>
-                                <span class="post-username">@IsaChuChu</span>
-                            </div>
-                            <span class="post-duration">6 days ago</span>
-
-                            <div class="post_headerDescription">
-                                <h2 onclick="redirectTo('visitor_post5')">Help out a Probinsyana!</h2>
-                                <p>Pampanga to Tagaytay commute pls</p>
-                            </div>
-                        </div>
-
-                        <div class="post-actions">
-                            <div class="vote-container">
-                                <a href="#" class="vote-btn" onclick="">
-                                    <img src="../icons/up.png" alt="upvote">
-                                </a>
-                                <span class="vote-count">5</span>
-                                <a href="#" class="vote-btn" onclick="">
-                                    <img src="../icons/down.png" alt="upvote">
-                                </a>
-                            </div>
-
-                            <div class="post-item-container">
-                                <a href="#" class="post-item" onclick="">
-                                    <img src="../icons/comment.png" alt="upvote">
-                                </a>
-                                <a href="#" class="post-item" onclick="">
-                                    <img src="../icons/share.png" alt="upvote">
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div id="right-panel"></div>
-    
+            <div id="visitor-posts-container"></div>
         </div>
-        <script src="../javascript/switchContents.js"></script>
-        <script src="../javascript/visitorPanels.js"></script>
-        <script src="../javascript/preserveScroll.js"></script>
-    </body>
+
+        <div id="right-panel"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/handlebars/dist/handlebars.min.js"></script>
+    <script src="../javascript/renderPosts.js"></script>
+    <script src="../javascript/switchContents.js"></script>
+    <script src="../javascript/visitorPanels.js"></script>
+    <script src="../javascript/preserveScroll.js"></script>
+    <script src="../javascript/contents.js"></script>
+</body>
 </html>

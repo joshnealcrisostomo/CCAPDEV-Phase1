@@ -38,7 +38,7 @@ function updateProfileContent(activeTab) {
 
     let contentHTML = ""; 
 
-    if (activeTab.includes("posts-btn")) {
+    if (activeTab.includes("posts-btn") || activeTab.includes("upvoted-btn")) {
         const userPosts = Object.values(posts).filter(post => post.postusername === username);
                 
         if (userPosts.length > 0) {

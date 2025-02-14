@@ -8,60 +8,62 @@ document.addEventListener("DOMContentLoaded", function () {
         const template = Handlebars.compile(source);
         const profileHTML = template(users[username]);
         profileContainer.innerHTML = profileHTML;
+
+        const menuButtons = document.querySelectorAll(".prof-menu-btn a");
+
+        menuButtons.forEach((btn) => {
+            btn.addEventListener("click", function (event) {
+                event.preventDefault();
+    
+                menuButtons.forEach((button) => button.classList.remove("active"));
+    
+                this.classList.add("active");
+    
+                updateProfileContent(this.classList[0]); 
+            });
+        });
+
+        updateProfileContent("posts-btn");
     } else {
         profileContainer.innerHTML = "<h2>User Not Found</h2>";
     }
-});
 
-document.addEventListener("DOMContentLoaded", function () {
-    const menuButtons = document.querySelectorAll(".prof-menu-btn a");
-
-    menuButtons.forEach((btn) => {
-        btn.addEventListener("click", function (event) {
-            event.preventDefault(); // Prevent page reload
-
-            // Remove "active" class from all buttons
-            menuButtons.forEach((button) => button.classList.remove("active"));
-
-            // Add "active" class to clicked button
-            this.classList.add("active");
-
-            // Update content dynamically (You need to implement this function)
-            updateProfileContent(this.classList[0]); 
-        });
-    });
+    document.title = `${username}'s Profile`;
 });
 
 function updateProfileContent(activeTab) {
     const contentContainer = document.querySelector(".content");
     const usernameElement = document.querySelector(".username");
-    const username = usernameElement ? usernameElement.textContent.trim() : "This user";
+    const username = usernameElement ? usernameElement.textContent.trim() : "";
 
     let contentHTML = ""; 
 
-    switch (activeTab) {
-        case "posts-btn":
+    if (activeTab.includes("posts-btn")) {
+        const userPosts = Object.values(posts).filter(post => post.postusername === username);
+                
+        if (userPosts.length > 0) {
+            const source = document.getElementById("post-template").innerHTML;
+            const template = Handlebars.compile(source);
+            contentHTML = template({ posts: userPosts });
+        } else {
             contentHTML = `<img src="../icons/pin.png" alt="pin-icon" class="empty-icon">
                            <p>${username} hasn't posted yet.</p>`;
-            break;
-        case "comments-btn":
-            contentHTML = `<img src="../icons/comment.png" alt="comment-icon" class="empty-icon">
-                           <p>${username} hasn't commented yet.</p>`;
-            break;
-        case "bookmark-btn":
-            contentHTML = `<img src="../icons/bookmark.png" alt="bookmark-icon" class="empty-icon">
-                           <p>${username} hasn't bookmarked anything yet.</p>`;
-            break;
-        case "upvoted-btn":
-            contentHTML = `<img src="../icons/up.png" alt="upvote-icon" class="empty-icon">
-                           <p>${username} hasn't upvoted anything yet.</p>`;
-            break;
-        case "downvoted-btn":
-            contentHTML = `<img src="../icons/down.png" alt="downvote-icon" class="empty-icon">
-                           <p>${username} hasn't downvoted anything yet.</p>`;
-            break;
-        default:
+        }
+    } else {
+        const fallbackMessages = {
+            "posts-btn": "hasn't posted yet.",
+            "comments-btn": "hasn't commented yet.",
+            "bookmark-btn": "hasn't bookmarked anything yet.",
+            "upvoted-btn": "hasn't upvoted anything yet.",
+            "downvoted-btn": "hasn't downvoted anything yet."
+        };
+
+        if (fallbackMessages[activeTab]) {
+            contentHTML = `<img src="../icons/${activeTab.replace("-btn", "")}.png" alt="${activeTab}" class="empty-icon">
+                           <p>${username} ${fallbackMessages[activeTab]}</p>`;
+        } else {
             contentHTML = `<p>Invalid selection.</p>`;
+        }
     }
 
     contentContainer.innerHTML = contentHTML;

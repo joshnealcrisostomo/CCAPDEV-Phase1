@@ -48,6 +48,28 @@
                 </div>
             </script>
 
+            <script id="post-template" type="text/x-handlebars-template">
+                {{#each posts}}
+                <div class="post">
+                    <div class="post-header">
+                        <div>
+                            <p class="post-duration">{{postduration}}</p>
+                        </div>
+                    </div>
+                    <div class="post-content">
+                        <h3>{{postTitle}}</h3>
+                        <p>{{postContent}}</p>
+                        {{#if postImage}}
+                            <img src="{{postImage}}" alt="Post Image">
+                        {{/if}}
+                    </div>
+                    <div class="post-footer">
+                        <span>▲ {{votes}} ▼</span>
+                    </div>
+                </div>
+                {{/each}}
+            </script>
+            
             <div id="profile-container"></div>
         </div>
 
@@ -56,10 +78,10 @@
 
     <script src="https://cdn.jsdelivr.net/npm/handlebars/dist/handlebars.min.js"></script>
     <script src="../javascript/users.js"></script>
-    <script src="../javascript/renderProfile.js"></script>
+    <script src="../javascript/contents.js"></script>
+    <script src="../javascript/profile.js"></script>
     <script src="../javascript/visitorPanels.js"></script>
     <script src="../javascript/switchContents.js"></script>
     <script src="../javascript/preserveScroll.js"></script>
-    <script src="../javascript/profile.js"></script>
 </body>
 </html>

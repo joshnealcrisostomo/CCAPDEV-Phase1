@@ -2,7 +2,6 @@ document.addEventListener("DOMContentLoaded", function () {
     if (typeof posts !== "undefined") {
         const postsData = Object.values(posts); // Convert object to array
         
-        // Check which template exists and render accordingly
         if (document.getElementById("post-template")) {
             const templateSource = document.getElementById("post-template").innerHTML;
             const template = Handlebars.compile(templateSource);

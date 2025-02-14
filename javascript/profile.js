@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", function () {
         profileContainer.innerHTML = "<h2>User Not Found</h2>";
     }
 
-    document.title = `${username}'s Profile`;
+    document.title = `(${username}) / ByaHero!`;
 });
 
 function updateProfileContent(activeTab) {

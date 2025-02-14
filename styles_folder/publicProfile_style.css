@@ -253,6 +253,7 @@ body {
     margin: 10px 0 5px;
     font-size: 18px;
     color: #292623;
+    cursor: pointer;
 }
 
 .post-content p {

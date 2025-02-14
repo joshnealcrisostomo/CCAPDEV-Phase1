@@ -55,7 +55,7 @@
                         </div>
                     </div>
                     <div class="post-content">
-                        <h3>{{postTitle}}</h3>
+                        <h3 onclick="redirectToPost('{{postusername}}')">{{postTitle}}</h3>
                         <p>{{postContent}}</p>
                         {{#if postImage}}
                             <img src="{{postImage}}" alt="Post Image">

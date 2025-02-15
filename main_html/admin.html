@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../styles_folder/admin_style.css">
+    <title>Admin</title>
+</head>
+<body>
+    <div class="container">
+        <div id="left-panel"></div>
+
+        <div class="middle-panel">
+            <div class="top-menu">
+                <button type="button" onclick="redirectToHome()">
+                    <img src="../icons/left_arrow.png" alt="Return to previous page">
+                </button>
+                <span>Admin</span>
+            </div>
+
+            <div class="profile-menu">
+                <div class="prof-menu-btn">
+                    <span><a href="#" class="posts-btn active">Post</a></span>
+                    <span><a href="#" class="comments-btn">Comment</a></span>
+                    <span><a href="#" class="users-btn">User</a></span>
+                </div>
+            </div>
+            <div class="content"></div>
+        </div>
+
+        <div id="right-panel">
+            <div class="report-summary">
+                <h3>Total Reported:</h3>
+                <p>Post: <span id="post-count">0</span></p>
+                <p>Comment: <span id="comment-count">0</span></p>
+                <p>User: <span id="user-count">0</span></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/handlebars/dist/handlebars.min.js"></script>
+    <script src="../javascript/users.js"></script>
+    <script src="../javascript/contents.js"></script>
+    <script src="../javascript/profile.js"></script>
+    <script src="../javascript/loadPanels.js"></script>
+    <script src="../javascript/switchContents.js"></script>
+    <script src="../javascript/preserveScroll.js"></script>
+</body>
+</html>

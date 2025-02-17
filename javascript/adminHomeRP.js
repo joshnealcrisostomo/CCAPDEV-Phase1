@@ -17,8 +17,6 @@ async function loadPanels() {
     }
 }
 
-
-
 loadPanels();
 
 document.querySelectorAll('.progress-bar').forEach(bar => {

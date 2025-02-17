@@ -11,7 +11,6 @@
         <div id="left-panel"></div>
 
         <div class="middle-panel">
-
             <div class="profile-menu">
                 <div class="prof-menu-btn">
                     <span><a href="#" class="posts-btn active">Post</a></span>
@@ -47,58 +46,7 @@
                                 <th>Actions</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr data-status="pending" data-post-id="1">
-                                <td><a href="post-details.html?postId=1" class="post-link">Post 1</a></td>
-                                <td>@juicekneel</td>
-                                <td>Spam</td>
-                                <td><span class="badge pending-badge">Pending</span></td>
-                                <td>
-                                    <button class="approve-btn" onclick="approvePost(1)">Approve</button>
-                                    <button class="delete-btn" onclick="deletePost(1)">Delete</button>
-                                </td>
-                            </tr>
-                            <tr data-status="resolved" data-post-id="2">
-                                <td><a href="post-details.html?postId=2" class="post-link">Post 2</a></td>
-                                <td>@paresMami16</td>
-                                <td>Bug</td>
-                                <td><span class="badge resolved-badge">Resolved</span></td>
-                                <td>
-                                    <button class="approve-btn" onclick="approvePost(2)">Approve</button>
-                                    <button class="delete-btn" onclick="deletePost(2)">Delete</button>
-                                </td>
-                            </tr>
-                            <tr data-status="in-progress" data-post-id="3">
-                                <td><a href="post-details.html?postId=3" class="post-link">Post 3</a></td>
-                                <td>@pat111</td>
-                                <td>Abuse</td>
-                                <td><span class="badge in-progress-badge">In-Progress</span></td>
-                                <td>
-                                    <button class="approve-btn" onclick="approvePost(3)">Approve</button>
-                                    <button class="delete-btn" onclick="deletePost(3)">Delete</button>
-                                </td>
-                            </tr>
-                            <tr data-status="pending" data-post-id="4">
-                                <td><a href="post-details.html?postId=4" class="post-link">Post 4</a></td>
-                                <td>@IsaChuChu</td>
-                                <td>Spam</td>
-                                <td><span class="badge pending-badge">Pending</span></td>
-                                <td>
-                                    <button class="approve-btn" onclick="approvePost(4)">Approve</button>
-                                    <button class="delete-btn" onclick="deletePost(4)">Delete</button>
-                                </td>
-                            </tr>
-                            <tr data-status="pending" data-post-id="5">
-                                <td><a href="post-details.html?postId=5" class="post-link">Post 5</a></td>
-                                <td>@euly123</td>
-                                <td>Other</td>
-                                <td><span class="badge pending-badge">Pending</span></td>
-                                <td>
-                                    <button class="approve-btn" onclick="approvePost(5)">Approve</button>
-                                    <button class="delete-btn" onclick="deletePost(5)">Delete</button>
-                                </td>
-                            </tr>
-                        </tbody>
+                        <tbody id="posts-table-body"></tbody>
                     </table>
                 </div>
 
@@ -114,8 +62,21 @@
 
         <div id="right-panel"></div>
 
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/handlebars/dist/handlebars.min.js"></script>
+        <script id="post-template" type="text/x-handlebars-template">
+            {{#each posts}}
+            <tr data-status="{{status}}" data-post-id="{{id}}">
+                <td><a href="post-details.html?postId={{id}}" class="post-link">{{title}}</a></td>
+                <td>{{author}}</td>
+                <td>{{reason}}</td>
+                <td><span class="badge {{status}}-badge">{{capitalize status}}</span></td>
+                <td>
+                    <button class="approve-btn" onclick="approvePost('{{id}}')">Approve</button>
+                    <button class="delete-btn" onclick="deletePost('{{id}}')">Delete</button>
+                </td>
+            </tr>
+            {{/each}}
+        </script>
         <script src="../javascript/admin.js"></script>
         <script src="../javascript/adminReports.js"></script>
         <script src="../javascript/adminLoadPanels.js"></script>

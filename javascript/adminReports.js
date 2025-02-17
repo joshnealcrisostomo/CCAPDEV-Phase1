@@ -94,3 +94,23 @@ document.querySelectorAll('.progress-bar').forEach(bar => {
     let percent = progress.style.width;
     bar.parentElement.querySelector('.percentage').innerText = percent;
 });
+
+document.addEventListener("DOMContentLoaded", function () {
+    const reports = [
+        { id: 1, title: "Post 1", author: "@juicekneel", reason: "Spam", status: "pending" },
+        { id: 2, title: "Post 2", author: "@paresMami16", reason: "Bug", status: "resolved" },
+        { id: 3, title: "Post 3", author: "@pat111", reason: "Abuse", status: "in-progress" },
+        { id: 4, title: "Post 4", author: "@IsaChuChu", reason: "Spam", status: "pending" },
+        { id: 5, title: "Post 5", author: "@euly123", reason: "Other", status: "pending" }
+    ];
+
+    Handlebars.registerHelper("capitalize", function (status) {
+        return status.charAt(0).toUpperCase() + status.slice(1);
+    });
+
+    const templateSource = document.getElementById("post-template").innerHTML;
+    const template = Handlebars.compile(templateSource);
+    const filledHtml = template({ posts: reports });
+
+    document.getElementById("posts-table-body").innerHTML = filledHtml;
+});

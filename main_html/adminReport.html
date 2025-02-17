@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../styles_folder/admin_style.css">
+    <title>Admin Report</title>
+</head>
+<body>
+    <div class="container">
+        <div id="left-panel"></div>
+
+        <div class="middle-panel">
+            <div class="top-menu">
+                <button type="button" onclick="goBack()">
+                    <img src="../icons/left_arrow.png" alt="return-btn">
+                </button>
+                <span>Admin</span>
+            </div>
+
+            <div class="profile-menu">
+                <div class="prof-menu-btn">
+                    <span><a href="#" class="posts-btn active">Post</a></span>
+                    <span><a href="#" class="comments-btn">Comment</a></span>
+                    <span><a href="#" class="users-btn">User</a></span>
+                </div>
+            </div>
+
+            <div class="content">
+                <div class="filter-options">
+                    <select id="status-filter">
+                        <option value="">Filter by Status</option>
+                        <option value="pending">Pending</option>
+                        <option value="in-progress">In Progress</option>
+                        <option value="resolved">Resolved</option>
+                    </select>
+                    <select id="sort-by">
+                        <option value="author">Sort by Author</option>
+                        <option value="report-reason">Sort by Report Reason</option>
+                        <option value="status">Sort by Status</option>
+                    </select>
+                </div>
+
+                <div class="reported-posts posts-content">
+                    <h3>Reported Posts</h3>
+                    <table id="posts-table">
+                        <thead>
+                            <tr>
+                                <th>Post Title</th>
+                                <th>Author</th>
+                                <th>Report Reason</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr data-status="pending" data-post-id="1">
+                                <td><a href="post-details.html?postId=1" class="post-link">Post 1</a></td>
+                                <td>@User123</td>
+                                <td>Spam</td>
+                                <td><span class="badge pending-badge">Pending</span></td>
+                                <td>
+                                    <button class="approve-btn" onclick="approvePost(1)">Approve</button>
+                                    <button class="delete-btn" onclick="deletePost(1)">Delete</button>
+                                </td>
+                            </tr>
+                            <tr data-status="resolved" data-post-id="2">
+                                <td><a href="post-details.html?postId=2" class="post-link">Post 2</a></td>
+                                <td>@Chuchu04</td>
+                                <td>Bug</td>
+                                <td><span class="badge resolved-badge">Resolved</span></td>
+                                <td>
+                                    <button class="approve-btn" onclick="approvePost(2)">Approve</button>
+                                    <button class="delete-btn" onclick="deletePost(2)">Delete</button>
+                                </td>
+                            </tr>
+                            <tr data-status="in-progress" data-post-id="3">
+                                <td><a href="post-details.html?postId=3" class="post-link">Post 3</a></td>
+                                <td>@wine01</td>
+                                <td>Abuse</td>
+                                <td><span class="badge in-progress-badge">In-Progress</span></td>
+                                <td>
+                                    <button class="approve-btn" onclick="approvePost(3)">Approve</button>
+                                    <button class="delete-btn" onclick="deletePost(3)">Delete</button>
+                                </td>
+                            </tr>
+                            <tr data-status="pending" data-post-id="4">
+                                <td><a href="post-details.html?postId=4" class="post-link">Post 4</a></td>
+                                <td>@Sparkle19</td>
+                                <td>Spam</td>
+                                <td><span class="badge pending-badge">Pending</span></td>
+                                <td>
+                                    <button class="approve-btn" onclick="approvePost(4)">Approve</button>
+                                    <button class="delete-btn" onclick="deletePost(4)">Delete</button>
+                                </td>
+                            </tr>
+                            <tr data-status="pending" data-post-id="5">
+                                <td><a href="post-details.html?postId=5" class="post-link">Post 5</a></td>
+                                <td>@tyler02</td>
+                                <td>Other</td>
+                                <td><span class="badge pending-badge">Pending</span></td>
+                                <td>
+                                    <button class="approve-btn" onclick="approvePost(5)">Approve</button>
+                                    <button class="delete-btn" onclick="deletePost(5)">Delete</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="comments-content" style="display: none;">
+                    <h3>Reported Comments</h3>
+                </div>
+
+                <div class="users-content" style="display: none;">
+                    <h3>Users</h3>
+                </div>
+            </div>
+        </div>
+
+        <div id="right-panel"></div>
+
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/handlebars/dist/handlebars.min.js"></script>
+        <script src="../javascript/admin.js"></script>
+        <script src="../javascript/adminReports.js"></script>
+        <script src="../javascript/adminLoadPanels.js"></script>
+        <script src="../javascript/switchContents.js"></script>
+        <script src="../javascript/preserveScroll.js"></script>
+        <script src="../javascript/adminSwitchContent.js"></script>
+    </div>
+</body>
+</html>

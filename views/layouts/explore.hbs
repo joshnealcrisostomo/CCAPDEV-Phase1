@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../styles_folder/explore.css">
+    <title>Explore</title>
+</head>
+<body>
+    <div class="container">
+        <div id="left-panel">
+            {{> navBar}}
+        </div>
+        <div class="middle-panel">
+            <div class="search-container">
+                <div class="return-container">
+                    <button type="button" class="return-btn">
+                        <img src="/icons/left_arrow.png" alt="return-btn">
+                    </button>
+                    <span>Return</span>
+                </div>
+                <hr>
+                <br>
+                <h2>Search</h2>
+                <div class="search-section">
+                    <input type="text" id="search" placeholder="Search by Keyword">
+                    <button type="button" class="btn-login">Search</button>
+                </div>
+                <div class="search-options">
+                    <label><input type="checkbox"> Search entire post</label>
+                    <label><input type="checkbox"> Search title only</label>
+                </div>
+                <div class="advanced-options">
+                    <select>
+                        <option>Routes</option>
+                        <option>Tips</option>
+                        <option>Misc</option>
+                        <option>Sort by Last Post Date</option>
+                        <option>Sort by User</option>
+                        <option>Sort by View Count</option>
+                        <option>Sort by Reply Count</option>
+                    </select>
+                    <div class="radio-options">
+                        <label>
+                            <input type="radio" name="sortOrder" value="ascending"> Ascending
+                        </label>
+                        <label>
+                            <input type="radio" name="sortOrder" value="descending"> Descending
+                        </label>
+                    </div>
+                </div>
+                <br>
+                <hr>
+
+                <div class="latest-posts">
+                    <h2>Latest Posts</h2>
+                    {{#each latestPosts}}
+                    <div class="post">
+                        <div class="post-title">{{postTitle}}</div>
+                        <div class="post-meta">
+                            <span class="username">by {{username}}</span>
+                            <span class="upvotes">▲ {{upvotes}} Upvotes</span>
+                            <span class="comments">💬 {{comments}} Comments</span>
+                        </div>
+                    </div>
+                    {{/each}}
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.querySelector('.return-btn').addEventListener('click', function() {
+            window.history.back(); // This goes back to the last page in the browser's history
+        });
+    </script>     
+</body>
+</html>

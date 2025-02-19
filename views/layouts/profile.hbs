@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/styles_folder/profile_style.css">
+    <title>{{displayName}}'s Profile</title>   
+</head>
+<body>
+    <div class="container">
+        <div id="left-panel">
+            {{> navBar}}
+        </div>
+
+        <div class="middle-panel">
+            <div class="top-menu">
+                <button type="button" class="return-btn">
+                    <img src="/icons/left_arrow.png" alt="return-btn">
+                </button>
+                <span>{{displayName}}</span>
+            </div>
+            <div class="header-profile">
+                <div class="header-img"></div>
+                <div class="pfp">
+                    <img src="{{profilePic}}" alt="Profile Picture">
+                </div>
+            </div>
+
+            <div class="user-info">
+                <div class="edit-prof-btn">
+                    <div class="edit-profile">
+                        <button type="button" class="edit-btn">Edit Profile</button>
+                    </div>
+                </div>
+                <div class="basic-info">
+                    <h3>{{displayName}}</h3>
+                    <p class="username">@{{username}}</p>
+                    <br>
+                    <div class="bio-box">
+                        <p class="bio">{{bio}}</p>
+                    </div>
+                </div>
+
+                <div class="profile-menu">
+                    <div class="prof-menu-btn">
+                        <span><a href="#" class="posts-btn active">Posts</a></span>
+                        <span><a href="#" class="comments-btn">Comments</a></span>
+                        <span><a href="#" class="bookmark-btn">Bookmarks</a></span>
+                        <span><a href="#" class="upvoted-btn">Upvoted</a></span>
+                        <span><a href="#" class="downvoted-btn">Downvoted</a></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content">
+                {{#each posts}}
+                <div class="post">
+                    <div class="post-header">
+                        <div>
+                            <p class="post-duration">{{postduration}}</p>
+                        </div>
+                        <div class="dots">⋮</div>
+                        <div id="optionsMenu" class="dots-menu">
+                            <a href="/editPost">Edit</a>
+                            <a href="" class="delete-post-btn">Delete</a>
+                        </div>                        
+                    </div>
+                    <div class="post-content">
+                        <h3><a href="/post/{{postId}}">{{postTitle}}</a></h3>
+                        <p>{{postContent}}</p>
+                        {{#if postImage}}
+                            <img src="{{postImage}}" alt="Post Image">
+                        {{/if}}
+                    </div>
+                    <div class="post-footer">
+                        <span>▲ {{votes}} ▼</span>
+                    </div>
+                </div>
+                {{/each}}
+
+                {{#each comments}}
+                <div class="comment">
+                    <p>{{commentText}}</p>
+                    <a href="#" class="delete-comment-btn" onclick="deleteComment(event)">Delete Comment</a>
+                </div>
+                {{/each}}
+            </div>
+        </div>
+
+        <div id="right-panel">
+            {{> searchPanel}}
+        </div>
+    </div>
+
+    <script src="/javascript/profile.js"></script>
+</body>
+</html>

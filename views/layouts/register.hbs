@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/styles_folder/register_style.css">
+    <title>Register Page</title>
+</head>
+<body>
+    <div class="container">
+        <div class="left-panel">
+            <h2>Become a<br>ByaHERO!</h2>
+            <br>
+            <p>Already have an account?</p>
+            <button type="button" class="btn-signin">Sign in</button>
+        </div>
+
+        <div class="right-panel">
+            <h2>Register</h2>
+            <div class="social-icons">
+                <a href="#">
+                    <img src="/images/fb.png" alt="fb_icon">
+                </a>
+                <a href="#">
+                    <img src="/images/google.png" alt="google_icon">
+                </a>
+                <a href="#">
+                    <img src="/images/linkedin.png" alt="linkedin_icon">
+                </a>
+            </div>
+            <form id="register-form">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" placeholder="example@gmail.com" required>
+                </div>
+                <div class="form-group password-group">
+                    <div class="password-field">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" placeholder="Enter your password" required>
+                    </div>
+                    <div class="password-field">
+                        <label for="confirm-password">Confirm Password</label>
+                        <input type="password" id="confirm-password" placeholder="Confirm your password" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" placeholder="e.g. user123" required>
+                </div>
+                <div class="form-group">
+                    <label for="display-name">Display Name</label>
+                    <input type="text" id="display-name" placeholder="e.g. John Doe" required>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="remember-me">
+                    <label for="remember-me">Remember me</label>
+                </div>
+                <br>
+                <button type="submit" class="btn-login">Sign Up</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.querySelector('.btn-signin').addEventListener('click', function() {
+            window.location.href = '/login';
+        });
+    </script>
+
+    <script>
+        document.getElementById('register-form').addEventListener('submit', function (event) {
+            event.preventDefault(); // Prevent form submission to perform validation
+
+            // Get form values
+            let email = document.getElementById('email').value.trim();
+            let username = document.getElementById('username').value.trim();
+            const displayName = document.getElementById('display-name').value.trim();
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+
+            // Ensure that the username starts with '@'
+            if (!username.startsWith('@')) {
+                username = '@' + username;
+            }
+
+            // Default values for new users
+            const defaultBio = 'No bio yet.';
+            const defaultProfilePic = 'https://i.pinimg.com/originals/a6/58/32/a65832155622ac173337874f02b218fb.png'; // Default profile picture URL
+
+            // Retrieve users data from the server (make sure to handle this server-side if needed)
+            fetch('/users.json')
+                .then(response => response.json())
+                .then(usersData => {
+                    let errorMessage = '';
+
+                    // Check if email, username, or display name already exist
+                    if (Object.values(usersData).some(user => user.username === username)) {
+                        errorMessage = 'Username is already taken.';
+                    } else if (Object.values(usersData).some(user => user.displayName === displayName)) {
+                        errorMessage = 'Display Name is already taken.';
+                    } else if (Object.values(usersData).some(user => user.email === email)) {
+                        errorMessage = 'Email is already registered.';
+                    } else if (password !== confirmPassword) {
+                        errorMessage = 'Passwords do not match.';
+                    }
+
+                    // Show error message if any
+                    if (errorMessage) {
+                        alert(errorMessage);
+                        return; // Prevent form submission
+                    }
+
+                    // If everything is fine, proceed with form submission
+                    const formData = {
+                        [username]: {  // Use username as the key
+                            email,
+                            displayName,
+                            username,
+                            password,
+                            bio: defaultBio, // Add default bio
+                            profilePic: defaultProfilePic // Add default profile picture
+                        }
+                    };
+
+                    // Send data to the server (here you can use an API endpoint to handle the data)
+                    fetch('/register', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(formData)
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                alert('Registration successful!');
+                                window.location.href = '/login'; // Redirect to login page
+                            } else {
+                                alert('Error during registration');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error during registration:', error);
+                            alert('Registration failed. Please try again.');
+                        });
+                })
+                .catch(error => {
+                    console.error('Error loading users data:', error);
+                    alert('Error checking user data.');
+                });
+        });
+    </script>
+</body>
+</html>

@@ -9,7 +9,6 @@ const latestPostsPath = path.join(__dirname, '../models/latestPosts.json');
 
 const authController = require('../../public/javascript/mongo/registerUser.js'); 
 
-
 // Global variables
 const loggedInUser = '@euly123'; // Assume the logged-in user is @euly123
 let user = {}; // This will be updated after reading usersData
@@ -139,7 +138,7 @@ router.get('/settings', (req, res) => {
 });
 
 // Registration route
-router.get('/register', (req, res) => {
+router.get('/registerPage', (req, res) => {
     res.render('register', {
         layout: 'register',
         title: 'Sign Up',
@@ -166,7 +165,7 @@ router.post('/register', async (req, res) => {
 });
 
 // Login route
-router.get('/login', (req, res) => {
+router.get('/loginPage', (req, res) => {
     res.render('login', {
         layout: 'login',
         title: 'Sign In',

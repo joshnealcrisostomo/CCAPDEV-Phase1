@@ -1,7 +1,6 @@
 const mongoose = require("mongoose")
 const uri = "mongodb+srv://patricklim:Derp634Derp@apdevcluster.chzne.mongodb.net/?retryWrites=true&w=majority&appName=APDEVcluster";
 
-
 const express = require("express");
 const path = require("path");
 const hbs = require("hbs");

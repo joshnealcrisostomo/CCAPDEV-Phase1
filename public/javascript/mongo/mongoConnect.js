@@ -1,6 +1,3 @@
-
-
-
 const mongoose = require("mongoose")
 const uri = "mongodb+srv://patricklim:Derp634Derp@apdevcluster.chzne.mongodb.net/?retryWrites=true&w=majority&appName=APDEVcluster";
 const User = require('./UserSchema.js'); // Replace with the actual path to your user.model.js file

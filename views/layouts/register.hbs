@@ -88,7 +88,7 @@
             const defaultProfilePic = 'https://i.pinimg.com/originals/a6/58/32/a65832155622ac173337874f02b218fb.png'; // Default profile picture URL
 
             // Retrieve users data from the server (make sure to handle this server-side if needed)
-            fetch('/users.json')
+            fetch('/users')
                 .then(response => response.json())
                 .then(usersData => {
                     let errorMessage = '';

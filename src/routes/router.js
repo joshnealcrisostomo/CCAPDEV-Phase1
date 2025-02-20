@@ -138,7 +138,7 @@ router.get('/settings', (req, res) => {
 });
 
 // Registration route
-router.get('/registerPage', (req, res) => {
+router.get('/registerPost', (req, res) => {
     res.render('register', {
         layout: 'register',
         title: 'Sign Up',
@@ -165,7 +165,7 @@ router.post('/register', async (req, res) => {
 });
 
 // Login route
-router.get('/loginPage', (req, res) => {
+router.get('/login', (req, res) => {
     res.render('login', {
         layout: 'login',
         title: 'Sign In',
@@ -174,7 +174,7 @@ router.get('/loginPage', (req, res) => {
 });
 
 // POST route for login
-router.post('/login', (req, res) => {
+router.post('/loginPost', (req, res) => {
     const { username, password } = req.body;
 
     const user = usersData[username];

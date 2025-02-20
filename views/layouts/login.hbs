@@ -42,7 +42,7 @@
             <div class="right-panel">
                 <h2>Welcome<br>Back!</h2>
                 <p>Don't have an account?</p>
-                <button type="button" class="btn-signup" onclick="window.location.href='/register';">Sign Up</button>
+                <button type="button" class="btn-signup">Sign Up</button>
             </div>
         </div>
 
@@ -80,6 +80,11 @@
                     console.error('Error:', error);
                     alert('An error occurred. Please try again.');
                 });
+            });
+        </script>
+        <script>
+            document.querySelector('.btn-signup').addEventListener('click', function() {
+                window.location.href = '/register';// This goes back to the last page in the browser's history
             });
         </script>
     </body>

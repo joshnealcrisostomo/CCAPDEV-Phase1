@@ -7,6 +7,9 @@ const contentsPath = path.join(__dirname, '../models/contents.json');
 const usersDataPath = path.join(__dirname, '../models/users.json');
 const latestPostsPath = path.join(__dirname, '../models/latestPosts.json');
 
+const authController = require('../../public/javascript/mongo/registerUser.js'); 
+
+
 // Global variables
 const loggedInUser = '@euly123'; // Assume the logged-in user is @euly123
 let user = {}; // This will be updated after reading usersData
@@ -142,6 +145,24 @@ router.get('/register', (req, res) => {
         title: 'Sign Up',
         isLoggedIn: false,
     });
+});
+
+//register post test
+router.post('/register', async (req, res) => {
+    console.log('Register POST route hit', req.body);
+    const { email, displayName, username, password } = req.body;
+    try {
+        const result = await authController.registerUser(email, displayName, username, password);
+        console.log("registerUser result: ", result);
+        if (result.success) {
+            res.redirect('/login');
+        } else {
+            res.status(result.message === 'User already exists' ? 409 : 500).json({ message: result.message });
+        }
+    } catch (error) {
+        console.error("Error in register route: ", error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
 });
 
 // Login route

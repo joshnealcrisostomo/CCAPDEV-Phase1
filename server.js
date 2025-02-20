@@ -1,3 +1,7 @@
+const mongoose = require("mongoose")
+const uri = "mongodb+srv://patricklim:Derp634Derp@apdevcluster.chzne.mongodb.net/?retryWrites=true&w=majority&appName=APDEVcluster";
+
+
 const express = require("express");
 const path = require("path");
 const hbs = require("hbs");
@@ -7,6 +11,7 @@ const PORT = process.env.PORT || 3000;
 
 // Middleware to parse JSON bodies
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // Set up Handlebars as the view engine
 app.set("view engine", "hbs");

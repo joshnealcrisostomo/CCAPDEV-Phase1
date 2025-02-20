@@ -85,7 +85,7 @@ document.querySelector('.return-btn').addEventListener('click', function() {
 
 // Event listener for edit profile button
 document.querySelector('.edit-btn').addEventListener('click', function() {
-    window.location.href = '/editPost';
+    window.location.href = '/editProfile';
 });
 
 // Toggle options menu for post actions

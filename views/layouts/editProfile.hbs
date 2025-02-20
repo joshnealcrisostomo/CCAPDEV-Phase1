@@ -1,0 +1,63 @@
+{{! Edit Profile Template }}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="../styles_folder/editProfile_style.css">
+        <title>Edit Profile</title>
+    </head>
+    <body>
+        <div class="overlay"></div>
+        <div class="container">
+            <div class="changes-container">
+                <div class="edit-top-menu">
+                    <button type="button" class="exit-btn" onclick="redirectToProfile()">
+                        <img src="../icons/delete.png" alt="close-btn">
+                    </button>
+                    <span>
+                        <h3>Edit Profile</h3>
+                    </span>
+                    <span>
+                        <div class="save-prof-btn">
+                            <button type="button" class="save-btn" onclick="redirectToProfile()">
+                                Save
+                            </button>
+                        </div>
+                    </span>
+                </div>
+                <div class="edit-header-profile">
+                    <div class="edit-header-btn">
+                        <button type="button" class="edit-btn">
+                            <img src="/icons/edit_pic.png" alt="edit-icon">
+                            <div class="edit-btn-overlay"></div>      
+                        </button>
+                    </div>
+                    <div class="edit-header-overlay">
+                        <div class="edit-header-img"></div>
+                    </div>
+                    <div class="edit-pfp">
+                        <img src="{{profilePic}}" id="profile-pic" alt="Profile picture">
+                        <div class="edit-pfp-overlay"></div>
+                        <div class="edit-pfp-btn">
+                            <button type="button" class="edit-for-pfp">
+                                <img src="/icons/edit_pic.png" alt="edit-icon">
+                                <div class="edit-pfp-btn-overlay"></div>
+                            </button>
+                        </div>    
+                    </div>
+                </div>
+                <div class="edit-fields">
+                    <div class="name-field">
+                        <input type="text" class="name-input" id="display-name" placeholder="Display Name" value="{{displayName}}">
+                    </div>
+                    <div class="bio-field">
+                        <input type="text" class="name-input" id="bio-input" placeholder="Bio" value="{{bio}}">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="/javascript/users.js"></script>
+        <script src="/javascript/editProfile.js"></script>
+    </body>
+</html>

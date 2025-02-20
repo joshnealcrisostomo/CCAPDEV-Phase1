@@ -227,4 +227,17 @@ router.get('/editPost', (req, res) => {
     });
 });
 
+// Edit post page
+router.get('/editProfile', (req, res) => {
+    res.render('editProfile', {
+        profilePic: user.profilePic,
+        displayName: user.displayName,
+        bio: user.bio,
+        layout: 'editProfile',
+        title: 'Edit your profile',
+        isLoggedIn: true,
+        loggedInUser
+    });    
+});
+
 module.exports = router;

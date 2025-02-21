@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../styles_folder/admin_style.css">
+    <title>Admin Report</title>
+</head>
+<body>
+    <div class="container">
+        <div id="left-panel">
+            {{> adminNavBar}}
+        </div>
+
+        <div class="middle-panel">
+            <div class="profile-menu">
+                <div class="prof-menu-btn">
+                    <span><a href="#" class="posts-btn active">Post</a></span>
+                    <span><a href="#" class="comments-btn">Comment</a></span>
+                    <span><a href="#" class="users-btn">User</a></span>
+                </div>
+            </div>
+
+            <div class="content">
+                <div class="filter-options">
+                    <select id="status-filter">
+                        <option value="">Filter by Status</option>
+                        <option value="pending">Pending</option>
+                        <option value="in-progress">In Progress</option>
+                        <option value="resolved">Resolved</option>
+                    </select>
+                    <select id="sort-by">
+                        <option value="author">Sort by Author</option>
+                        <option value="report-reason">Sort by Report Reason</option>
+                        <option value="status">Sort by Status</option>
+                    </select>
+                </div>
+
+                <div class="reported-posts posts-content">
+                    <h3>Reported Posts</h3>
+                    <table id="posts-table">
+                        <thead>
+                            <tr>
+                                <th>Post Title</th>
+                                <th>Author</th>
+                                <th>Report Reason</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="posts-table-body"></tbody>
+                    </table>
+                </div>
+
+                <div class="comments-content" style="display: none;">
+                    <h3>Reported Comments</h3>
+                </div>
+
+                <div class="users-content" style="display: none;">
+                    <h3>Users</h3>
+                </div>
+            </div>
+        </div>
+
+        <div id="right-panel">
+            {{> adminSummary}}
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/handlebars/dist/handlebars.min.js"></script>
+        <script id="post-template" type="text/x-handlebars-template">
+            {{#each posts}}
+            <tr data-status="{{status}}" data-post-id="{{id}}">
+                <td><a href="post-details.html?postId={{id}}" class="post-link">{{title}}</a></td>
+                <td>{{author}}</td>
+                <td>{{reason}}</td>
+                <td><span class="badge {{status}}-badge">{{capitalize status}}</span></td>
+                <td>
+                    <button class="approve-btn" onclick="approvePost('{{id}}')">Approve</button>
+                    <button class="delete-btn" onclick="deletePost('{{id}}')">Delete</button>
+                </td>
+            </tr>
+            {{/each}}
+        </script>
+        <script src="../javascript/admin.js"></script>
+        <script src="../javascript/adminReports.js"></script>
+        <script src="../javascript/adminLoadPanels.js"></script>
+        <script src="../javascript/adminSwitchContent.js"></script>
+        <script src="../javascript/switchContents.js"></script>
+    </div>
+</body>
+</html>

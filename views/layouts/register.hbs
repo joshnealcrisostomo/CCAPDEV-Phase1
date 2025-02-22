@@ -66,89 +66,66 @@
             window.location.href = '/login';
         });
     </script>
-
     <script>
-        document.getElementById('register-form').addEventListener('submit', function (event) {
-            event.preventDefault(); // Prevent form submission to perform validation
+    document.getElementById('register-form').addEventListener('submit', function (event) {
+        event.preventDefault(); // Prevent form submission to perform validation
 
-            // Get form values
-            let email = document.getElementById('email').value.trim();
-            let username = document.getElementById('username').value.trim();
-            const displayName = document.getElementById('display-name').value.trim();
-            const password = document.getElementById('password').value;
-            const confirmPassword = document.getElementById('confirm-password').value;
+        // Get form values
+        let email = document.getElementById('email').value.trim();
+        let username = document.getElementById('username').value.trim();
+        const displayName = document.getElementById('display-name').value.trim();
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirm-password').value;
 
-            // Ensure that the username starts with '@'
-            if (!username.startsWith('@')) {
-                username = '@' + username;
-            }
+        // Ensure that the username starts with '@'
+        if (!username.startsWith('@')) {
+            username = '@' + username;
+        }
 
-            // Default values for new users
-            const defaultBio = 'No bio yet.';
-            const defaultProfilePic = 'https://i.pinimg.com/originals/a6/58/32/a65832155622ac173337874f02b218fb.png'; // Default profile picture URL
+        // Default values for new users
+        const defaultBio = 'No bio yet.';
+        const defaultProfilePic = 'https://i.pinimg.com/originals/a6/58/32/a65832155622ac173337874f02b218fb.png'; // Default profile picture URL
 
-            // Retrieve users data from the server (make sure to handle this server-side if needed)
-            fetch('/users')
-                .then(response => response.json())
-                .then(usersData => {
-                    let errorMessage = '';
+        // Check if passwords match
+        if (password !== confirmPassword) {
+            alert('Passwords do not match.');
+            return; // Prevent form submission
+        }
 
-                    // Check if email, username, or display name already exist
-                    if (Object.values(usersData).some(user => user.username === username)) {
-                        errorMessage = 'Username is already taken.';
-                    } else if (Object.values(usersData).some(user => user.displayName === displayName)) {
-                        errorMessage = 'Display Name is already taken.';
-                    } else if (Object.values(usersData).some(user => user.email === email)) {
-                        errorMessage = 'Email is already registered.';
-                    } else if (password !== confirmPassword) {
-                        errorMessage = 'Passwords do not match.';
+        // Prepare the data to send
+        const formData = {
+            email,
+            displayName,
+            username,
+            password,
+            bio: defaultBio,
+            profilePic: defaultProfilePic
+        };
+
+        // Send data to the server
+        fetch('/registerPost', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.message || 'Registration successful!');
+                    if (data.redirect) {
+                        window.location.href = data.redirect; // Redirect to login page
                     }
-
-                    // Show error message if any
-                    if (errorMessage) {
-                        alert(errorMessage);
-                        return; // Prevent form submission
-                    }
-
-                    // If everything is fine, proceed with form submission
-                    const formData = {
-                        [username]: {  // Use username as the key
-                            email,
-                            displayName,
-                            username,
-                            password,
-                            bio: defaultBio, // Add default bio
-                            profilePic: defaultProfilePic // Add default profile picture
-                        }
-                    };
-
-                    // Send data to the server (here you can use an API endpoint to handle the data)
-                    fetch('/registerPost', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(formData)
-                    })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                alert('Registration successful!');
-                                window.location.href = '/login'; // Redirect to login page
-                            } else {
-                                alert('Error during registration');
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error during registration:', error);
-                            alert('Registration failed. Please try again.');
-                        });
-                })
-                .catch(error => {
-                    console.error('Error loading users data:', error);
-                    alert('Error checking user data.');
-                });
-        });
+                } else {
+                    alert(data.message || 'Error during registration');
+                }
+            })
+            .catch(error => {
+                console.error('Error during registration:', error);
+                alert('Registration failed. Please try again.');
+            });
+    });
     </script>
 </body>
 </html>

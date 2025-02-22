@@ -138,7 +138,7 @@ router.get('/settings', (req, res) => {
 });
 
 // Registration route
-router.get('/registerPost', (req, res) => {
+router.get('/register', (req, res) => {
     res.render('register', {
         layout: 'register',
         title: 'Sign Up',
@@ -147,20 +147,23 @@ router.get('/registerPost', (req, res) => {
 });
 
 //register post test
-router.post('/register', async (req, res) => {
-    console.log('Register POST route hit', req.body);
-    const { email, displayName, username, password } = req.body;
+router.post('/registerPost', async (req, res) => {
+    const { email, displayName, username, password, bio, profilePic } = req.body;
+
     try {
-        const result = await authController.registerUser(email, displayName, username, password);
+        const result = await authController.registerUser(email, displayName, username, password, bio, profilePic);
         console.log("registerUser result: ", result);
+
         if (result.success) {
-            res.redirect('/login');
+            // Send a success response with a redirect URL
+            res.status(200).json({ success: true, message: 'Registration successful!', redirect: '/login' });
         } else {
-            res.status(result.message === 'User already exists' ? 409 : 500).json({ message: result.message });
+            // Send an error response
+            res.status(400).json({ success: false, message: result.message });
         }
     } catch (error) {
         console.error("Error in register route: ", error);
-        res.status(500).json({ message: 'Internal server error' });
+        res.status(500).json({ success: false, message: 'Internal server error' });
     }
 });
 

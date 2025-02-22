@@ -7,14 +7,15 @@ const contentsPath = path.join(__dirname, '../models/contents.json');
 const usersDataPath = path.join(__dirname, '../models/users.json');
 const latestPostsPath = path.join(__dirname, '../models/latestPosts.json');
 
-const authController = require('../../public/javascript/mongo/registerUser.js'); 
+const authController = require('../../public/javascript/mongo/registerUser.js');
 
 // Global variables
-const loggedInUser = '@euly123'; // Assume the logged-in user is @euly123
+let isLoggedIn = false; // Default value
+let loggedInUser = ''; // Default value
 let user = {}; // This will be updated after reading usersData
 
 // Load contents.json
-let contentsData = {}; 
+let contentsData = {};
 if (fs.existsSync(contentsPath)) {
     try {
         contentsData = JSON.parse(fs.readFileSync(contentsPath, 'utf8'));
@@ -64,7 +65,7 @@ router.get('/dashboard', (req, res) => {
         posts: postsArray,
         layout: 'dashboard',
         title: 'ByaHero!',
-        isLoggedIn: true,
+        isLoggedIn,
         loggedInUser
     });
 });
@@ -96,7 +97,7 @@ router.get('/profile/:username', (req, res) => {
             posts: userPosts,
             layout: 'profile',
             title: `${viewedUser.displayName}'s Profile`,
-            isLoggedIn: true,
+            isLoggedIn,
             loggedInUser,
             viewedUser
         });
@@ -109,7 +110,7 @@ router.get('/profile/:username', (req, res) => {
             posts: userPosts,
             layout: 'publicProfile',
             title: `${viewedUser.displayName}'s Profile`,
-            isLoggedIn: true,
+            isLoggedIn,
             loggedInUser,
             viewedUser
         });
@@ -118,11 +119,11 @@ router.get('/profile/:username', (req, res) => {
 
 // Explore route
 router.get('/explore', (req, res) => {
-    res.render('explore', { 
+    res.render('explore', {
         latestPosts: latestPostsData,
         layout: 'explore',
         title: 'Explore',
-        isLoggedIn: true,
+        isLoggedIn,
         loggedInUser
     });
 });
@@ -132,7 +133,7 @@ router.get('/settings', (req, res) => {
     res.render('settings', {
         layout: 'settings',
         title: 'Settings',
-        isLoggedIn: true,
+        isLoggedIn,
         loggedInUser
     });
 });
@@ -146,7 +147,7 @@ router.get('/register', (req, res) => {
     });
 });
 
-//register post test
+// Register post route
 router.post('/registerPost', async (req, res) => {
     const { email, displayName, username, password, bio, profilePic } = req.body;
 
@@ -182,10 +183,24 @@ router.post('/loginPost', (req, res) => {
 
     const user = usersData[username];
     if (user && user.password === password) {
+        // Update global variables
+        isLoggedIn = true;
+        loggedInUser = username;
+
         res.json({ success: true, user });
     } else {
         res.json({ success: false, message: 'Invalid username or password' });
     }
+});
+
+// Logout route
+router.get('/logout', (req, res) => {
+    // Update global variables
+    isLoggedIn = false;
+    loggedInUser = '';
+
+    // Redirect to the welcome page
+    res.redirect('/welcome');
 });
 
 // Single post view
@@ -197,12 +212,12 @@ router.get('/post/:postId', (req, res) => {
         return res.status(404).send('Post not found');
     }
 
-    res.render('post', { 
-        ...postData, 
-        postId,  
+    res.render('post', {
+        ...postData,
+        postId,
         layout: 'post',
         title: `${postData.displayName}'s Post`,
-        isLoggedIn: true
+        isLoggedIn
     });
 });
 
@@ -225,7 +240,7 @@ router.get('/createPost', (req, res) => {
     res.render('createPost', {
         layout: 'createPost',
         title: 'Create a Post!',
-        isLoggedIn: true,
+        isLoggedIn,
         loggedInUser
     });
 });
@@ -235,7 +250,7 @@ router.get('/notifications', (req, res) => {
     res.render('notifications', {
         layout: 'notifications',
         title: 'Notifications',
-        isLoggedIn: true,
+        isLoggedIn,
         loggedInUser
     });
 });
@@ -245,12 +260,12 @@ router.get('/editPost', (req, res) => {
     res.render('editPost', {
         layout: 'editPost',
         title: 'Edit your post',
-        isLoggedIn: true,
+        isLoggedIn,
         loggedInUser
     });
 });
 
-// Edit post page
+// Edit profile page
 router.get('/editProfile', (req, res) => {
     res.render('editProfile', {
         profilePic: user.profilePic,
@@ -258,9 +273,9 @@ router.get('/editProfile', (req, res) => {
         bio: user.bio,
         layout: 'editProfile',
         title: 'Edit your profile',
-        isLoggedIn: true,
+        isLoggedIn,
         loggedInUser
-    });    
+    });
 });
 
 module.exports = router;

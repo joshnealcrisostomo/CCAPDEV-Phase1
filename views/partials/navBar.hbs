@@ -46,7 +46,7 @@
                         </button>
                     </div>
                     <div class="menu-item">
-                        <button type="button" class="logout"><span>Logout.</span></button>
+                        <button type="button" class="logout"><span>Logout</span></button>
                     </div>
                 {{else}}
                     <a href="/" class="menu-item">
@@ -70,19 +70,14 @@
         document.querySelector('.btn-post').addEventListener('click', function() {
             window.location.href = '/createPost';
         });
-    </script>
-    <script>
+
         document.addEventListener('DOMContentLoaded', function() {
-            // Delegate the click event to the parent element
-            const navBar = document.querySelector('.left-panel');
-            
-            if (navBar) {
-                navBar.addEventListener('click', function(event) {
-                    if (event.target && event.target.matches('.logout')) {
-                        const isConfirmed = confirm("Are you sure you want to logout?");
-                        if (isConfirmed) {
-                            window.location.href = '/login';
-                        }
+            const logoutButton = document.querySelector('.logout');
+            if (logoutButton) {
+                logoutButton.addEventListener('click', function() {
+                    const isConfirmed = confirm("Are you sure you want to logout?");
+                    if (isConfirmed) {
+                        window.location.href = '/logout';
                     }
                 });
             }

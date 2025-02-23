@@ -211,6 +211,18 @@ router.post('/loginPost', async (req, res) => {
     const { username, password } = req.body;
 
     try {
+        // Check if the credentials match the admin credentials
+        if (username === '@admin' && password === 'admin123') {
+            // Update global variables
+            isLoggedIn = true;
+            loggedInUser = username;
+            user = { username: 'admin' }; // Store the admin user data
+
+            // Redirect to /admin
+            return res.json({ success: true, redirect: '/admin' });
+        }
+
+        // Otherwise, proceed with normal login
         const result = await loginUser(username, password);
 
         if (result.success) {
@@ -266,11 +278,6 @@ router.get('/welcome', (req, res) => {
     });
 });
 
-// Get all users
-router.get('/users', (req, res) => {
-    res.json(usersData);
-});
-
 // Create post page
 router.get('/createPost', (req, res) => {
     res.render('createPost', {
@@ -309,6 +316,26 @@ router.get('/editProfile', (req, res) => {
         bio: user.bio,
         layout: 'editProfile',
         title: 'Edit your profile',
+        isLoggedIn,
+        loggedInUser
+    });
+});
+
+// Admin page
+router.get('/admin', (req, res) => {
+    res.render('admin', {
+        layout: 'admin',
+        title: 'Admin',
+        isLoggedIn,
+        loggedInUser
+    });
+});
+
+// Admin Notifications page
+router.get('/adminNotifications', (req, res) => {
+    res.render('adminNotifications', {
+        layout: 'adminNotifications',
+        title: 'Admin Notifications',
         isLoggedIn,
         loggedInUser
     });

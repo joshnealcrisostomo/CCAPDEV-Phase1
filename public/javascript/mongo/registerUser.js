@@ -1,11 +1,10 @@
 const mongoose = require("mongoose");
 const uri = "mongodb+srv://patricklim:Derp634Derp@apdevcluster.chzne.mongodb.net/?retryWrites=true&w=majority&appName=APDEVcluster";
-const User = require('./UserSchema.js'); // Replace with the actual path to your user.model.js file
+const User = require('./UserSchema.js');
 
 mongoose.connect(uri);
 
 async function registerUser(email, displayName, username, password, bio, profilePic) {
-    console.log('registerUser function called', email, displayName, username, password, bio, profilePic);
     try {
         const existingUser = await User.findOne({ $or: [{ email }, { username }] });
         if (existingUser) {
@@ -15,7 +14,7 @@ async function registerUser(email, displayName, username, password, bio, profile
             email,
             displayName,
             username,
-            password, // Ensure the password is hashed before saving
+            password,
             bio: bio || 'No bio yet.',
             profilePic: profilePic || 'https://i.pinimg.com/originals/a6/58/32/a65832155622ac173337874f02b218fb.png'
         });

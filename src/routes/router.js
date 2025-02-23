@@ -2,17 +2,45 @@ const express = require('express');
 const router = express.Router();
 const fs = require('fs');
 const path = require('path');
+const { MongoClient } = require('mongodb'); // Add this import
 
 const contentsPath = path.join(__dirname, '../models/contents.json');
-const usersDataPath = path.join(__dirname, '../models/users.json');
 const latestPostsPath = path.join(__dirname, '../models/latestPosts.json');
 
 const authController = require('../../public/javascript/mongo/registerUser.js');
+const { loginUser } = require('../../public/javascript/mongo/loginUser.js');
+
+// MongoDB connection URI
+const uri = "mongodb+srv://patricklim:Derp634Derp@apdevcluster.chzne.mongodb.net/?retryWrites=true&w=majority&appName=APDEVcluster";
 
 // Global variables
 let isLoggedIn = false; // Default value
 let loggedInUser = ''; // Default value
-let user = {}; // This will be updated after reading usersData
+let user = {};
+
+// MongoDB client
+let client;
+
+// Connect to MongoDB
+async function connect() {
+    client = new MongoClient(uri);
+    await client.connect();
+    return client.db('test');
+}
+
+// Close MongoDB connection
+async function close() {
+    if (client) {
+        await client.close();
+        console.log('MongoDB connection closed.');
+    }
+}
+
+// Close the connection when the application exits
+process.on('SIGINT', async () => {
+    await close();
+    process.exit();
+});
 
 // Load contents.json
 let contentsData = {};
@@ -25,20 +53,6 @@ if (fs.existsSync(contentsPath)) {
     }
 } else {
     console.warn(`File ${contentsPath} NOT found.`);
-}
-
-// Load users.json
-let usersData = {};
-if (fs.existsSync(usersDataPath)) {
-    try {
-        usersData = JSON.parse(fs.readFileSync(usersDataPath, 'utf8'));
-        console.log(`File ${usersDataPath} found.`);
-        user = usersData[loggedInUser] || {}; // Update global user variable
-    } catch (error) {
-        console.error('Error reading users.json:', error);
-    }
-} else {
-    console.warn(`File ${usersDataPath} NOT found.`);
 }
 
 // Load latestPosts.json
@@ -66,54 +80,69 @@ router.get('/dashboard', (req, res) => {
         layout: 'dashboard',
         title: 'ByaHero!',
         isLoggedIn,
-        loggedInUser
+        loggedInUser,
+        user 
     });
 });
 
 // Profile route
-router.get('/profile/:username', (req, res) => {
+router.get('/profile/:username', async (req, res) => {
     let { username } = req.params;
 
+    // Ensure username starts with '@'
     if (!username.startsWith('@')) {
         username = '@' + username;
     }
 
-    const viewedUser = usersData[username];
+    try {
+        const db = await connect();
+        const usersCollection = db.collection('users');
 
-    if (!viewedUser) {
-        return res.status(404).send('User not found');
-    }
+        // Fetch the viewed user's data from MongoDB
+        const viewedUser = await usersCollection.findOne({ username });
 
-    const userPosts = Object.entries(contentsData)
-        .filter(([postId, post]) => post.postusername === username)
-        .map(([postId, post]) => ({ postId, ...post }));
+        if (!viewedUser) {
+            return res.status(404).send('User not found');
+        }
 
-    if (loggedInUser.toLowerCase() === username.toLowerCase()) {
-        res.render('profile', {
-            displayName: viewedUser.displayName,
-            username: viewedUser.username,
-            profilePic: viewedUser.profilePic,
-            bio: viewedUser.bio,
-            posts: userPosts,
-            layout: 'profile',
-            title: `${viewedUser.displayName}'s Profile`,
-            isLoggedIn,
-            loggedInUser,
-            viewedUser
-        });
-    } else {
-        res.render('publicProfile', {
-            displayName: viewedUser.displayName,
-            username: viewedUser.username,
-            profilePic: viewedUser.profilePic,
-            bio: viewedUser.bio,
-            posts: userPosts,
-            layout: 'publicProfile',
-            title: `${viewedUser.displayName}'s Profile`,
-            isLoggedIn,
-            loggedInUser,
-            viewedUser
-        });
+        // Fetch posts associated with the viewed user (if needed)
+        const userPosts = Object.entries(contentsData)
+            .filter(([postId, post]) => post.postusername === username)
+            .map(([postId, post]) => ({ postId, ...post }));
+
+        // Check if the profile being viewed belongs to the logged-in user
+        if (loggedInUser.toLowerCase() === username.toLowerCase()) {
+            // Render the profile page for the logged-in user
+            res.render('profile', {
+                displayName: viewedUser.displayName,
+                username: viewedUser.username,
+                profilePic: viewedUser.profilePic,
+                bio: viewedUser.bio,
+                posts: userPosts,
+                layout: 'profile',
+                title: `${viewedUser.displayName}'s Profile`,
+                isLoggedIn,
+                loggedInUser,
+                viewedUser
+            });
+        } else {
+            // Render the public profile page for other users
+            res.render('publicProfile', {
+                displayName: viewedUser.displayName,
+                username: viewedUser.username,
+                profilePic: viewedUser.profilePic,
+                bio: viewedUser.bio,
+                posts: userPosts,
+                layout: 'publicProfile',
+                title: `${viewedUser.displayName}'s Profile`,
+                isLoggedIn,
+                loggedInUser,
+                viewedUser
+            });
+        }
+    } catch (error) {
+        console.error('Error fetching user profile:', error);
+        res.status(500).send('Internal server error');
     }
 });
 
@@ -178,18 +207,25 @@ router.get('/login', (req, res) => {
 });
 
 // POST route for login
-router.post('/loginPost', (req, res) => {
+router.post('/loginPost', async (req, res) => {
     const { username, password } = req.body;
 
-    const user = usersData[username];
-    if (user && user.password === password) {
-        // Update global variables
-        isLoggedIn = true;
-        loggedInUser = username;
+    try {
+        const result = await loginUser(username, password);
 
-        res.json({ success: true, user });
-    } else {
-        res.json({ success: false, message: 'Invalid username or password' });
+        if (result.success) {
+            // Update global variables
+            isLoggedIn = true;
+            loggedInUser = username;
+            user = result.user; // Store the user data
+
+            res.json({ success: true, user });
+        } else {
+            res.json({ success: false, message: result.message });
+        }
+    } catch (error) {
+        console.error('Error during login:', error);
+        res.status(500).json({ success: false, message: 'Internal server error' });
     }
 });
 

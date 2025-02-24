@@ -35,6 +35,42 @@ body {
     width: 70%;
 }
 
+
+.top-menu {
+    display: flex;
+    align-items: center;
+    background-color: #DFDAC8;
+    padding: 10px;
+    position: relative;
+    margin-top: 10px;
+}
+
+.top-menu button {
+    background-color: transparent;
+    border: none;
+    padding: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px;
+}     
+
+.top-menu button:hover {
+    background-color: rgba(12, 95, 179, 0.2); 
+    border-radius: 100%;
+}
+
+.top-menu button img {
+    width: 20px;
+    height: 20px;
+}
+
+.top-menu span {
+    font-size: 14px;
+    color: black;
+}
+
 .post-title-container {
     margin: 30px;
 }

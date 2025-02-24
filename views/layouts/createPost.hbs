@@ -13,8 +13,12 @@
             </div>
 
             <div class="middle-panel">
-                <br>
-                <br>
+                <div class="top-menu">
+                    <button type="button" class="return-btn">
+                        <img src="/icons/left_arrow.png" alt="return-btn">
+                    </button>
+                    <span>Return</span>
+                </div>
                 <h2>Create a Post!</h2>
                 
                 <div class="create-post-container">
@@ -81,5 +85,10 @@
                 {{> searchPanel}}
             </div>
         </div>
+        <script>
+            document.querySelector('.return-btn').addEventListener('click', function() {
+                window.history.back(); // This goes back to the last page in the browser's history
+            });
+        </script>
     </body>
 </html>

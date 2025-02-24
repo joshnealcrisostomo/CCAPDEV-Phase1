@@ -7,6 +7,7 @@ const { MongoClient } = require('mongodb'); // Add this import
 
 const contentsPath = path.join(__dirname, '../models/contents.json');
 const latestPostsPath = path.join(__dirname, '../models/latestPosts.json');
+const reportsPath = path.join(__dirname, '../models/reports.json');
 
 const authController = require('../../public/javascript/mongo/registerUser.js');
 const { loginUser } = require('../../public/javascript/mongo/loginUser.js');
@@ -69,6 +70,19 @@ if (fs.existsSync(latestPostsPath)) {
     }
 } else {
     console.warn(`File ${latestPostsPath} NOT found.`);
+}
+
+// Load reports.json
+let reportsData = { reports: [] };
+if (fs.existsSync(reportsPath)) {
+    try {
+        reportsData = JSON.parse(fs.readFileSync(reportsPath, 'utf8'));
+        console.log(`File ${reportsPath} found.`);
+    } catch (error) {
+        console.error('Error reading reports.json:', error);
+    }
+} else {
+    console.warn(`File ${reportsPath} NOT found.`);
 }
 
 // Dashboard route
@@ -345,13 +359,14 @@ router.get('/editProfile', (req, res) => {
     });
 });
 
-// Admin page
+// Admin page route
 router.get('/admin', (req, res) => {
     res.render('admin', {
         layout: 'admin',
-        title: 'Admin',
+        title: 'Admin Report',
         isLoggedIn,
-        loggedInUser
+        loggedInUser,
+        reports: reportsData.reports // Pass reports data to Handlebars
     });
 });
 

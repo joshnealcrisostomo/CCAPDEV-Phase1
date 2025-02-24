@@ -9,18 +9,18 @@
 <body>
     <div class="container">
         <div id="left-panel">
-            
+            {{> adminNavBar}}
         </div>
         <div class="middle-panel">
             <div class="search-container">
                 <div class="return-container">
-                    <button type="button" onclick="goBack()">
-                        <img src="../icons/left_arrow.png" alt="return-btn">
+                    <button type="button" class="return-btn">
+                        <img src="/icons/left_arrow.png" alt="return-btn">
                     </button>
                     <span>
-                        Home
+                        Return
                     </span>
-                </div>
+                </div>                
                 <hr>
                 <br>
                 <h2>Settings</h2>
@@ -31,6 +31,22 @@
                             <option value="light">Light</option>
                             <option value="dark">Dark</option>
                             <option value="system">System Default</option>
+                        </select>
+                    </div>
+                    <div class="setting-option">
+                        <label for="notifications">Notifications:</label>
+                        <select id="notifications">
+                            <option value="all">All Notifications</option>
+                            <option value="mentions">Only Mentions</option>
+                            <option value="none">None</option>
+                        </select>
+                    </div>
+                    <div class="setting-option">
+                        <label for="privacy">Privacy:</label>
+                        <select id="privacy">
+                            <option value="public">Public</option>
+                            <option value="friends">Friends Only</option>
+                            <option value="private">Private</option>
                         </select>
                     </div>
                     <div class="setting-option">
@@ -52,7 +68,10 @@
             </div>
         </div>
     </div>
-    <script src="../javascript/visitorPanels.js"></script>
-    <script src="../javascript/switchContents.js"></script>
+    <script>
+        document.querySelector('.return-btn').addEventListener('click', function() {
+            window.history.back(); // This goes back to the last page in the browser's history
+        });
+    </script>
 </body>
 </html>

@@ -1,0 +1,29 @@
+{{#if posts.length}}
+    {{#each posts}}
+        <div class="post">
+            <div class="post-header">
+                <div>
+                    <p class="post-duration">{{postduration}}</p>
+                </div>
+                <div class="dots">⋮</div>
+                <div id="optionsMenu" class="dots-menu">
+                    <a href="/editPost">Edit</a>
+                    <a href="" class="delete-post-btn">Delete</a>
+                </div>                        
+            </div>
+            <div class="post-content">
+                <h3><a href="/post/{{postId}}">{{postTitle}}</a></h3>
+                <p>{{postContent}}</p>
+                {{#if postImage}}
+                    <img src="{{postImage}}" alt="Post Image">
+                {{/if}}
+            </div>
+            <div class="post-footer">
+                <span>▲ {{votes}} ▼</span>
+            </div>
+        </div>
+    {{/each}}
+{{else}}
+    <img src="/icons/pin.png" alt="pin-icon" class="empty-icon">
+    <p>No posts available.</p>
+{{/if}}

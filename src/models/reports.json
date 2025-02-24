@@ -1,0 +1,39 @@
+{
+    "reports": [
+        {
+            "id": 1,
+            "title": "000001",
+            "author": "@paresMami16",
+            "reason": "Spam",
+            "status": "pending"
+        },
+        {
+            "id": 2,
+            "title": "000003",
+            "author": "@pat111",
+            "reason": "Bug",
+            "status": "resolved"
+        },
+        {
+            "id": 3,
+            "title": "000002",
+            "author": "@juicekneel",
+            "reason": "Spam",
+            "status": "in-progress"
+        },
+        {
+            "id": 4,
+            "title": "000004",
+            "author": "@euly123",
+            "reason": "Spam",
+            "status": "pending"
+        },
+        {
+            "id": 5,
+            "title": "000005",
+            "author": "@IsaChuChu",
+            "reason": "Other",
+            "status": "pending"
+        }
+    ]
+}

@@ -7,6 +7,7 @@ const { MongoClient } = require('mongodb'); // Add this import
 
 const contentsPath = path.join(__dirname, '../models/contents.json');
 const latestPostsPath = path.join(__dirname, '../models/latestPosts.json');
+const reportsPath = path.join(__dirname, '../models/reports.json');
 
 const authController = require('../../public/javascript/mongo/registerUser.js');
 const { loginUser } = require('../../public/javascript/mongo/loginUser.js');
@@ -70,6 +71,19 @@ if (fs.existsSync(latestPostsPath)) {
     }
 } else {
     console.warn(`File ${latestPostsPath} NOT found.`);
+}
+
+// Load reports.json
+let reportsData = { reports: [] };
+if (fs.existsSync(reportsPath)) {
+    try {
+        reportsData = JSON.parse(fs.readFileSync(reportsPath, 'utf8'));
+        console.log(`File ${reportsPath} found.`);
+    } catch (error) {
+        console.error('Error reading reports.json:', error);
+    }
+} else {
+    console.warn(`File ${reportsPath} NOT found.`);
 }
 
 // Dashboard route
@@ -146,6 +160,52 @@ router.get('/profile/:username', async (req, res) => {
         }
     } catch (error) {
         console.error('Error fetching user profile:', error);
+        res.status(500).send('Internal server error');
+    }
+});
+
+// Profile menu nav
+router.get('/profile/:username/content/:tab', async (req, res) => {
+    let { username, tab } = req.params;
+
+    // Ensure username starts with '@'
+    if (!username.startsWith('@')) {
+        username = '@' + username;
+    }
+
+    try {
+        const db = await connect();
+        const usersCollection = db.collection('users');
+        const user = await usersCollection.findOne({ username });
+
+        if (!user) {
+            return res.status(404).send('User not found');
+        }
+
+        let content = [];
+
+        switch (tab) {
+            case 'comments':
+                content = Object.values(contentsData)
+                    .flatMap(post => post.comments)
+                    .filter(comment => comment.username === username);
+                res.render('../partials/profileComments', { comments: content });
+                break;
+            case 'bookmark':
+                res.render('../partials/profileBookmarks', { bookmarks: user.bookmarks || [] });
+                break;
+            case 'upvoted':
+                res.render('../partials/profileUpvoted', { upvoted: user.upvoted || [] });
+                break;
+            case 'downvoted':
+                res.render('../partials/profileDownvoted', { downvoted: user.downvoted || [] });
+                break;
+            default:
+                content = Object.values(contentsData).filter(post => post.postusername === username);
+                res.render('../partials/profilePosts', { posts: content });
+        }
+    } catch (error) {
+        console.error('Error fetching user profile content:', error);
         res.status(500).send('Internal server error');
     }
 });
@@ -394,13 +454,14 @@ router.get('/editProfile', (req, res) => {
     });
 });
 
-// Admin page
+// Admin page route
 router.get('/admin', (req, res) => {
     res.render('admin', {
         layout: 'admin',
-        title: 'Admin',
+        title: 'Admin Report',
         isLoggedIn,
-        loggedInUser
+        loggedInUser,
+        reports: reportsData.reports // Pass reports data to Handlebars
     });
 });
 
@@ -421,6 +482,24 @@ router.get('/adminSettings', (req, res) => {
         title: 'Admin Settings',
         isLoggedIn,
         loggedInUser
+    });
+});
+
+// Admin single post view
+router.get('/adminPost/:postId', (req, res) => {
+    const { postId } = req.params;
+    const postData = contentsData[postId];
+
+    if (!postData) {
+        return res.status(404).send('Post not found');
+    }
+
+    res.render('post', {
+        ...postData,
+        postId,
+        layout: 'adminPost',
+        title: `${postData.displayName}'s Post`,
+        isLoggedIn
     });
 });
 

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../styles_folder/admin_style.css">
+    <link rel="stylesheet" href="/styles_folder/admin_style.css">
     <title>Admin Report</title>
 </head>
 <body>
@@ -13,6 +13,8 @@
         </div>
 
         <div class="middle-panel">
+            <br>
+            <br>
             <div class="profile-menu">
                 <div class="prof-menu-btn">
                     <span><a href="#" class="posts-btn active">Post</a></span>
@@ -41,14 +43,27 @@
                     <table id="posts-table">
                         <thead>
                             <tr>
-                                <th>Post Title</th>
+                                <th>Post ID</th>
                                 <th>Author</th>
                                 <th>Report Reason</th>
                                 <th>Status</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
-                        <tbody id="posts-table-body"></tbody>
+                        <tbody>
+                            {{#each reports}}
+                            <tr data-status="{{status}}" data-post-id="{{id}}">
+                                <td><a href="/adminPost/{{title}}" class="post-link">{{title}}</a></td>
+                                <td><a href="/adminProfile/{{author}}">{{author}}</a></td>
+                                <td>{{reason}}</td>
+                                <td><span class="badge {{status}}-badge">{{status}}</span></td>
+                                <td>
+                                    <button class="approve-btn" onclick="approvePost({{id}})">Approve</button>
+                                    <button class="delete-btn" onclick="deletePost({{id}})">Delete</button>
+                                </td>
+                            </tr>
+                            {{/each}}
+                        </tbody>
                     </table>
                 </div>
 
@@ -65,22 +80,6 @@
         <div id="right-panel">
             {{> adminSummary}}
         </div>
-
-        <script src="https://cdn.jsdelivr.net/npm/handlebars/dist/handlebars.min.js"></script>
-        <script id="post-template" type="text/x-handlebars-template">
-            {{#each posts}}
-            <tr data-status="{{status}}" data-post-id="{{id}}">
-                <td><a href="post-details.html?postId={{id}}" class="post-link">{{title}}</a></td>
-                <td>{{author}}</td>
-                <td>{{reason}}</td>
-                <td><span class="badge {{status}}-badge">{{capitalize status}}</span></td>
-                <td>
-                    <button class="approve-btn" onclick="approvePost('{{id}}')">Approve</button>
-                    <button class="delete-btn" onclick="deletePost('{{id}}')">Delete</button>
-                </td>
-            </tr>
-            {{/each}}
-        </script>
     </div>
 </body>
 </html>

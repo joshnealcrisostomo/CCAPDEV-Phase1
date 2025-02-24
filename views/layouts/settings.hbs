@@ -63,6 +63,11 @@
                         <input type="range" id="font-size" min="12" max="24" value="16">
                     </div>
                 </div>
+                <button {{#unless isLoggedIn}} style="display:none;" {{/unless}} type="button" class="delete-profile">
+                    <span>
+                        Delete Account
+                    </span>
+                </button>
                 <br>
                 <hr>
             </div>

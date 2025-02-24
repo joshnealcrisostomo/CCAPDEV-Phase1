@@ -22,6 +22,11 @@ body {
     max-width: 1300px;
 }
 
+a {
+    text-decoration: none;
+    color: #292623;
+}
+
 .middle-panel {
     flex: 1;
     background: #DFDAC8;

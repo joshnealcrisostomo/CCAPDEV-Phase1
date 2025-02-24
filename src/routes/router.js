@@ -1,9 +1,9 @@
 const express = require('express');
+const session = require('express-session');
 const router = express.Router();
-const cookieParser = require('cookie-parser');
 const fs = require('fs');
 const path = require('path');
-const { MongoClient } = require('mongodb'); // Add this import
+const { MongoClient } = require('mongodb'); 
 
 const contentsPath = path.join(__dirname, '../models/contents.json');
 const latestPostsPath = path.join(__dirname, '../models/latestPosts.json');
@@ -13,18 +13,19 @@ const authController = require('../../public/javascript/mongo/registerUser.js');
 const { loginUser } = require('../../public/javascript/mongo/loginUser.js');
 const { createPost } = require('../../public/javascript/mongo/crudPost.js');
 
-router.use(cookieParser());
-
 // MongoDB connection URI
 const uri = "mongodb+srv://patricklim:Derp634Derp@apdevcluster.chzne.mongodb.net/?retryWrites=true&w=majority&appName=APDEVcluster";
 
-// Global variables
-let isLoggedIn = false; // Default value
-let loggedInUser = ''; // Default value
-let user = {};
-
 // MongoDB client
 let client;
+
+// Session middleware
+router.use(session({
+    secret: 'your-secret-key',  // Replace with a strong secret in production
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false }  // Set to `true` if using HTTPS
+}));
 
 // Connect to MongoDB
 async function connect() {
@@ -33,7 +34,7 @@ async function connect() {
     return client.db('test');
 }
 
-// Close MongoDB connection
+// Close MongoDB connection on app exit
 async function close() {
     if (client) {
         await client.close();
@@ -41,7 +42,6 @@ async function close() {
     }
 }
 
-// Close the connection when the application exits
 process.on('SIGINT', async () => {
     await close();
     process.exit();
@@ -88,76 +88,46 @@ if (fs.existsSync(reportsPath)) {
 
 // Dashboard route
 router.get('/dashboard', (req, res) => {
-    const postsArray = Object.entries(contentsData).map(([postId, post]) => ({
-        postId,
-        ...post
-    }));
-
+    const postsArray = Object.entries(contentsData).map(([postId, post]) => ({ postId, ...post }));
+    
     res.render('dashboard', {
         posts: postsArray,
         layout: 'dashboard',
         title: 'ByaHero!',
-        isLoggedIn,
-        loggedInUser,
-        user 
+        isLoggedIn: req.session.isLoggedIn || false,
+        loggedInUser: req.session.loggedInUser || '',
+        user: req.session.user || {}
     });
 });
 
 // Profile route
 router.get('/profile/:username', async (req, res) => {
     let { username } = req.params;
-
-    // Ensure username starts with '@'
-    if (!username.startsWith('@')) {
-        username = '@' + username;
-    }
+    if (!username.startsWith('@')) username = '@' + username;
 
     try {
         const db = await connect();
         const usersCollection = db.collection('users');
-
-        // Fetch the viewed user's data from MongoDB
         const viewedUser = await usersCollection.findOne({ username });
 
-        if (!viewedUser) {
-            return res.status(404).send('User not found');
-        }
+        if (!viewedUser) return res.status(404).send('User not found');
 
-        // Fetch posts associated with the viewed user (if needed)
         const userPosts = Object.entries(contentsData)
             .filter(([postId, post]) => post.postusername === username)
             .map(([postId, post]) => ({ postId, ...post }));
 
-        // Check if the profile being viewed belongs to the logged-in user
-        if (loggedInUser.toLowerCase() === username.toLowerCase()) {
-            // Render the profile page for the logged-in user
-            res.render('profile', {
-                displayName: viewedUser.displayName,
-                username: viewedUser.username,
-                profilePic: viewedUser.profilePic,
-                bio: viewedUser.bio,
-                posts: userPosts,
-                layout: 'profile',
-                title: `${viewedUser.displayName}'s Profile`,
-                isLoggedIn,
-                loggedInUser,
-                viewedUser
-            });
-        } else {
-            // Render the public profile page for other users
-            res.render('publicProfile', {
-                displayName: viewedUser.displayName,
-                username: viewedUser.username,
-                profilePic: viewedUser.profilePic,
-                bio: viewedUser.bio,
-                posts: userPosts,
-                layout: 'publicProfile',
-                title: `${viewedUser.displayName}'s Profile`,
-                isLoggedIn,
-                loggedInUser,
-                viewedUser
-            });
-        }
+        res.render('profile', {
+            displayName: viewedUser.displayName,
+            username: viewedUser.username,
+            profilePic: viewedUser.profilePic,
+            bio: viewedUser.bio,
+            posts: userPosts,
+            layout: 'profile',
+            title: `${viewedUser.displayName}'s Profile`,
+            isLoggedIn: req.session.isLoggedIn || false,
+            loggedInUser: req.session.loggedInUser || '',
+            viewedUser
+        });
     } catch (error) {
         console.error('Error fetching user profile:', error);
         res.status(500).send('Internal server error');
@@ -216,8 +186,8 @@ router.get('/explore', (req, res) => {
         latestPosts: latestPostsData,
         layout: 'explore',
         title: 'Explore',
-        isLoggedIn,
-        loggedInUser
+        isLoggedIn: req.session.isLoggedIn || false,
+        loggedInUser: req.session.loggedInUser || ''
     });
 });
 
@@ -226,8 +196,8 @@ router.get('/settings', (req, res) => {
     res.render('settings', {
         layout: 'settings',
         title: 'Settings',
-        isLoggedIn,
-        loggedInUser
+        isLoggedIn: req.session.isLoggedIn || false,
+        loggedInUser: req.session.loggedInUser || ''
     });
 });
 
@@ -263,57 +233,34 @@ router.post('/registerPost', async (req, res) => {
 
 // Login route
 router.get('/login', (req, res) => {
-    const rememberMeCookie = req.cookies.rememberMe;
-
-    if (rememberMeCookie) {
-        // Automatically log the user in
-        isLoggedIn = true;
-        loggedInUser = rememberMeCookie;
-        user = { username: rememberMeCookie }; // Store the user data
-
-        // Redirect to the dashboard
-        return res.redirect('/dashboard');
-    }
+    if (req.session.isLoggedIn) return res.redirect('/dashboard');
 
     res.render('login', {
         layout: 'login',
         title: 'Sign In',
-        isLoggedIn: false,
+        isLoggedIn: false
     });
 });
 
-// POST route for login
+// Login POST route
 router.post('/loginPost', async (req, res) => {
-    const { username, password, rememberMe } = req.body;
+    const { username, password } = req.body;
 
     try {
-        // Check if the credentials match the admin credentials
         if (username === '@admin' && password === 'admin123') {
-            // Update global variables
-            isLoggedIn = true;
-            loggedInUser = username;
-            user = { username: 'admin' }; // Store the admin user data
-
-            // Redirect to /admin
+            req.session.isLoggedIn = true;
+            req.session.loggedInUser = username;
+            req.session.user = { username: 'admin' };
             return res.json({ success: true, redirect: '/admin' });
         }
 
-        // Otherwise, proceed with normal login
         const result = await loginUser(username, password);
-
         if (result.success) {
-            // Update global variables
-            isLoggedIn = true;
-            loggedInUser = username;
-            user = result.user; // Store the user data
+            req.session.isLoggedIn = true;
+            req.session.loggedInUser = username;
+            req.session.user = result.user;
 
-            // Set cookie if "Remember Me" is checked
-            if (rememberMe) {
-                const threeWeeks = 21 * 24 * 60 * 60 * 1000; // 3 weeks in milliseconds
-                res.cookie('rememberMe', username, { maxAge: threeWeeks, httpOnly: true });
-            }
-
-            res.json({ success: true, user });
+            res.json({ success: true, user: result.user });
         } else {
             res.json({ success: false, message: result.message });
         }
@@ -325,15 +272,10 @@ router.post('/loginPost', async (req, res) => {
 
 // Logout route
 router.get('/logout', (req, res) => {
-    // Update global variables
-    isLoggedIn = false;
-    loggedInUser = '';
-
-    // Clear the "Remember Me" cookie
-    res.clearCookie('rememberMe');
-
-    // Redirect to the welcome page
-    res.redirect('/login');
+    req.session.destroy(err => {
+        if (err) console.error('Error logging out:', err);
+        res.redirect('/login');
+    });
 });
 
 // Single post view
@@ -365,16 +307,16 @@ router.get('/welcome', (req, res) => {
 
 // Create post page
 router.get('/createPost', (req, res) => {
-    // Assuming user data is stored in req.session.user
     res.render('createPost', {
         layout: 'createPost',
         title: 'Create a Post!',
-        isLoggedIn: req.session.isLoggedIn, // Use req.session
-        loggedInUser: req.session.loggedInUser, // Use req.session
-        user: req.session.user // Pass the user object from session
+        isLoggedIn: req.session.isLoggedIn || false,
+        loggedInUser: req.session.loggedInUser || '',
+        user: req.session.user || {}
     });
 });
 
+// Create post API
 router.post('/createPost', async (req, res) => {
     try {
         const {
@@ -385,11 +327,10 @@ router.post('/createPost', async (req, res) => {
             displayName,
             votes,
             comments,
-            userId,
+            userId
         } = req.body;
 
-        // Generate a unique postId (you can use a library like uuid)
-        const postId = generateUniquePostId(); // Implement this function
+        const postId = generateUniquePostId();
 
         const result = await createPost(
             postId,
@@ -426,8 +367,8 @@ router.get('/notifications', (req, res) => {
     res.render('notifications', {
         layout: 'notifications',
         title: 'Notifications',
-        isLoggedIn,
-        loggedInUser
+        isLoggedIn: req.session.isLoggedIn || false,
+        loggedInUser: req.session.loggedInUser || ''
     });
 });
 
@@ -436,8 +377,8 @@ router.get('/editPost', (req, res) => {
     res.render('editPost', {
         layout: 'editPost',
         title: 'Edit your post',
-        isLoggedIn,
-        loggedInUser
+        isLoggedIn: req.session.isLoggedIn || false,
+        loggedInUser: req.session.loggedInUser || ''
     });
 });
 
@@ -449,8 +390,8 @@ router.get('/editProfile', (req, res) => {
         bio: user.bio,
         layout: 'editProfile',
         title: 'Edit your profile',
-        isLoggedIn,
-        loggedInUser
+        isLoggedIn: req.session.isLoggedIn || false,
+        loggedInUser: req.session.loggedInUser || ''
     });
 });
 

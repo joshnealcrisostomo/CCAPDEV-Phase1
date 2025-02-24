@@ -1,83 +1,3 @@
-document.addEventListener("DOMContentLoaded", function () {
-    // Extract the username from the URL path
-    const pathParts = window.location.pathname.split('/');
-    const username = pathParts[pathParts.length - 1].replace('@', ''); // Remove '@' from username
-
-    const profileContainer = document.querySelector(".middle-panel .user-info");
-
-    if (users[username]) {
-        const profileData = users[username];
-        document.title = `${profileData.displayName}`;
-
-        // Compile the profile template and render the user info
-        const profileHTML = Handlebars.compile(document.querySelector(".middle-panel").innerHTML);
-        profileContainer.innerHTML = profileHTML(profileData);
-
-        // Ensure the menu buttons are available after content is rendered
-        const menuButtons = document.querySelectorAll(".prof-menu-btn a");
-
-        // Set up the event listeners for the menu buttons after content is rendered
-        menuButtons.forEach((btn) => {
-            btn.addEventListener("click", function (event) {
-                event.preventDefault(); // Prevent default anchor link behavior
-
-                // Remove active class from all buttons and add to the clicked button
-                menuButtons.forEach((button) => button.classList.remove("active"));
-                this.classList.add("active");
-
-                // Update content based on the clicked button
-                updateProfileContent(this.classList[0], profileData.username);
-            });
-        });
-
-        // Default content load: Show posts
-        updateProfileContent("posts-btn", profileData.username);
-    } else {
-        profileContainer.innerHTML = "<h2>User Not Found</h2>";
-    }
-});
-
-function updateProfileContent(activeTab, username) {
-    const contentContainer = document.querySelector(".content");
-    let contentHTML = "";
-
-    // Check if the active tab is related to posts or upvoted
-    if (activeTab.includes("posts-btn") || activeTab.includes("upvoted-btn")) {
-        const userPosts = Object.values(posts).filter(post => post.postusername === username);
-
-        if (userPosts.length > 0) {
-            const source = document.getElementById("post-template").innerHTML;
-            const template = Handlebars.compile(source);
-            contentHTML = template({ posts: userPosts });
-        } else {
-            contentHTML = `<img src="/icons/pin.png" alt="pin-icon" class="empty-icon">
-                           <p>${username} hasn't posted yet.</p>`;
-        }
-    } else {
-        const fallbackMessages = {
-            "posts-btn": "hasn't posted yet.",
-            "comments-btn": "hasn't commented yet.",
-            "bookmark-btn": "hasn't bookmarked anything yet.",
-            "upvoted-btn": "hasn't upvoted anything yet.",
-            "downvoted-btn": "hasn't downvoted anything yet."
-        };
-
-        if (fallbackMessages[activeTab]) {
-            contentHTML = `<img src="/icons/${activeTab.replace("-btn", "")}.png" alt="${activeTab}" class="empty-icon">
-                           <p>${username} ${fallbackMessages[activeTab]}</p>`;
-        } else {
-            contentHTML = `<p>Invalid selection.</p>`;
-        }
-    }
-
-    // Ensure content is updated
-    if (contentContainer) {
-        contentContainer.innerHTML = contentHTML;
-    } else {
-        console.error("Content container not found.");
-    }
-}
-
 // Event listener for return button
 document.querySelector('.return-btn').addEventListener('click', function() {
     window.history.back(); // This goes back to the last page in the browser's history
@@ -133,4 +53,29 @@ function deletePost(event) {
 const deletePostButtons = document.querySelectorAll('.delete-post-btn');
 deletePostButtons.forEach(button => {
     button.addEventListener('click', deletePost);
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+    const menuButtons = document.querySelectorAll(".prof-menu-btn a");
+    const contentDiv = document.querySelector(".content");
+
+    menuButtons.forEach(button => {
+        button.addEventListener("click", function (event) {
+            event.preventDefault();
+
+            // Remove active class from all buttons
+            menuButtons.forEach(btn => btn.classList.remove("active"));
+            this.classList.add("active");
+
+            const tab = this.classList[0].replace("-btn", ""); // Extract tab name from class
+            const username = window.location.pathname.split('/').pop(); // Get username from URL
+
+            fetch(`/profile/${username}/content/${tab}`)
+                .then(response => response.text())
+                .then(html => {
+                    contentDiv.innerHTML = html;
+                })
+                .catch(error => console.error("Error loading content:", error));
+        });
+    });
 });

@@ -163,6 +163,37 @@ router.get('/profile/:username', async (req, res) => {
     }
 });
 
+// Profile menu nav
+router.get('/profile/:username/content/:tab', (req, res) => {
+    const { username, tab } = req.params;
+    const user = usersData[username];
+
+    if (!user) {
+        return res.status(404).send('User not found');
+    }
+
+    let content = [];
+    switch (tab) {
+        case 'comments':
+            content = Object.values(contentsData).flatMap(post => post.comments)
+                        .filter(comment => comment.username === username);
+            res.render('partials/profileComments', { comments: content });
+            break;
+        case 'bookmarks':
+            res.render('partials/profileBookmarks', { bookmarks: content });
+            break;
+        case 'upvoted':
+            res.render('partials/profileUpvoted', { upvoted: content });
+            break;
+        case 'downvoted':
+            res.render('partials/profileDownvoted', { downvoted: content });
+            break;
+        default:
+            content = Object.values(contentsData).filter(post => post.postusername === username);
+            res.render('partials/profilePosts', { posts: content });
+    }
+});
+
 // Explore route
 router.get('/explore', (req, res) => {
     res.render('explore', {

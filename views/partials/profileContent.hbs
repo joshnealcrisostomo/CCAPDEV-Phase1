@@ -1,0 +1,5 @@
+{{#if activeTab}}
+    {{> (lookup . "activeTab")}}
+{{else}}
+    {{> profilePosts}}  <!-- Default to posts if no tab is selected -->
+{{/if}}

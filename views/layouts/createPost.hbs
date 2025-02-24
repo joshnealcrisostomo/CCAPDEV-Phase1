@@ -66,6 +66,10 @@
                                     <a href="#" class="body-item" onclick="">
                                         <img src="/icons/list.png" alt="list-btn" class="icon-body">
                                     </a>
+                                    <a href="#" class="body-item" onclick="">
+                                        <img src="/icons/image.png" alt="image-btn" class="icon-body">
+                                    </a>
+                                    <input type="file" id="image-upload" accept="image/*" style="display: none;">
                                 </div>
                             </div>
                             <div class="body-text-container">
@@ -90,10 +94,6 @@
             </div>
         </div>
         <script>
-        document.querySelector('.return-btn').addEventListener('click', function() {
-            window.history.back();
-        });
-
         document.addEventListener("DOMContentLoaded", function () {
             document.querySelector('.return-btn').addEventListener('click', function() {
                 window.history.back();
@@ -132,6 +132,27 @@
                     window.location.href = "/dashboard";  // Redirect after successful post
                 } else {
                     alert("Failed to create post: " + data.message);
+                }
+            });
+
+            // Image upload functionality
+            const imageUpload = document.getElementById("image-upload");
+            const imageButton = document.querySelector(".body-options-container img[alt='image-btn']");
+            const bodyTextArea = document.querySelector(".body-text-area");
+
+            imageButton.addEventListener("click", function () {
+                imageUpload.click();
+            });
+
+            imageUpload.addEventListener("change", function () {
+                const file = this.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        const imgTag = `<img src="${e.target.result}" alt="Inserted Image" style="max-width: 100%; height: auto;">`;
+                        bodyTextArea.value += "\n" + imgTag; // Append image to textarea
+                    };
+                    reader.readAsDataURL(file);
                 }
             });
         });

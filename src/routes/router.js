@@ -248,7 +248,7 @@ router.get('/logout', (req, res) => {
     loggedInUser = '';
 
     // Redirect to the welcome page
-    res.redirect('/welcome');
+    res.redirect('/login');
 });
 
 // Single post view
@@ -336,6 +336,16 @@ router.get('/adminNotifications', (req, res) => {
     res.render('adminNotifications', {
         layout: 'adminNotifications',
         title: 'Admin Notifications',
+        isLoggedIn,
+        loggedInUser
+    });
+});
+
+// Admin Settings page
+router.get('/adminSettings', (req, res) => {
+    res.render('adminSettings', {
+        layout: 'adminSettings',
+        title: 'Admin Settings',
         isLoggedIn,
         loggedInUser
     });

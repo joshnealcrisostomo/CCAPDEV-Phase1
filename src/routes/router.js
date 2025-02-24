@@ -249,7 +249,7 @@ router.post('/loginPost', async (req, res) => {
         const result = await loginUser(username, password);
         if (result.success) {
             req.session.isLoggedIn = true;
-            req.session.loggedInUser = username;
+            req.session.loggedInUser = result.user;
             req.session.user = result.user;
 
             console.log('Session After Login:', req.session);  // Debugging log
@@ -446,6 +446,5 @@ router.get('/session-test', (req, res) => {
         sessionID: req.sessionID
     });
 });
-
 
 module.exports = router;

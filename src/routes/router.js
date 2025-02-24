@@ -19,14 +19,6 @@ const uri = "mongodb+srv://patricklim:Derp634Derp@apdevcluster.chzne.mongodb.net
 // MongoDB client
 let client;
 
-// Session middleware
-router.use(session({
-    secret: 'your-secret-key',  // Replace with a strong secret in production
-    resave: false,
-    saveUninitialized: true,
-    cookie: { secure: false }  // Set to `true` if using HTTPS
-}));
-
 // Connect to MongoDB
 async function connect() {
     client = new MongoClient(uri);
@@ -260,6 +252,8 @@ router.post('/loginPost', async (req, res) => {
             req.session.loggedInUser = username;
             req.session.user = result.user;
 
+            console.log('Session After Login:', req.session);  // Debugging log
+
             res.json({ success: true, user: result.user });
         } else {
             res.json({ success: false, message: result.message });
@@ -442,5 +436,16 @@ router.get('/adminPost/:postId', (req, res) => {
         isLoggedIn
     });
 });
+
+router.get('/session-test', (req, res) => {
+    console.log('Session Data:', req.session);
+    res.json({
+        isLoggedIn: req.session.isLoggedIn || false,
+        loggedInUser: req.session.loggedInUser || null,
+        user: req.session.user || {},
+        sessionID: req.sessionID
+    });
+});
+
 
 module.exports = router;

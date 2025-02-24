@@ -8,6 +8,15 @@ const hbs = require("hbs");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+const session = require('express-session');
+
+app.use(session({
+    secret: 'your-secret-key',  // Use a strong secret in production
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false }  // Set to `true` if using HTTPS
+}));
+
 // Middleware to parse JSON bodies
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

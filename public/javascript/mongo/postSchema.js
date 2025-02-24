@@ -1,18 +1,10 @@
 const mongoose = require('mongoose');
 
-// Define the schema for the `posts` collection
 const postSchema = new mongoose.Schema({
-  _id: {
-    type: mongoose.Schema.Types.ObjectId,
-    default: () => new mongoose.Types.ObjectId(), // Automatically generate ObjectId
-  },
   postId: {
     type: String,
     required: true,
-  },
-  postusername: {
-    type: String,
-    required: true,
+    unique: true, // Assuming postId should be unique
   },
   postTitle: {
     type: String,
@@ -21,10 +13,7 @@ const postSchema = new mongoose.Schema({
   postduration: {
     type: String,
     required: true,
-  },
-  posterpfp: {
-    type: String,
-    required: true,
+    default: 'Just now', // Default to 'Just now'
   },
   postContent: {
     type: String,
@@ -32,23 +21,25 @@ const postSchema = new mongoose.Schema({
   },
   postImage: {
     type: String,
-    required: true,
+    default: '', // Default to an empty string if no image
   },
   displayName: {
     type: String,
-    required: true,
+    required: true, // Assuming displayName is required
   },
   votes: {
     type: String,
-    required: true,
+    default: '0', // Default to 0 votes
   },
   comments: {
     type: String,
-    default: "", // Default value for comments
+    default: '', // Default to an empty string for comments
+  },
+  author: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true, // Author is required
   },
 });
 
-// Create a Mongoose model for the `posts` collection
-const Post = mongoose.model('Post', postSchema);
-
-module.exports = Post;
+module.exports = mongoose.model('Post', postSchema);

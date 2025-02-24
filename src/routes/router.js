@@ -10,6 +10,7 @@ const latestPostsPath = path.join(__dirname, '../models/latestPosts.json');
 
 const authController = require('../../public/javascript/mongo/registerUser.js');
 const { loginUser } = require('../../public/javascript/mongo/loginUser.js');
+const { createPost } = require('../../public/javascript/mongo/crudPost.js');
 
 router.use(cookieParser());
 
@@ -304,13 +305,61 @@ router.get('/welcome', (req, res) => {
 
 // Create post page
 router.get('/createPost', (req, res) => {
+    // Assuming user data is stored in req.session.user
     res.render('createPost', {
         layout: 'createPost',
         title: 'Create a Post!',
-        isLoggedIn,
-        loggedInUser
+        isLoggedIn: req.session.isLoggedIn, // Use req.session
+        loggedInUser: req.session.loggedInUser, // Use req.session
+        user: req.session.user // Pass the user object from session
     });
 });
+
+router.post('/createPost', async (req, res) => {
+    try {
+        const {
+            postTitle,
+            postduration,
+            postContent,
+            postImage,
+            displayName,
+            votes,
+            comments,
+            userId,
+        } = req.body;
+
+        // Generate a unique postId (you can use a library like uuid)
+        const postId = generateUniquePostId(); // Implement this function
+
+        const result = await createPost(
+            postId,
+            postTitle,
+            postduration,
+            postContent,
+            postImage,
+            displayName,
+            votes,
+            comments,
+            userId
+        );
+
+        if (result.success) {
+            res.status(201).json({ success: true, message: 'Post created successfully' });
+        } else {
+            res.status(400).json({ success: false, message: result.message });
+        }
+    } catch (error) {
+        console.error('Error in /createPost:', error);
+        res.status(500).json({ success: false, message: 'Internal server error' });
+    }
+});
+
+// Helper function to generate a unique postId (replace with your implementation)
+function generateUniquePostId() {
+    // Example: Using a simple timestamp (not ideal for production)
+    return Date.now().toString(36) + Math.random().toString(36).substr(2);
+    // or use a uuid library.
+}
 
 // Notifications page
 router.get('/notifications', (req, res) => {

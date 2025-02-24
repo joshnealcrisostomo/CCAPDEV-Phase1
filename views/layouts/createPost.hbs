@@ -86,9 +86,45 @@
             </div>
         </div>
         <script>
-            document.querySelector('.return-btn').addEventListener('click', function() {
-                window.history.back(); // This goes back to the last page in the browser's history
+        document.querySelector('.return-btn').addEventListener('click', function() {
+            window.history.back();
+        });
+
+        document.getElementById('postButton').addEventListener('click', async function(){
+            const postTitle = document.querySelector('.post-title-text-area').value;
+            const postContent = document.querySelector('.body-text-area').value;
+            const tags = document.getElementById('tags').value;
+            const postusername = document.getElementById('loggedInUsername').value;
+            const posterpfp = document.getElementById('loggedInPfp').value;
+            const displayName = document.getElementById('loggedInDisplayName').value;
+            const userId = document.getElementById('loggedInUserId').value;
+            const postImage = "";//replace with actual image later
+            const postduration = "now";
+            const votes = "0";
+            const comments = "";
+
+            const response = await fetch('/createPost', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    postTitle,
+                    postContent,
+                    tags,
+                    postusername,
+                    posterpfp,
+                    postImage,
+                    displayName,
+                    postduration,
+                    votes,
+                    comments,
+                    userId
+                }),
             });
+            const data = await response.json();
+            console.log(data);
+        });
         </script>
     </body>
 </html>

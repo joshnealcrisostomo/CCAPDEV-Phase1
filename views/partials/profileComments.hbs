@@ -1,6 +1,11 @@
-{{#each comments}}
-<div class="comment">
-    <p>{{commentText}}</p>
-    <a href="#" class="delete-comment-btn" onclick="deleteComment(event)">Delete Comment</a>
-</div>
-{{/each}}
+{{#if comments.length}}
+    {{#each comments}}
+    <div class="comment">
+        <p>{{commentText}}</p>
+        <a href="#" class="delete-comment-btn" onclick="deleteComment(event)">Delete Comment</a>
+    </div>
+    {{/each}}
+{{else}}
+    <img src="/icons/comments.png" alt="comment-icon" class="empty-icon">
+    <p>No comments available.</p>
+{{/if}}

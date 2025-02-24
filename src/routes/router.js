@@ -164,33 +164,48 @@ router.get('/profile/:username', async (req, res) => {
 });
 
 // Profile menu nav
-router.get('/profile/:username/content/:tab', (req, res) => {
-    const { username, tab } = req.params;
-    const user = usersData[username];
+router.get('/profile/:username/content/:tab', async (req, res) => {
+    let { username, tab } = req.params;
 
-    if (!user) {
-        return res.status(404).send('User not found');
+    // Ensure username starts with '@'
+    if (!username.startsWith('@')) {
+        username = '@' + username;
     }
 
-    let content = [];
-    switch (tab) {
-        case 'comments':
-            content = Object.values(contentsData).flatMap(post => post.comments)
-                        .filter(comment => comment.username === username);
-            res.render('partials/profileComments', { comments: content });
-            break;
-        case 'bookmarks':
-            res.render('partials/profileBookmarks', { bookmarks: content });
-            break;
-        case 'upvoted':
-            res.render('partials/profileUpvoted', { upvoted: content });
-            break;
-        case 'downvoted':
-            res.render('partials/profileDownvoted', { downvoted: content });
-            break;
-        default:
-            content = Object.values(contentsData).filter(post => post.postusername === username);
-            res.render('partials/profilePosts', { posts: content });
+    try {
+        const db = await connect();
+        const usersCollection = db.collection('users');
+        const user = await usersCollection.findOne({ username });
+
+        if (!user) {
+            return res.status(404).send('User not found');
+        }
+
+        let content = [];
+
+        switch (tab) {
+            case 'comments':
+                content = Object.values(contentsData)
+                    .flatMap(post => post.comments)
+                    .filter(comment => comment.username === username);
+                res.render('../partials/profileComments', { comments: content });
+                break;
+            case 'bookmark':
+                res.render('../partials/profileBookmarks', { bookmarks: user.bookmarks || [] });
+                break;
+            case 'upvoted':
+                res.render('../partials/profileUpvoted', { upvoted: user.upvoted || [] });
+                break;
+            case 'downvoted':
+                res.render('../partials/profileDownvoted', { downvoted: user.downvoted || [] });
+                break;
+            default:
+                content = Object.values(contentsData).filter(post => post.postusername === username);
+                res.render('../partials/profilePosts', { posts: content });
+        }
+    } catch (error) {
+        console.error('Error fetching user profile content:', error);
+        res.status(500).send('Internal server error');
     }
 });
 

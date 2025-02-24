@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const cookieParser = require('cookie-parser');
 const fs = require('fs');
 const path = require('path');
 const { MongoClient } = require('mongodb'); // Add this import
@@ -9,6 +10,8 @@ const latestPostsPath = path.join(__dirname, '../models/latestPosts.json');
 
 const authController = require('../../public/javascript/mongo/registerUser.js');
 const { loginUser } = require('../../public/javascript/mongo/loginUser.js');
+
+router.use(cookieParser());
 
 // MongoDB connection URI
 const uri = "mongodb+srv://patricklim:Derp634Derp@apdevcluster.chzne.mongodb.net/?retryWrites=true&w=majority&appName=APDEVcluster";
@@ -199,6 +202,18 @@ router.post('/registerPost', async (req, res) => {
 
 // Login route
 router.get('/login', (req, res) => {
+    const rememberMeCookie = req.cookies.rememberMe;
+
+    if (rememberMeCookie) {
+        // Automatically log the user in
+        isLoggedIn = true;
+        loggedInUser = rememberMeCookie;
+        user = { username: rememberMeCookie }; // Store the user data
+
+        // Redirect to the dashboard
+        return res.redirect('/dashboard');
+    }
+
     res.render('login', {
         layout: 'login',
         title: 'Sign In',
@@ -208,7 +223,7 @@ router.get('/login', (req, res) => {
 
 // POST route for login
 router.post('/loginPost', async (req, res) => {
-    const { username, password } = req.body;
+    const { username, password, rememberMe } = req.body;
 
     try {
         // Check if the credentials match the admin credentials
@@ -231,6 +246,12 @@ router.post('/loginPost', async (req, res) => {
             loggedInUser = username;
             user = result.user; // Store the user data
 
+            // Set cookie if "Remember Me" is checked
+            if (rememberMe) {
+                const threeWeeks = 21 * 24 * 60 * 60 * 1000; // 3 weeks in milliseconds
+                res.cookie('rememberMe', username, { maxAge: threeWeeks, httpOnly: true });
+            }
+
             res.json({ success: true, user });
         } else {
             res.json({ success: false, message: result.message });
@@ -246,6 +267,9 @@ router.get('/logout', (req, res) => {
     // Update global variables
     isLoggedIn = false;
     loggedInUser = '';
+
+    // Clear the "Remember Me" cookie
+    res.clearCookie('rememberMe');
 
     // Redirect to the welcome page
     res.redirect('/login');

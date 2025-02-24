@@ -390,4 +390,22 @@ router.get('/adminSettings', (req, res) => {
     });
 });
 
+// Admin single post view
+router.get('/adminPost/:postId', (req, res) => {
+    const { postId } = req.params;
+    const postData = contentsData[postId];
+
+    if (!postData) {
+        return res.status(404).send('Post not found');
+    }
+
+    res.render('post', {
+        ...postData,
+        postId,
+        layout: 'adminPost',
+        title: `${postData.displayName}'s Post`,
+        isLoggedIn
+    });
+});
+
 module.exports = router;

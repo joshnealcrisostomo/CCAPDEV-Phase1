@@ -53,8 +53,8 @@
                         <tbody>
                             {{#each reports}}
                             <tr data-status="{{status}}" data-post-id="{{id}}">
-                                <td><a href="/post/{{title}}" class="post-link">{{title}}</a></td>
-                                <td>{{author}}</td>
+                                <td><a href="/adminPost/{{title}}" class="post-link">{{title}}</a></td>
+                                <td><a href="/adminProfile/{{author}}">{{author}}</a></td>
                                 <td>{{reason}}</td>
                                 <td><span class="badge {{status}}-badge">{{status}}</span></td>
                                 <td>

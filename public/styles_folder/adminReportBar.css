@@ -59,6 +59,12 @@ body {
     overflow: hidden;
 }
 
+.total-reports {
+    background: #DFDAC8 !important;
+    padding: 15px !important;
+    display: block !important;
+}
+
 .progress {
     height: 100%;
     border-radius: 4px;

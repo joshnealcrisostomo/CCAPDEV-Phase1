@@ -310,50 +310,49 @@ router.get('/createPost', (req, res) => {
     res.render('createPost', {
         layout: 'createPost',
         title: 'Create a Post!',
-        isLoggedIn: req.session.isLoggedIn || false,
-        loggedInUser: req.session.loggedInUser || '',
+        isLoggedIn: req.session.isLoggedIn,
+        loggedInUser: req.session.loggedInUser,
         user: req.session.user || {}
     });
 });
 
-// Create post API
 router.post('/createPost', async (req, res) => {
     try {
+        if (!req.session.isLoggedIn) {
+            return res.status(403).json({ success: false, message: 'Unauthorized' });
+        }
+
         const {
             postTitle,
-            postduration,
             postContent,
-            postImage,
-            displayName,
-            votes,
-            comments,
-            userId
+            tags,
         } = req.body;
 
         const postId = generateUniquePostId();
-
-        const result = await createPost(
+        const newPost = {
             postId,
             postTitle,
-            postduration,
             postContent,
-            postImage,
-            displayName,
-            votes,
-            comments,
-            userId
-        );
+            tags,
+            postusername: req.session.loggedInUser.username,
+            displayName: req.session.loggedInUser.displayName,
+            posterpfp: req.session.loggedInUser.profilePic,
+            timestamp: new Date(),
+            votes: 0,
+            comments: []
+        };
 
-        if (result.success) {
-            res.status(201).json({ success: true, message: 'Post created successfully' });
-        } else {
-            res.status(400).json({ success: false, message: result.message });
-        }
+        const db = await connect();
+        const postsCollection = db.collection('posts');
+        await postsCollection.insertOne(newPost);
+
+        res.status(201).json({ success: true, message: 'Post created successfully' });
     } catch (error) {
         console.error('Error in /createPost:', error);
         res.status(500).json({ success: false, message: 'Internal server error' });
     }
 });
+
 
 // Helper function to generate a unique postId (replace with your implementation)
 function generateUniquePostId() {

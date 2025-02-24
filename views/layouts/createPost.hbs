@@ -78,6 +78,10 @@
                             </div>
                         </div>
                     </div>
+
+                    <input type="hidden" id="loggedInUsername" value="{{loggedInUser.username}}">
+                    <input type="hidden" id="loggedInDisplayName" value="{{loggedInUser.displayName}}">
+                    <input type="hidden" id="loggedInPfp" value="{{loggedInUser.profilePic}}">
                 </div>
             </div>
 
@@ -90,40 +94,46 @@
             window.history.back();
         });
 
-        document.getElementById('.post-btn').addEventListener('click', async function(){
-            const postTitle = document.querySelector('.post-title-text-area').value;
-            const postContent = document.querySelector('.body-text-area').value;
-            const tags = document.getElementById('tags').value;
-            const postusername = document.getElementById('loggedInUsername').value;
-            const posterpfp = document.getElementById('loggedInPfp').value;
-            const displayName = document.getElementById('loggedInDisplayName').value;
-            const userId = document.getElementById('loggedInUserId').value;
-            const postImage = "";//replace with actual image later
-            const postduration = "now";
-            const votes = "0";
-            const comments = "";
-
-            const response = await fetch('/createPost', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    postTitle,
-                    postContent,
-                    tags,
-                    postusername,
-                    posterpfp,
-                    postImage,
-                    displayName,
-                    postduration,
-                    votes,
-                    comments,
-                    userId
-                }),
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelector('.return-btn').addEventListener('click', function() {
+                window.history.back();
             });
-            const data = await response.json();
-            console.log(data);
+
+            document.querySelector('.post-btn').addEventListener('click', async function () {
+                const postTitle = document.querySelector('.post-title-text-area').value.trim();
+                const postContent = document.querySelector('.body-text-area').value.trim();
+                const tags = document.getElementById('tags').value;
+                const postusername = document.getElementById('loggedInUsername')?.value;
+                const displayName = document.getElementById('loggedInDisplayName')?.value;
+                const posterpfp = document.getElementById('loggedInPfp')?.value;
+
+                if (!postTitle || !postContent) {
+                    alert("Post title and content cannot be empty!");
+                    return;
+                }
+
+                const response = await fetch('/createPost', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        postTitle,
+                        postContent,
+                        tags,
+                        postusername,
+                        displayName,
+                        posterpfp
+                    }),
+                });
+
+                const data = await response.json();
+                console.log(data);
+
+                if (data.success) {
+                    window.location.href = "/dashboard";  // Redirect after successful post
+                } else {
+                    alert("Failed to create post: " + data.message);
+                }
+            });
         });
         </script>
     </body>

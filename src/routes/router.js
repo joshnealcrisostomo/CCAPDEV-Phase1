@@ -298,7 +298,7 @@ router.post('/loginPost', async (req, res) => {
         const result = await loginUser(username, password);
         if (result.success) {
             req.session.isLoggedIn = true;
-            req.session.loggedInUser = result.user;
+            req.session.loggedInUser = username;
             req.session.user = result.user;
 
             console.log('Session After Login:', req.session);  // Debugging log
@@ -377,9 +377,9 @@ router.post('/createPost', async (req, res) => {
             postTitle,
             postContent,
             tags,
-            postusername: req.session.loggedInUser.username,
-            displayName: req.session.loggedInUser.displayName,
-            posterpfp: req.session.loggedInUser.profilePic,
+            postusername: req.session.user.username,
+            displayName: req.session.user.displayName,
+            posterpfp: req.session.user.profilePic,
             timestamp: new Date(),
             votes: 0,
             comments: []
@@ -442,8 +442,8 @@ router.get('/admin', (req, res) => {
     res.render('admin', {
         layout: 'admin',
         title: 'Admin Report',
-        isLoggedIn,
-        loggedInUser,
+        isLoggedIn: req.session.isLoggedIn || false,
+        loggedInUser: req.session.loggedInUser || '',
         reports: reportsData.reports // Pass reports data to Handlebars
     });
 });
@@ -453,8 +453,8 @@ router.get('/adminNotifications', (req, res) => {
     res.render('adminNotifications', {
         layout: 'adminNotifications',
         title: 'Admin Notifications',
-        isLoggedIn,
-        loggedInUser
+        isLoggedIn: req.session.isLoggedIn || false,
+        loggedInUser: req.session.loggedInUser || ''
     });
 });
 
@@ -463,13 +463,13 @@ router.get('/adminSettings', (req, res) => {
     res.render('adminSettings', {
         layout: 'adminSettings',
         title: 'Admin Settings',
-        isLoggedIn,
-        loggedInUser
+        isLoggedIn: req.session.isLoggedIn || false,
+        loggedInUser: req.session.loggedInUser || ''
     });
 });
 
 // Admin single post view
-router.get('/adminPost/:postId', (req, res) => {
+router.get('/adminViewPost/:postId', (req, res) => {
     const { postId } = req.params;
     const postData = contentsData[postId];
 
@@ -480,12 +480,47 @@ router.get('/adminPost/:postId', (req, res) => {
     res.render('post', {
         ...postData,
         postId,
-        layout: 'adminPost',
+        layout: 'adminViewPost',
         title: `${postData.displayName}'s Post`,
-        isLoggedIn
+        isLoggedIn: req.session.isLoggedIn || false
     });
 });
 
+// Adnin profile route
+router.get('/adminProfile/:username', async (req, res) => {
+    let { username } = req.params;
+    if (!username.startsWith('@')) username = '@' + username;
+
+    try {
+        const db = await connect();
+        const usersCollection = db.collection('users');
+        const viewedUser = await usersCollection.findOne({ username });
+
+        if (!viewedUser) return res.status(404).send('User not found');
+
+        const userPosts = Object.entries(contentsData)
+            .filter(([postId, post]) => post.postusername === username)
+            .map(([postId, post]) => ({ postId, ...post }));
+
+        res.render('adminProfile', {
+            displayName: viewedUser.displayName,
+            username: viewedUser.username,
+            profilePic: viewedUser.profilePic,
+            bio: viewedUser.bio,
+            posts: userPosts,
+            layout: 'adminProfile',
+            title: `${viewedUser.displayName}'s Profile`,
+            isLoggedIn: req.session.isLoggedIn || false,
+            loggedInUser: req.session.loggedInUser || '',
+            viewedUser
+        });
+    } catch (error) {
+        console.error('Error fetching user profile:', error);
+        res.status(500).send('Internal server error');
+    }
+});
+
+// FOR TESTING ONLY
 router.get('/session-test', (req, res) => {
     console.log('Session Data:', req.session);
     res.json({

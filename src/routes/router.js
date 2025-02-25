@@ -12,6 +12,7 @@ const reportsPath = path.join(__dirname, '../models/reports.json');
 const authController = require('../../public/javascript/mongo/registerUser.js');
 const { loginUser } = require('../../public/javascript/mongo/loginUser.js');
 const { createPost } = require('../../public/javascript/mongo/crudPost.js');
+const { updateUser } = require('../../public/javascript/mongo/updateUser.js');
 
 // MongoDB connection URI
 const uri = "mongodb+srv://patricklim:Derp634Derp@apdevcluster.chzne.mongodb.net/?retryWrites=true&w=majority&appName=APDEVcluster";
@@ -425,16 +426,47 @@ router.get('/editPost', (req, res) => {
 });
 
 // Edit profile page
-router.get('/editProfile', (req, res) => {
-    res.render('editProfile', {
-        profilePic: user.profilePic,
-        displayName: user.displayName,
-        bio: user.bio,
-        layout: 'editProfile',
-        title: 'Edit your profile',
-        isLoggedIn: req.session.isLoggedIn || false,
-        loggedInUser: req.session.loggedInUser || ''
-    });
+router.get('/editProfile', async (req, res) => {
+    try {
+        const db = await connect();
+        const usersCollection = db.collection('users');
+        const user = await usersCollection.findOne({ username: req.session.loggedInUser });
+
+        if (!user) {
+            return res.status(404).send('User not found');
+        }
+
+        res.render('editProfile', {
+            profilePic: user.profilePic,
+            displayName: user.displayName,
+            bio: user.bio,
+            layout: 'editProfile',
+            title: 'Edit your profile',
+            isLoggedIn: req.session.isLoggedIn || false,
+            loggedInUser: req.session.loggedInUser || ''
+        });
+    } catch (error) {
+        console.error('Error fetching user for edit profile:', error);
+        res.status(500).send('Internal server error');
+    }
+});
+
+
+// Update profile POST route  
+router.post('/updateProfile', async (req, res) => {
+    const { username, displayName, bio } = req.body;
+
+    try {
+        const result = await updateUser(username, displayName, bio); // Call updateUser function
+        if (result.success) {
+            res.redirect(`/profile/${username}`); // Redirect to the user's profile
+        } else {
+            res.status(400).send(result.message); // Handle errors
+        }
+    } catch (error) {
+        console.error('Error updating profile:', error);
+        res.status(500).send('Internal server error');
+    }
 });
 
 // Admin page route

@@ -92,6 +92,55 @@ router.get('/dashboard', (req, res) => {
     });
 });
 
+/* 
+- postusername, displayname, and posterpfp should come from users db
+- make reading post dynamic from database
+
+router.get('/dashboard', async (req, res) => {
+    try {
+        const db = await connect();
+        const postsCollection = db.collection('posts');
+        const usersCollection = db.collection('users');
+
+        // Fetch all posts from the database
+        let posts = await postsCollection.find().toArray();
+
+        // Fetch user data for each post and enrich the post data
+        const userIds = [...new Set(posts.map(post => post.postusername))]; // Get unique usernames
+        const users = await usersCollection
+            .find({ username: { $in: userIds } })
+            .toArray();
+        
+        // Create a user lookup table
+        const userMap = {};
+        users.forEach(user => {
+            userMap[user.username] = {
+                displayName: user.displayName,
+                profilePic: user.profilePic
+            };
+        });
+
+        // Attach user details to posts
+        posts = posts.map(post => ({
+            ...post,
+            displayName: userMap[post.postusername]?.displayName || 'Unknown User',
+            posterpfp: userMap[post.postusername]?.profilePic || '/default_pfp.png' // Default fallback
+        }));
+
+        res.render('dashboard', {
+            posts,
+            layout: 'dashboard',
+            title: 'ByaHero!',
+            isLoggedIn: req.session.isLoggedIn || false,
+            loggedInUser: req.session.loggedInUser || '',
+        });
+    } catch (error) {
+        console.error('Error fetching posts for dashboard:', error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+*/
+
 // Profile route
 router.get('/profile/:username', async (req, res) => {
     let { username } = req.params;

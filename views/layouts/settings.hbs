@@ -63,11 +63,47 @@
                         <input type="range" id="font-size" min="12" max="24" value="16">
                     </div>
                 </div>
-                <button {{#unless isLoggedIn}} style="display:none;" {{/unless}} type="button" class="delete-profile">
-                    <span>
-                        Delete Account
-                    </span>
-                </button>
+                <form id="deleteForm">
+                    <button type="button" class="delete-profile">
+                        <span>Delete Account</span>
+                    </button>
+                </form>
+                <script>
+                    document.querySelector(".delete-profile").addEventListener("click", async function () {
+                        const confirmDelete = confirm("Are you sure? This cannot be undone.");
+                        
+                        if (!confirmDelete) return; // If user clicks "Cancel", do nothing.
+                        const userId = "{{user._id}}".trim();  // Ensure it's a valid ID
+
+                        if (!userId) {
+                            alert("❌ Error: User ID is missing.");
+                            return;
+                        }
+
+                        console.log("🛑 Sending DELETE request for user:", userId);
+                        try {
+                            const response = await fetch(`http://localhost:3000/users/${userId}`, {
+                                method: "DELETE",
+                                credentials: "include",
+                                headers: {
+                                    "Content-Type": "application/json"
+                                }
+                            });
+
+                            if (response.ok) {
+                                alert("✅ Account deleted successfully!");
+                                window.location.href = "/register"; // Redirect to register page
+                            } else {
+                                const errorData = await response.json();
+                                alert(`❌ ${errorData.message}`);
+                            }
+                        } catch (error) {
+                            console.error("❌ Fetch Error:", error);
+                            alert("❌ Network error. Please try again.");
+                        }
+                    });
+
+                </script>
                 <br>
                 <hr>
             </div>
@@ -75,7 +111,7 @@
     </div>
     <script>
         document.querySelector('.return-btn').addEventListener('click', function() {
-            window.history.back(); // This goes back to the last page in the browser's history
+            window.history.back();
         });
     </script>
 </body>

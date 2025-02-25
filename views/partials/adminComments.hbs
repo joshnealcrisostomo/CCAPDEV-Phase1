@@ -1,0 +1,29 @@
+{{#if reports.length}}
+    <table>
+        <thead>
+            <tr>
+                <th>Post ID</th>
+                <th>Author</th>
+                <th>Report Reason</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each reports}}
+                <tr data-status="{{status}}" data-post-id="{{id}}">
+                    <td><a href="/adminViewPost/{{title}}" class="post-link">{{title}}</a></td>
+                    <td><a href="/adminProfile/{{author}}">{{author}}</a></td>
+                    <td>{{reason}}</td>
+                    <td><span class="badge {{status}}-badge">{{status}}</span></td>
+                    <td>
+                        <button class="approve-btn" onclick="approvePost({{id}})">Approve</button>
+                        <button class="delete-btn" onclick="deletePost({{id}})">Delete</button>
+                    </td>
+                </tr>
+            {{/each}}
+        </tbody>
+    </table>
+{{else}}
+    <p>No comment reports available.</p>
+{{/if}}

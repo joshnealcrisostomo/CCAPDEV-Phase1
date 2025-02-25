@@ -17,9 +17,9 @@
             <br>
             <div class="profile-menu">
                 <div class="prof-menu-btn">
-                    <span><a href="#" class="posts-btn active">Post</a></span>
-                    <span><a href="#" class="comments-btn">Comment</a></span>
-                    <span><a href="#" class="users-btn">User</a></span>
+                    <span><a href="#" class="postsReport-btn active">Post</a></span>
+                    <span><a href="#" class="commentsReport-btn">Comment</a></span>
+                    <span><a href="#" class="usersReport-btn">User</a></span>
                 </div>
             </div>
 
@@ -39,40 +39,10 @@
                 </div>
 
                 <div class="reported-posts posts-content">
-                    <h3>Reported Posts</h3>
-                    <table id="posts-table">
-                        <thead>
-                            <tr>
-                                <th>Post ID</th>
-                                <th>Author</th>
-                                <th>Report Reason</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {{#each reports}}
-                            <tr data-status="{{status}}" data-post-id="{{id}}">
-                                <td><a href="/adminPost/{{title}}" class="post-link">{{title}}</a></td>
-                                <td><a href="/adminProfile/{{author}}">{{author}}</a></td>
-                                <td>{{reason}}</td>
-                                <td><span class="badge {{status}}-badge">{{status}}</span></td>
-                                <td>
-                                    <button class="approve-btn" onclick="approvePost({{id}})">Approve</button>
-                                    <button class="delete-btn" onclick="deletePost({{id}})">Delete</button>
-                                </td>
-                            </tr>
-                            {{/each}}
-                        </tbody>
+                    <h3>Reports</h3>
+                    <table id="table">
+                        {{> adminContent}}
                     </table>
-                </div>
-
-                <div class="comments-content" style="display: none;">
-                    <h3>Reported Comments</h3>
-                </div>
-
-                <div class="users-content" style="display: none;">
-                    <h3>Users</h3>
                 </div>
             </div>
         </div>
@@ -81,5 +51,6 @@
             {{> adminSummary}}
         </div>
     </div>
+    <script src="/javascript/admin.js"></script>
 </body>
 </html>

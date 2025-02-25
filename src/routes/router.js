@@ -92,6 +92,55 @@ router.get('/dashboard', (req, res) => {
     });
 });
 
+/* 
+- postusername, displayname, and posterpfp should come from users db
+- make reading post dynamic from database
+
+router.get('/dashboard', async (req, res) => {
+    try {
+        const db = await connect();
+        const postsCollection = db.collection('posts');
+        const usersCollection = db.collection('users');
+
+        // Fetch all posts from the database
+        let posts = await postsCollection.find().toArray();
+
+        // Fetch user data for each post and enrich the post data
+        const userIds = [...new Set(posts.map(post => post.postusername))]; // Get unique usernames
+        const users = await usersCollection
+            .find({ username: { $in: userIds } })
+            .toArray();
+        
+        // Create a user lookup table
+        const userMap = {};
+        users.forEach(user => {
+            userMap[user.username] = {
+                displayName: user.displayName,
+                profilePic: user.profilePic
+            };
+        });
+
+        // Attach user details to posts
+        posts = posts.map(post => ({
+            ...post,
+            displayName: userMap[post.postusername]?.displayName || 'Unknown User',
+            posterpfp: userMap[post.postusername]?.profilePic || '/default_pfp.png' // Default fallback
+        }));
+
+        res.render('dashboard', {
+            posts,
+            layout: 'dashboard',
+            title: 'ByaHero!',
+            isLoggedIn: req.session.isLoggedIn || false,
+            loggedInUser: req.session.loggedInUser || '',
+        });
+    } catch (error) {
+        console.error('Error fetching posts for dashboard:', error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+*/
+
 // Profile route
 router.get('/profile/:username', async (req, res) => {
     let { username } = req.params;
@@ -249,7 +298,7 @@ router.post('/loginPost', async (req, res) => {
         const result = await loginUser(username, password);
         if (result.success) {
             req.session.isLoggedIn = true;
-            req.session.loggedInUser = result.user;
+            req.session.loggedInUser = username;
             req.session.user = result.user;
 
             console.log('Session After Login:', req.session);  // Debugging log
@@ -328,9 +377,9 @@ router.post('/createPost', async (req, res) => {
             postTitle,
             postContent,
             tags,
-            postusername: req.session.loggedInUser.username,
-            displayName: req.session.loggedInUser.displayName,
-            posterpfp: req.session.loggedInUser.profilePic,
+            postusername: req.session.user.username,
+            displayName: req.session.user.displayName,
+            posterpfp: req.session.user.profilePic,
             timestamp: new Date(),
             votes: 0,
             comments: []
@@ -393,8 +442,8 @@ router.get('/admin', (req, res) => {
     res.render('admin', {
         layout: 'admin',
         title: 'Admin Report',
-        isLoggedIn,
-        loggedInUser,
+        isLoggedIn: req.session.isLoggedIn || false,
+        loggedInUser: req.session.loggedInUser || '',
         reports: reportsData.reports // Pass reports data to Handlebars
     });
 });
@@ -404,8 +453,8 @@ router.get('/adminNotifications', (req, res) => {
     res.render('adminNotifications', {
         layout: 'adminNotifications',
         title: 'Admin Notifications',
-        isLoggedIn,
-        loggedInUser
+        isLoggedIn: req.session.isLoggedIn || false,
+        loggedInUser: req.session.loggedInUser || ''
     });
 });
 
@@ -414,13 +463,13 @@ router.get('/adminSettings', (req, res) => {
     res.render('adminSettings', {
         layout: 'adminSettings',
         title: 'Admin Settings',
-        isLoggedIn,
-        loggedInUser
+        isLoggedIn: req.session.isLoggedIn || false,
+        loggedInUser: req.session.loggedInUser || ''
     });
 });
 
 // Admin single post view
-router.get('/adminPost/:postId', (req, res) => {
+router.get('/adminViewPost/:postId', (req, res) => {
     const { postId } = req.params;
     const postData = contentsData[postId];
 
@@ -431,12 +480,47 @@ router.get('/adminPost/:postId', (req, res) => {
     res.render('post', {
         ...postData,
         postId,
-        layout: 'adminPost',
+        layout: 'adminViewPost',
         title: `${postData.displayName}'s Post`,
-        isLoggedIn
+        isLoggedIn: req.session.isLoggedIn || false
     });
 });
 
+// Adnin profile route
+router.get('/adminProfile/:username', async (req, res) => {
+    let { username } = req.params;
+    if (!username.startsWith('@')) username = '@' + username;
+
+    try {
+        const db = await connect();
+        const usersCollection = db.collection('users');
+        const viewedUser = await usersCollection.findOne({ username });
+
+        if (!viewedUser) return res.status(404).send('User not found');
+
+        const userPosts = Object.entries(contentsData)
+            .filter(([postId, post]) => post.postusername === username)
+            .map(([postId, post]) => ({ postId, ...post }));
+
+        res.render('adminProfile', {
+            displayName: viewedUser.displayName,
+            username: viewedUser.username,
+            profilePic: viewedUser.profilePic,
+            bio: viewedUser.bio,
+            posts: userPosts,
+            layout: 'adminProfile',
+            title: `${viewedUser.displayName}'s Profile`,
+            isLoggedIn: req.session.isLoggedIn || false,
+            loggedInUser: req.session.loggedInUser || '',
+            viewedUser
+        });
+    } catch (error) {
+        console.error('Error fetching user profile:', error);
+        res.status(500).send('Internal server error');
+    }
+});
+
+// FOR TESTING ONLY
 router.get('/session-test', (req, res) => {
     console.log('Session Data:', req.session);
     res.json({
@@ -445,6 +529,27 @@ router.get('/session-test', (req, res) => {
         user: req.session.user || {},
         sessionID: req.sessionID
     });
+});
+
+// Admin menu nav
+router.get('/admin/content/:tab', async (req, res) => {
+    const { tab } = req.params;
+
+    let filteredReports = [];
+
+    switch (tab) {
+        case 'commentsReport':
+            filteredReports = reportsData.reports.filter(report => report.type === 'Comment');
+            res.render('../partials/adminComments', { reports: filteredReports });
+            break;
+        case 'usersReport':
+            filteredReports = reportsData.reports.filter(report => report.type === 'User');
+            res.render('../partials/adminUsers', { reports: filteredReports });
+            break;
+        default:
+            filteredReports = reportsData.reports.filter(report => report.type === 'Post');
+            res.render('../partials/adminPosts', { reports: filteredReports });
+    }
 });
 
 module.exports = router;

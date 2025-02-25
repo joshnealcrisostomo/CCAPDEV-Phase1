@@ -158,6 +158,9 @@ router.get('/profile/:username', async (req, res) => {
             .filter(([postId, post]) => post.postusername === username)
             .map(([postId, post]) => ({ postId, ...post }));
 
+        // Use req.session.user instead of req.session.loggedInUser
+        const loggedInUser = req.session.user ? req.session.user.username : '';
+
         res.render('profile', {
             displayName: viewedUser.displayName,
             username: viewedUser.username,
@@ -166,8 +169,8 @@ router.get('/profile/:username', async (req, res) => {
             posts: userPosts,
             layout: 'profile',
             title: `${viewedUser.displayName}'s Profile`,
-            isLoggedIn: req.session.isLoggedIn || false,
-            loggedInUser: req.session.loggedInUser || '',
+            isLoggedIn: !!req.session.user, // Check if user is logged in
+            loggedInUser, // Pass the logged-in user's username
             viewedUser
         });
     } catch (error) {

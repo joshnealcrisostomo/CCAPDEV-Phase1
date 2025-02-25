@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { deleteUser } = require("../../public/javascript/mongo/deleteUser");
+const { updateUser } = require('../../public/javascript/mongo/updateUser.js');
 const { ObjectId } = require("mongodb");
 
 // Middleware to check if user is logged in
@@ -44,6 +45,23 @@ router.delete("/deleteAccount", async (req, res) => {
     } catch (error) {
         console.error("❌ Error deleting user:", error);
         res.status(500).json({ message: "Server error" });
+    }
+});
+
+// POST: Update user profile
+router.post('/updateProfile', async (req, res) => {
+    const { username, displayName, bio } = req.body;
+
+    try {
+        const result = await updateUser(username, displayName, bio);
+        if (result.success) {
+            res.redirect(`/profile/${username}`);
+        } else {
+            res.status(400).send(result.message);
+        }
+    } catch (error) {
+        console.error('Error updating profile:', error);
+        res.status(500).send('Internal server error');
     }
 });
 

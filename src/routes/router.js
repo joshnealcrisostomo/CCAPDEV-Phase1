@@ -452,23 +452,6 @@ router.get('/editProfile', async (req, res) => {
 });
 
 
-// Update profile POST route  
-router.post('/updateProfile', async (req, res) => {
-    const { username, displayName, bio } = req.body;
-
-    try {
-        const result = await updateUser(username, displayName, bio); // Call updateUser function
-        if (result.success) {
-            res.redirect(`/profile/${username}`); // Redirect to the user's profile
-        } else {
-            res.status(400).send(result.message); // Handle errors
-        }
-    } catch (error) {
-        console.error('Error updating profile:', error);
-        res.status(500).send('Internal server error');
-    }
-});
-
 // Admin page route
 router.get('/admin', (req, res) => {
     res.render('admin', {

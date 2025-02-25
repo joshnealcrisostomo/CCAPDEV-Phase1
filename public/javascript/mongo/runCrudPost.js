@@ -8,7 +8,7 @@ const postduration = '5 min read';
 const postContent = 'This is the content of my first post.';
 const postImage = 'https://example.com/image.jpg';
 const votes = 4; // Initial votes
-const comments = []; // Initial comments (array of ObjectIds)
+const comments = 'bitch'; // Initial comments (array of ObjectIds)
 
 
 const userId = '67ba08fa14e872f6047419c1'; // Replace with a valid user ID from your database

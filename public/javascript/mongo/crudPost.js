@@ -7,8 +7,12 @@ const uri = "mongodb+srv://patricklim:Derp634Derp@apdevcluster.chzne.mongodb.net
 
 mongoose.connect(uri);
 
-async function createPost(postId, postTitle, postduration, postContent, postImage, displayName, votes, comments, userId) {
+async function createPost(postId, postTitle, postduration, postContent, postImage, votes, comments, userId) {
   try {
+
+    if(!ObjectId.isValid(userId)){
+      console.log("UserId is not a valid ObjectId : ", userId);
+  }
     // Validate userId
     if (!userId) {
       throw new Error('User ID is required');
@@ -27,7 +31,6 @@ async function createPost(postId, postTitle, postduration, postContent, postImag
       postduration,
       postContent,
       postImage,
-      displayName,
       votes,
       comments, // will be an object id array list also
       author: user._id, // Assign the user's ObjectId

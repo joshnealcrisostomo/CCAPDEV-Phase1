@@ -1,4 +1,3 @@
-// createPost.js
 const mongoose = require('mongoose');
 const Post = require('./postSchema'); // Adjust path as needed
 const User = require('./UserSchema'); // Adjust path as needed
@@ -44,4 +43,37 @@ async function createPost(postId, postTitle, postduration, postContent, postImag
   }
 }
 
-module.exports = { createPost };
+async function deletePost(postId) {
+  try {
+    if (!ObjectId.isValid(postId)) {
+      return { success: false, message: "Invalid Post ID format" };
+    }
+
+    const objectId = new ObjectId(postId);
+
+    // Check if the post exists
+    const postExists = await Post.findById(objectId);
+    if (!postExists) {
+      console.error("❌ Post not found.");
+      return { success: false, message: "Post not found in database" };
+    }
+
+    console.log("🔍 Found post, proceeding with deletion:", postExists);
+
+    // Delete the post
+    const deleteResult = await Post.deleteOne({ _id: objectId });
+
+    if (deleteResult.deletedCount === 0) {
+      console.error("❌ Post deletion failed:", postId);
+      return { success: false, message: "Post could not be deleted" };
+    }
+
+    console.log("✅ Post deleted successfully:", postId);
+    return { success: true, message: "Post deleted successfully" };
+  } catch (error) {
+    console.error("❌ Error deleting post:", error);
+    return { success: false, message: "Server error" };
+  }
+}
+
+module.exports = { createPost, deletePost };

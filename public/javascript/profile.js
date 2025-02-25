@@ -39,22 +39,6 @@ window.addEventListener('click', function(event) {
     }
 });
 
-// Handle post deletion (if necessary)
-function deletePost(event) {
-    event.preventDefault();  // Prevents page reload (because of the `href="#"`)
-    const confirmation = confirm("Are you sure you want to delete this post?");
-    if (confirmation) {
-        alert("Post deleted successfully!");
-        // Here you can add logic to delete the post from the server/database
-    }
-}
-
-// Add event listener for post delete buttons
-const deletePostButtons = document.querySelectorAll('.delete-post-btn');
-deletePostButtons.forEach(button => {
-    button.addEventListener('click', deletePost);
-});
-
 document.addEventListener("DOMContentLoaded", function () {
     const menuButtons = document.querySelectorAll(".prof-menu-btn a");
     const contentDiv = document.querySelector(".content");
@@ -78,4 +62,33 @@ document.addEventListener("DOMContentLoaded", function () {
                 .catch(error => console.error("Error loading content:", error));
         });
     });
+});
+
+document.querySelector(".delete-post-btn").addEventListener("click", async function () {
+    const postId = this.dataset.postId; // Get postId from button dataset
+    const confirmDelete = confirm("Are you sure? This action cannot be undone.");
+    if (!confirmDelete) return;
+
+    try {
+        const response = await fetch("/deletePost", {
+            method: "DELETE",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ postId }) // Send postId in request body
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            alert("✅ Post deleted successfully!");
+            window.location.href = "/dashboard"; // Redirect after deletion
+        } else {
+            alert(`❌ ${data.message}`);
+        }
+    } catch (error) {
+        console.error("❌ Error deleting post:", error);
+        alert("❌ Network error. Please try again.");
+    }
 });

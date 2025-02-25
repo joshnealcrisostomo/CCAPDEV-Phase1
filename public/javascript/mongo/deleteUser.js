@@ -7,33 +7,43 @@ async function connectDB() {
     if (!client) {
         client = new MongoClient(uri);
         await client.connect();
+        console.log("✅ Connected to MongoDB");
     }
-    return client.db("APDEVcluster");
+    return client.db("test");
 }
 
 async function deleteUser(userId) {
     try {
-        if (!userId) {
-            console.error("❌ Error: User ID is missing.");
-            return { success: false, message: "User ID is missing" };
-        }
-
         if (!ObjectId.isValid(userId)) {
-            console.error("❌ Error: Invalid User ID format.");
+            console.error("❌ Invalid User ID format:", userId);
             return { success: false, message: "Invalid User ID format" };
         }
 
         const db = await connectDB();
         const usersCollection = db.collection("users");
 
-        const deletedUser = await usersCollection.findOneAndDelete({ _id: ObjectId.createFromHexString(userId) });
+        // Convert userId to ObjectId
+        const objectId = new ObjectId(userId);
 
-        if (!deletedUser || !deletedUser.value) {
-            console.error("❌ User not found in database:", userId);
+        // Check if the user exists
+        const userExists = await usersCollection.findOne({ _id: objectId });
+
+        if (!userExists) {
+            console.error("❌ User not found.");
             return { success: false, message: "User not found in database" };
         }
 
-        console.log("✅ User deleted from database:", deletedUser.value);
+        console.log("🔍 Found user, proceeding with deletion:", userExists);
+
+        // Delete the user
+        const deleteResult = await usersCollection.deleteOne({ _id: objectId });
+
+        if (deleteResult.deletedCount === 0) {
+            console.error("❌ User deletion failed:", userId);
+            return { success: false, message: "User could not be deleted" };
+        }
+
+        console.log("✅ User deleted successfully:", userId);
         return { success: true, message: "User deleted successfully" };
 
     } catch (error) {

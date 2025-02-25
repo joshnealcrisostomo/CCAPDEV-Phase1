@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { MongoClient, ObjectId } = require("mongodb");
 const Post = require('./postSchema'); // Adjust path as needed
 const User = require('./UserSchema'); // Adjust path as needed
 
@@ -28,7 +29,7 @@ async function createPost(postId, postTitle, postduration, postContent, postImag
       postImage,
       displayName,
       votes,
-      comments,
+      comments, // will be an object id array list also
       author: user._id, // Assign the user's ObjectId
     });
 

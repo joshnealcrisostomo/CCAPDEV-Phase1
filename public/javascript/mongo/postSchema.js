@@ -23,10 +23,6 @@ const postSchema = new mongoose.Schema({
     type: String,
     default: '', // Default to an empty string if no image
   },
-  displayName: {
-    type: String,
-    required: true, // Assuming displayName is required
-  },
   votes: {
     type: String,
     default: '0', // Default to 0 votes

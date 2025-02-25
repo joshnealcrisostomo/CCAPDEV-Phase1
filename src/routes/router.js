@@ -531,4 +531,25 @@ router.get('/session-test', (req, res) => {
     });
 });
 
+// Admin menu nav
+router.get('/admin/content/:tab', async (req, res) => {
+    const { tab } = req.params;
+
+    let filteredReports = [];
+
+    switch (tab) {
+        case 'commentsReport':
+            filteredReports = reportsData.reports.filter(report => report.type === 'Comment');
+            res.render('../partials/adminComments', { reports: filteredReports });
+            break;
+        case 'usersReport':
+            filteredReports = reportsData.reports.filter(report => report.type === 'User');
+            res.render('../partials/adminUsers', { reports: filteredReports });
+            break;
+        default:
+            filteredReports = reportsData.reports.filter(report => report.type === 'Post');
+            res.render('../partials/adminPosts', { reports: filteredReports });
+    }
+});
+
 module.exports = router;

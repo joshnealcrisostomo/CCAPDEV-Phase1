@@ -10,13 +10,12 @@ document.addEventListener("DOMContentLoaded", function () {
             menuButtons.forEach(btn => btn.classList.remove("active"));
             this.classList.add("active");
 
-            const tab = this.classList[0].replace("-btn", ""); // Extract tab name from class
-            const username = window.location.pathname.split('/').pop(); // Get username from URL
+            const tab = this.classList[0].replace("Report-btn", "Report");
 
-            fetch(`/profile/${username}/content/${tab}`)
+            fetch(`/admin/content/${tab}`)
                 .then(response => response.text())
                 .then(html => {
-                    contentDiv.innerHTML = html;
+                    document.querySelector(".reported-posts").innerHTML = html;
                 })
                 .catch(error => console.error("Error loading content:", error));
         });

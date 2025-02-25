@@ -5,35 +5,40 @@
             "title": "000001",
             "author": "@paresMami16",
             "reason": "Spam",
-            "status": "pending"
+            "status": "pending",
+            "type": "Post"
         },
         {
             "id": 2,
             "title": "000003",
             "author": "@pat111",
             "reason": "Bug",
-            "status": "resolved"
+            "status": "resolved",
+            "type": "Post"
         },
         {
             "id": 3,
             "title": "000002",
             "author": "@juicekneel",
             "reason": "Spam",
-            "status": "in-progress"
+            "status": "in-progress",
+            "type": "User"
         },
         {
             "id": 4,
             "title": "000004",
             "author": "@euly123",
             "reason": "Spam",
-            "status": "pending"
+            "status": "pending",
+            "type": "Comment"
         },
         {
             "id": 5,
             "title": "000005",
             "author": "@IsaChuChu",
             "reason": "Other",
-            "status": "pending"
+            "status": "pending",
+            "type": "User"
         }
     ]
 }

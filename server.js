@@ -8,7 +8,6 @@ const path = require("path");
 const hbs = require("hbs");
 const methodOverride = require("method-override");
 const session = require('express-session');
-const MongoStore = require('connect-mongo'); // Add connect-mongo
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -27,10 +26,6 @@ app.use(session({
     secret: 'your-secret-key',  // Use a strong secret in production
     resave: false,
     saveUninitialized: true,
-    store: MongoStore.create({
-        mongoUrl: uri, // Use the same MongoDB connection URI
-        collectionName: 'sessions', // Collection to store sessions
-    }),
     cookie: { secure: false }  // Set to `true` if using HTTPS
 }));
 

@@ -1,11 +1,11 @@
 const express = require('express');
 const session = require('express-session');
+const mongoose = require('mongoose');
 const router = express.Router();
 const fs = require('fs');
 const path = require('path');
 const { MongoClient } = require('mongodb'); 
 
-const contentsPath = path.join(__dirname, '../models/contents.json');
 const latestPostsPath = path.join(__dirname, '../models/latestPosts.json');
 const reportsPath = path.join(__dirname, '../models/reports.json');
 
@@ -13,6 +13,7 @@ const authController = require('../../public/javascript/mongo/registerUser.js');
 const { loginUser } = require('../../public/javascript/mongo/loginUser.js');
 const { createPost } = require('../../public/javascript/mongo/crudPost.js');
 const { updateUser } = require('../../public/javascript/mongo/updateUser.js');
+const Post = require('../../public/javascript/mongo/postSchema.js');
 
 // MongoDB connection URI
 const uri = "mongodb+srv://patricklim:Derp634Derp@apdevcluster.chzne.mongodb.net/?retryWrites=true&w=majority&appName=APDEVcluster";
@@ -40,19 +41,6 @@ process.on('SIGINT', async () => {
     process.exit();
 });
 
-// Load contents.json
-let contentsData = {};
-if (fs.existsSync(contentsPath)) {
-    try {
-        contentsData = JSON.parse(fs.readFileSync(contentsPath, 'utf8'));
-        console.log(`File ${contentsPath} found.`);
-    } catch (error) {
-        console.error('Error reading contents.json:', error);
-    }
-} else {
-    console.warn(`File ${contentsPath} NOT found.`);
-}
-
 // Load latestPosts.json
 let latestPostsData = [];
 if (fs.existsSync(latestPostsPath)) {
@@ -79,55 +67,14 @@ if (fs.existsSync(reportsPath)) {
     console.warn(`File ${reportsPath} NOT found.`);
 }
 
-// Dashboard route
-router.get('/dashboard', (req, res) => {
-    const postsArray = Object.entries(contentsData).map(([postId, post]) => ({ postId, ...post }));
-    
-    res.render('dashboard', {
-        posts: postsArray,
-        layout: 'dashboard',
-        title: 'ByaHero!',
-        isLoggedIn: req.session.isLoggedIn || false,
-        loggedInUser: req.session.loggedInUser || '',
-        user: req.session.user || {}
-    });
-});
-
-/* 
-- postusername, displayname, and posterpfp should come from users db
-- make reading post dynamic from database
-
 router.get('/dashboard', async (req, res) => {
-    try {
-        const db = await connect();
-        const postsCollection = db.collection('posts');
-        const usersCollection = db.collection('users');
-
-        // Fetch all posts from the database
-        let posts = await postsCollection.find().toArray();
-
-        // Fetch user data for each post and enrich the post data
-        const userIds = [...new Set(posts.map(post => post.postusername))]; // Get unique usernames
-        const users = await usersCollection
-            .find({ username: { $in: userIds } })
-            .toArray();
+    try {        
+        // Fetch all posts and populate the author field
+        let posts = await Post.find()
+                              .populate('author')
+                              .sort({ createdAt: -1 })
+                              .exec();
         
-        // Create a user lookup table
-        const userMap = {};
-        users.forEach(user => {
-            userMap[user.username] = {
-                displayName: user.displayName,
-                profilePic: user.profilePic
-            };
-        });
-
-        // Attach user details to posts
-        posts = posts.map(post => ({
-            ...post,
-            displayName: userMap[post.postusername]?.displayName || 'Unknown User',
-            posterpfp: userMap[post.postusername]?.profilePic || '/default_pfp.png' // Default fallback
-        }));
-
         res.render('dashboard', {
             posts,
             layout: 'dashboard',
@@ -140,7 +87,6 @@ router.get('/dashboard', async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 });
-*/
 
 // Profile route
 router.get('/profile/:username', async (req, res) => {
@@ -154,25 +100,42 @@ router.get('/profile/:username', async (req, res) => {
 
         if (!viewedUser) return res.status(404).send('User not found');
 
-        const userPosts = Object.entries(contentsData)
-            .filter(([postId, post]) => post.postusername === username)
-            .map(([postId, post]) => ({ postId, ...post }));
+        // Fetch posts by this user using the Post model
+        const userPosts = await Post.find({ author: viewedUser._id })
+                                   .populate('author')
+                                   .sort({ createdAt: -1 })
+                                   .exec();
 
-        // Use req.session.user instead of req.session.loggedInUser
         const loggedInUser = req.session.user ? req.session.user.username : '';
+        const isOwnProfile = req.session.user && req.session.user.username === viewedUser.username;
 
-        res.render('profile', {
-            displayName: viewedUser.displayName,
-            username: viewedUser.username,
-            profilePic: viewedUser.profilePic,
-            bio: viewedUser.bio,
-            posts: userPosts,
-            layout: 'profile',
-            title: `${viewedUser.displayName}'s Profile`,
-            isLoggedIn: !!req.session.user, // Check if user is logged in
-            loggedInUser, // Pass the logged-in user's username
-            viewedUser
-        });
+        if (isOwnProfile) {
+            res.render('profile.hbs', {
+                displayName: viewedUser.displayName,
+                username: viewedUser.username,
+                profilePic: viewedUser.profilePic,
+                bio: viewedUser.bio,
+                posts: userPosts,
+                layout: 'profile',
+                title: `${viewedUser.displayName}'s Profile`,
+                isLoggedIn: !!req.session.user,
+                loggedInUser,
+                viewedUser
+            });
+        } else {
+            res.render('publicProfile.hbs', {
+                displayName: viewedUser.displayName,
+                username: viewedUser.username,
+                profilePic: viewedUser.profilePic,
+                bio: viewedUser.bio,
+                posts: userPosts,
+                layout: 'publicProfile',
+                title: `${viewedUser.displayName}'s Profile`,
+                isLoggedIn: !!req.session.user,
+                loggedInUser,
+                viewedUser
+            });
+        }
     } catch (error) {
         console.error('Error fetching user profile:', error);
         res.status(500).send('Internal server error');
@@ -191,34 +154,78 @@ router.get('/profile/:username/content/:tab', async (req, res) => {
     try {
         const db = await connect();
         const usersCollection = db.collection('users');
-        const user = await usersCollection.findOne({ username });
+        const viewedUser = await usersCollection.findOne({ username });
 
-        if (!user) {
+        if (!viewedUser) {
             return res.status(404).send('User not found');
         }
 
-        let content = [];
-
-        switch (tab) {
-            case 'comments':
-                content = Object.values(contentsData)
-                    .flatMap(post => post.comments)
-                    .filter(comment => comment.username === username);
-                res.render('../partials/profileComments', { comments: content });
-                break;
-            case 'bookmark':
-                res.render('../partials/profileBookmarks', { bookmarks: user.bookmarks || [] });
-                break;
-            case 'upvoted':
-                res.render('../partials/profileUpvoted', { upvoted: user.upvoted || [] });
-                break;
-            case 'downvoted':
-                res.render('../partials/profileDownvoted', { downvoted: user.downvoted || [] });
-                break;
-            default:
-                content = Object.values(contentsData).filter(post => post.postusername === username);
-                res.render('../partials/profilePosts', { posts: content });
+        // Check if user is viewing their own profile
+        const isOwnProfile = req.session.user && req.session.user.username === viewedUser.username;
+        
+        if(isOwnProfile) {
+            switch (tab) {
+                case 'comments':
+                    const comments = await Post.find({ "comments.author": viewedUser._id })
+                                             .populate('author')
+                                             .exec();
+                    res.render('../partials/profileComments', { comments });
+                    break;
+                case 'bookmark':
+                    // Fetch bookmarked posts if you have a bookmarks field in user model
+                    const bookmarkedPosts = await Post.find({ _id: { $in: viewedUser.bookmarks || [] } })
+                                                    .populate('author')
+                                                    .exec();
+                    res.render('../partials/profileBookmarks', { bookmarks: bookmarkedPosts });
+                    break;
+                case 'upvoted':
+                    // Fetch upvoted posts if you have an upvoted field in user model
+                    const upvotedPosts = await Post.find({ _id: { $in: viewedUser.upvoted || [] } })
+                                                 .populate('author')
+                                                 .exec();
+                    res.render('../partials/profileUpvoted', { upvoted: upvotedPosts });
+                    break;
+                case 'downvoted':
+                    // Fetch downvoted posts if you have a downvoted field in user model
+                    const downvotedPosts = await Post.find({ _id: { $in: viewedUser.downvoted || [] } })
+                                                   .populate('author')
+                                                   .exec();
+                    res.render('../partials/profileDownvoted', { downvoted: downvotedPosts });
+                    break;
+                default:
+                    // Fetch posts by this user
+                    const userPosts = await Post.find({ author: viewedUser._id })
+                                              .populate('author')
+                                              .sort({ createdAt: -1 })
+                                              .exec();
+                    res.render('../partials/profilePosts', { posts: userPosts, Post });
+            }
+        } else {
+            switch (tab) {
+                case 'comments':
+                    const comments = await Post.find({ "comments.author": viewedUser._id })
+                                             .populate('author')
+                                             .exec();
+                    res.render('../partials/pubProfileComments', { comments });
+                    break;
+                case 'upvoted':
+                    // Fetch upvoted posts if you have an upvoted field in user model
+                    const upvotedPosts = await Post.find({ _id: { $in: viewedUser.upvoted || [] } })
+                                                 .populate('author')
+                                                 .exec();
+                    res.render('../partials/pubProfileUpvoted', { upvoted: upvotedPosts });
+                    break;
+                default:
+                    // Fetch posts by this user
+                    const userPosts = await Post.find({ author: viewedUser._id })
+                                              .populate('author')
+                                              .sort({ createdAt: -1 })
+                                              .exec();
+                    res.render('../partials/pubProfilePosts', { posts: userPosts, Post });
+            }
         }
+
+        
     } catch (error) {
         console.error('Error fetching user profile content:', error);
         res.status(500).send('Internal server error');
@@ -325,22 +332,40 @@ router.get('/logout', (req, res) => {
     });
 });
 
-// Single post view
-router.get('/post/:postId', (req, res) => {
-    const { postId } = req.params;
-    const postData = contentsData[postId];
-
-    if (!postData) {
-        return res.status(404).send('Post not found');
+// Render indiv post
+router.get('/post/:postId', async (req, res) => {
+    try {
+        const { postId } = req.params;
+        
+        // Find the post by _id and populate the author field
+        let post = await Post.findById(postId).populate('author');
+        
+        if (!post) {
+            return res.status(404).send('Post not found');
+        }
+        
+        // Convert post document to a plain object
+        const postObj = post.toObject();
+        
+        res.render('post', {
+            ...postObj,  // Spread the post properties
+            author: post.author,  // Ensure author is passed correctly
+            layout: 'post',
+            title: `${post.author.displayName}'s Post`,
+            isLoggedIn: req.session.isLoggedIn || false,
+            loggedInUser: req.session.loggedInUser || '',
+            comments: post.comments || []  // Make sure comments are passed
+        });
+    } catch (error) {
+        console.error('Error fetching post:', error);
+        
+        // Handle invalid ObjectId format
+        if (error.name === 'CastError') {
+            return res.status(404).send('Post not found');
+        }
+        
+        res.status(500).send('Internal Server Error');
     }
-
-    res.render('post', {
-        ...postData,
-        postId,
-        layout: 'post',
-        title: `${postData.displayName}'s Post`,
-        isLoggedIn
-    });
 });
 
 // Welcome page
@@ -372,41 +397,31 @@ router.post('/createPost', async (req, res) => {
         const {
             postTitle,
             postContent,
+            postImage,
             tags,
         } = req.body;
 
-        const postId = generateUniquePostId();
-        const newPost = {
-            postId,
-            postTitle,
-            postContent,
-            tags,
-            postusername: req.session.user.username,
-            displayName: req.session.user.displayName,
-            posterpfp: req.session.user.profilePic,
-            timestamp: new Date(),
-            votes: 0,
-            comments: []
-        };
+        const userId = req.session.user._id;
+        
+        // Use the createPost function from crudPost.js
+        const result = await createPost(
+            postTitle, 
+            postContent, 
+            postImage, 
+            tags, 
+            userId
+        );
 
-        const db = await connect();
-        const postsCollection = db.collection('posts');
-        await postsCollection.insertOne(newPost);
-
-        res.status(201).json({ success: true, message: 'Post created successfully' });
+        if (result.success) {
+            return res.status(201).json(result);
+        } else {
+            return res.status(400).json(result);
+        }
     } catch (error) {
         console.error('Error in /createPost:', error);
         res.status(500).json({ success: false, message: 'Internal server error' });
     }
 });
-
-
-// Helper function to generate a unique postId (replace with your implementation)
-function generateUniquePostId() {
-    // Example: Using a simple timestamp (not ideal for production)
-    return Date.now().toString(36) + Math.random().toString(36).substr(2);
-    // or use a uuid library.
-}
 
 // Notifications page
 router.get('/notifications', (req, res) => {

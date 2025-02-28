@@ -36,11 +36,6 @@ body {
     height: 100%;
 }
 
-.post-content a {
-    text-decoration: none;
-    color: #292623;
-}
-
 .top-menu {
     display: flex;
     align-items: center;
@@ -131,6 +126,29 @@ body {
     opacity: 0.5;
 }
 
+.edit-prof-btn {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.edit-btn {
+    margin: 15px;
+    background-color: #292623; 
+    color: ghostwhite; 
+    border: 1px solid #292623; 
+    padding: 6px 12px;
+    border-radius: 100px; 
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.1s ease;
+    margin-left: 525px;
+}
+
+.edit-btn:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: #292623;
+}
+
 .bio {
     color: #292623;
     margin-left: 25px;
@@ -181,7 +199,7 @@ body {
     align-items: center;
     justify-content: flex-start; 
     padding: 25px 0px; 
-    height: auto; 
+    height: 100%; 
     min-height: 300px; 
 }
 
@@ -228,7 +246,8 @@ body {
 .post-header {
     display: flex;
     align-items: center;
-    gap: 10px;
+    justify-content: space-between;
+    position: relative;
 }
 
 .post-header img {
@@ -286,4 +305,65 @@ body {
     align-items: center;
     gap: 5px;
     cursor: pointer;
+}
+
+.post-content a {
+    text-decoration: none;
+    color: #292623;
+}
+
+.dots {
+    cursor: pointer;
+    font-size: 24px;
+    color: #000;
+    position: relative;
+    background: transparent;
+    border-radius: 50%;
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    padding: 0px;
+    transition: color 0.3s ease, background-color 0.3s ease;
+    text-align: center;
+    line-height: 30px;
+    z-index: 10;
+    margin-left: 10px; /* Add space between post-duration and dots */
+    display: flex;
+    align-items: center; /* Center vertically */
+    justify-content: center;
+}
+
+
+.dots:hover {
+    color: #007bff;
+    background-color: #007bff;
+    opacity: 20%;
+}
+
+.dots-menu {
+    display: none;
+    position: absolute;
+    background-color: white;
+    border: 1px solid #ccc;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    padding: 8px;
+    border-radius: 4px;
+}
+
+
+.dots.active + .dots-menu {
+    display: block;
+}
+
+
+.dots-menu a {
+    display: block;
+    padding: 4px 8px;
+    text-decoration: none;
+    color: #333;
+}
+
+.dots-menu a:hover {
+    background-color: #f0f0f0;
 }

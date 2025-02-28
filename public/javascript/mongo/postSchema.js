@@ -1,19 +1,9 @@
 const mongoose = require('mongoose');
 
 const postSchema = new mongoose.Schema({
-  postId: {
-    type: String,
-    required: true,
-    unique: true, // Assuming postId should be unique
-  },
   postTitle: {
     type: String,
     required: true,
-  },
-  postduration: {
-    type: String,
-    required: true,
-    default: 'Just now', // Default to 'Just now'
   },
   postContent: {
     type: String,
@@ -24,8 +14,12 @@ const postSchema = new mongoose.Schema({
     default: '', // Default to an empty string if no image
   },
   votes: {
+    type: Number, // Changed to Number type for easier manipulation
+    default: 0,
+  },
+  tags: {
     type: String,
-    default: '0', // Default to 0 votes
+    default: '', // Default to an empty string if no tags
   },
   comments: {
     type: String,
@@ -36,6 +30,8 @@ const postSchema = new mongoose.Schema({
     ref: 'User',
     required: true, // Author is required
   },
+},{
+  timestamps: true,
 });
 
 module.exports = mongoose.model('Post', postSchema);

@@ -88,6 +88,10 @@ a {
     margin-right: 20px;
 }
 
+.visitor-posts-container {
+    width: 100%;
+}
+
 .post-actions span {
     font-weight: bold;
     color: #0C5FB3;

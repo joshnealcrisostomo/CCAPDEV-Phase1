@@ -22,13 +22,13 @@
             
             <div class="post">
                 <div class="post_avatar">
-                    <a href="/profile/{{postusername}}"><img src="{{posterpfp}}" alt="Profile Picture"/></a>
+                    <a href="/profile/{{author.username}}"><img src="{{author.profilePic}}" alt="Profile Picture"/></a>
                 </div>
                 <div class="post_body">
                     <div class="post_header">
                         <div class="post_headerText">
-                            <h3><a href="/profile/{{postusername}}">{{displayName}}</a></h3>
-                            <span class="post-username">{{postusername}}</span>
+                            <h3><a href="/profile/{{author.username}}">{{author.displayName}}</a></h3>
+                            <span class="post-username">{{author.username}}</span>
                             {{#if isLoggedIn}}
                             <div class="dots-container">
                                 <div class="dots" onclick="toggleOptionsMenu(event)">⋮</div>
@@ -38,7 +38,7 @@
                             </div>
                             {{/if}}
                         </div>
-                        <span class="post-duration">{{postduration}}</span>
+                        <span class="post-duration">{{timestamp}}</span>
                         <div class="post_headerDescription">
                             <h2>{{postTitle}}</h2>
                             <p>{{postContent}}</p>

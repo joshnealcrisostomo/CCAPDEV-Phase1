@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/styles_folder/post_style.css">
-    <title>{{postTitle}}</title> 
+    <title></title> 
 </head>
 <body>
     <div class="container">
@@ -38,15 +38,15 @@
                             </div>
                             {{/if}}
                         </div>
-                        <span class="post-duration">{{timestamp}}</span>
+                        <span class="post-duration">{{post.createdAt}}</span>
                         <div class="post_headerDescription">
-                            <h2>{{postTitle}}</h2>
-                            <p>{{postContent}}</p>
+                            <h2>{{post.postTitle}}</h2>
+                            <p>{{post.postContent}}</p>
                         </div>
                     </div>
                     
-                    {{#if postImage}}
-                    <img src="{{postImage}}" alt="Post Image" class="post-image"/>
+                    {{#if post.postImage}}
+                    <img src="{{post.postImage}}" alt="Post Image" class="post-image"/>
                     {{/if}}
                     
                     <div class="post-actions">
@@ -54,7 +54,7 @@
                             <a href="#" class="vote-btn">
                                 <img src="/icons/upvoted.png" alt="upvote">
                             </a>
-                            <span class="vote-count">{{votes}}</span>
+                            <span class="vote-count">{{post.votes}}</span>
                             <a href="#" class="vote-btn">
                                 <img src="/icons/downvoted.png" alt="downvote">
                             </a>
@@ -91,7 +91,7 @@
     </div>
 
     <div class="comments-section">
-        {{#each comments}}
+        {{#each post.comments}}
         <div class="comment">
             <div class="user-comment">
                 <strong>{{username}}</strong>

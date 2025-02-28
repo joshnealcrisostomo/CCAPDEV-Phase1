@@ -1,6 +1,4 @@
 const express = require('express');
-const session = require('express-session');
-const mongoose = require('mongoose');
 const router = express.Router();
 const fs = require('fs');
 const path = require('path');
@@ -332,42 +330,6 @@ router.get('/logout', (req, res) => {
     });
 });
 
-// Render indiv post
-router.get('/post/:postId', async (req, res) => {
-    try {
-        const { postId } = req.params;
-        
-        // Find the post by _id and populate the author field
-        let post = await Post.findById(postId).populate('author');
-        
-        if (!post) {
-            return res.status(404).send('Post not found');
-        }
-        
-        // Convert post document to a plain object
-        const postObj = post.toObject();
-        
-        res.render('post', {
-            ...postObj,  // Spread the post properties
-            author: post.author,  // Ensure author is passed correctly
-            layout: 'post',
-            title: `${post.author.displayName}'s Post`,
-            isLoggedIn: req.session.isLoggedIn || false,
-            loggedInUser: req.session.loggedInUser || '',
-            comments: post.comments || []  // Make sure comments are passed
-        });
-    } catch (error) {
-        console.error('Error fetching post:', error);
-        
-        // Handle invalid ObjectId format
-        if (error.name === 'CastError') {
-            return res.status(404).send('Post not found');
-        }
-        
-        res.status(500).send('Internal Server Error');
-    }
-});
-
 // Welcome page
 router.get('/welcome', (req, res) => {
     res.render('welcome', {
@@ -375,6 +337,28 @@ router.get('/welcome', (req, res) => {
         title: 'Welcome to ByaHero!',
         isLoggedIn: false,
     });
+});
+
+// Individual post route
+router.get('/post/:postId', async (req, res) => {
+    const { postId } = req.params;
+
+    try {
+        const post = await Post.findById(postId).populate('author').exec();
+
+        res.render('post', {
+            post,
+            author: post.author,
+            layout: 'post',
+            title: `${post.author ? post.author.displayName : 'Unknown'}'s Post`,
+            comments: post.comments || [],
+            isLoggedIn: !!req.session.user,
+            loggedInUser: req.session.user
+        });
+    } catch (error) {
+        console.error('Error fetching post:', error);
+        res.status(500).send('Error loading post: ' + error.message);
+    }
 });
 
 // Create post page

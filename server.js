@@ -25,7 +25,7 @@ mongoose.connect(uri)
 app.use(session({
     secret: 'your-secret-key',  // Use a strong secret in production
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
     cookie: { secure: false }  // Set to `true` if using HTTPS
 }));
 
@@ -44,7 +44,6 @@ hbs.registerPartials(path.join(__dirname, "views/partials")); // Register partia
 // Serve static files (CSS, JS, Images)
 app.use(express.static(path.join(__dirname, "src")));
 app.use(express.static(path.join(__dirname, "public")));
-app.use("/main_html", express.static(path.join(__dirname, "main_html")));
 
 // Dummy data (importing posts from a separate file)
 const posts = require("./src/models/contents");

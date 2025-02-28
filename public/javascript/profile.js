@@ -1,19 +1,15 @@
-// Event listener for return button
 document.querySelector('.return-btn').addEventListener('click', function() {
-    window.history.back(); // This goes back to the last page in the browser's history
+    window.history.back();
 });
 
-// Event listener for edit profile button
 document.querySelector('.edit-btn').addEventListener('click', function() {
     window.location.href = '/editProfile';
 });
 
-// Toggle options menu for post actions
 function toggleOptionsMenu(event) {
     const menu = document.getElementById("optionsMenu");
     const dots = event.target;
 
-    // Toggle the display of the menu
     if (menu.style.display === "block") {
         menu.style.display = "none";
     } else {
@@ -25,7 +21,6 @@ function toggleOptionsMenu(event) {
     }
 }
 
-// Attach event listener for dots (toggle options menu)
 const dotsElements = document.querySelectorAll('.dots');
 dotsElements.forEach(dots => {
     dots.addEventListener('click', toggleOptionsMenu);
@@ -51,8 +46,8 @@ document.addEventListener("DOMContentLoaded", function () {
             menuButtons.forEach(btn => btn.classList.remove("active"));
             this.classList.add("active");
 
-            const tab = this.classList[0].replace("-btn", ""); // Extract tab name from class
-            const username = window.location.pathname.split('/').pop(); // Get username from URL
+            const tab = this.classList[0].replace("-btn", ""); 
+            const username = window.location.pathname.split('/').pop();
 
             fetch(`/profile/${username}/content/${tab}`)
                 .then(response => response.text())
@@ -76,14 +71,14 @@ document.querySelector(".delete-post-btn").addEventListener("click", async funct
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ postId }) // Send postId in request body
+            body: JSON.stringify({ postId })
         });
 
         const data = await response.json();
 
         if (response.ok) {
             alert("✅ Post deleted successfully!");
-            window.location.href = "/dashboard"; // Redirect after deletion
+            window.location.href = "/dashboard";
         } else {
             alert(`❌ ${data.message}`);
         }

@@ -21,12 +21,11 @@ mongoose.connect(uri)
     console.error("❌ MongoDB connection error:", err);
     });
 
-// Configure session middleware with connect-mongo
 app.use(session({
-    secret: 'your-secret-key',  // Use a strong secret in production
+    secret: 'your-secret-key',
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: false }  // Set to `true` if using HTTPS
+    cookie: { secure: false } 
 }));
 
 app.use(methodOverride("_method"));
@@ -39,13 +38,11 @@ app.use(express.urlencoded({ extended: true }));
 // Set up Handlebars as the view engine
 app.set("view engine", "hbs");
 app.set("views", path.join(__dirname, "views/layouts"));
-hbs.registerPartials(path.join(__dirname, "views/partials")); // Register partials
+hbs.registerPartials(path.join(__dirname, "views/partials"));
 
-// Serve static files (CSS, JS, Images)
 app.use(express.static(path.join(__dirname, "src")));
 app.use(express.static(path.join(__dirname, "public")));
 
-// Dummy data (importing posts from a separate file)
 const posts = require("./src/models/contents");
 const router = require('./src/routes/router.js');
 const userRoutes = require("./src/routes/userRouter.js");
@@ -53,7 +50,6 @@ const userRoutes = require("./src/routes/userRouter.js");
 console.log("📂 Checking Router Type:", typeof router);
 console.log("📂 Checking UserRouter Type:", typeof userRoutes);
 
-// Ensure routes are valid middleware functions before using them
 if (typeof router === "function") {
     app.use(router);
 } else {
@@ -66,24 +62,21 @@ if (typeof userRoutes === "function") {
     console.error("❌ ERROR: userRouter.js is not a valid middleware function!");
 }
 
-// Redirect the root ("/") route to "/dashboard"
 app.get("/", (req, res) => {
-    res.redirect("/dashboard");  // Redirect to the dashboard route
+    res.redirect("/dashboard");
 });
 
-// Home Route - Renders Dashboard
 app.get("/dashboard", (req, res) => {
-    res.render("dashboard", { posts: Object.values(posts), isLoggedIn: true }); // Ensure isLoggedIn is set
+    res.render("dashboard", { posts: Object.values(posts), isLoggedIn: true });
 });
 
 const User = require("./public/javascript/mongo/UserSchema.js");
 
-// Middleware to load user profile into session
 app.use(async (req, res, next) => {
     if (req.session.userId) {
         try {
-            const user = await User.findById(req.session.userId); // Fetch user from DB
-            req.session.user = user; // Store user profile in session
+            const user = await User.findById(req.session.userId); 
+            req.session.user = user;
         } catch (error) {
             console.error("❌ Error loading user profile:", error);
         }

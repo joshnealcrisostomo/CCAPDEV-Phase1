@@ -67,7 +67,6 @@ if (fs.existsSync(reportsPath)) {
 
 router.get('/dashboard', async (req, res) => {
     try {        
-        // Fetch all posts and populate the author field
         let posts = await Post.find()
                               .populate('author')
                               .sort({ createdAt: -1 })
@@ -98,7 +97,6 @@ router.get('/profile/:username', async (req, res) => {
 
         if (!viewedUser) return res.status(404).send('User not found');
 
-        // Fetch posts by this user using the Post model
         const userPosts = await Post.find({ author: viewedUser._id })
                                    .populate('author')
                                    .sort({ createdAt: -1 })
@@ -144,7 +142,6 @@ router.get('/profile/:username', async (req, res) => {
 router.get('/profile/:username/content/:tab', async (req, res) => {
     let { username, tab } = req.params;
 
-    // Ensure username starts with '@'
     if (!username.startsWith('@')) {
         username = '@' + username;
     }
@@ -158,7 +155,6 @@ router.get('/profile/:username/content/:tab', async (req, res) => {
             return res.status(404).send('User not found');
         }
 
-        // Check if user is viewing their own profile
         const isOwnProfile = req.session.user && req.session.user.username === viewedUser.username;
         
         if(isOwnProfile) {
@@ -170,28 +166,24 @@ router.get('/profile/:username/content/:tab', async (req, res) => {
                     res.render('../partials/profileComments', { comments });
                     break;
                 case 'bookmark':
-                    // Fetch bookmarked posts if you have a bookmarks field in user model
                     const bookmarkedPosts = await Post.find({ _id: { $in: viewedUser.bookmarks || [] } })
                                                     .populate('author')
                                                     .exec();
                     res.render('../partials/profileBookmarks', { bookmarks: bookmarkedPosts });
                     break;
                 case 'upvoted':
-                    // Fetch upvoted posts if you have an upvoted field in user model
                     const upvotedPosts = await Post.find({ _id: { $in: viewedUser.upvoted || [] } })
                                                  .populate('author')
                                                  .exec();
                     res.render('../partials/profileUpvoted', { upvoted: upvotedPosts });
                     break;
                 case 'downvoted':
-                    // Fetch downvoted posts if you have a downvoted field in user model
                     const downvotedPosts = await Post.find({ _id: { $in: viewedUser.downvoted || [] } })
                                                    .populate('author')
                                                    .exec();
                     res.render('../partials/profileDownvoted', { downvoted: downvotedPosts });
                     break;
                 default:
-                    // Fetch posts by this user
                     const userPosts = await Post.find({ author: viewedUser._id })
                                               .populate('author')
                                               .sort({ createdAt: -1 })
@@ -207,14 +199,12 @@ router.get('/profile/:username/content/:tab', async (req, res) => {
                     res.render('../partials/pubProfileComments', { comments });
                     break;
                 case 'upvoted':
-                    // Fetch upvoted posts if you have an upvoted field in user model
                     const upvotedPosts = await Post.find({ _id: { $in: viewedUser.upvoted || [] } })
                                                  .populate('author')
                                                  .exec();
                     res.render('../partials/pubProfileUpvoted', { upvoted: upvotedPosts });
                     break;
                 default:
-                    // Fetch posts by this user
                     const userPosts = await Post.find({ author: viewedUser._id })
                                               .populate('author')
                                               .sort({ createdAt: -1 })
@@ -269,10 +259,8 @@ router.post('/registerPost', async (req, res) => {
         console.log("registerUser result: ", result);
 
         if (result.success) {
-            // Send a success response with a redirect URL
             res.status(200).json({ success: true, message: 'Registration successful!', redirect: '/login' });
         } else {
-            // Send an error response
             res.status(400).json({ success: false, message: result.message });
         }
     } catch (error) {
@@ -309,9 +297,6 @@ router.post('/loginPost', async (req, res) => {
             req.session.isLoggedIn = true;
             req.session.loggedInUser = username;
             req.session.user = result.user;
-
-            console.log('Session After Login:', req.session);  // Debugging log
-
             res.json({ success: true, user: result.user });
         } else {
             res.json({ success: false, message: result.message });
@@ -372,6 +357,7 @@ router.get('/createPost', (req, res) => {
     });
 });
 
+// Create post route
 router.post('/createPost', async (req, res) => {
     try {
         if (!req.session.isLoggedIn) {
@@ -387,7 +373,6 @@ router.post('/createPost', async (req, res) => {
 
         const userId = req.session.user._id;
         
-        // Use the createPost function from crudPost.js
         const result = await createPost(
             postTitle, 
             postContent, 
@@ -461,7 +446,7 @@ router.get('/admin', (req, res) => {
         title: 'Admin Report',
         isLoggedIn: req.session.isLoggedIn || false,
         loggedInUser: req.session.loggedInUser || '',
-        reports: reportsData.reports // Pass reports data to Handlebars
+        reports: reportsData.reports
     });
 });
 

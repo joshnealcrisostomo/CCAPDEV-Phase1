@@ -25,11 +25,11 @@ async function createPost(postTitle, postContent, postImage, tags, userId) {
     const newPost = new Post({
       postTitle,
       postContent,
-      postImage: postImage || '', // Use provided image or default empty string
-      votes: 0, // Default to 0 votes
-      tags: tags || '', // Use provided tags or default empty string
-      comments: '', // Default to empty string as per schema
-      author: user._id, // Assign the user's ObjectId
+      postImage: postImage || '',
+      votes: 0, 
+      tags: tags || '', 
+      comments: '', 
+      author: user._id, 
     });
 
     // Save the post

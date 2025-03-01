@@ -94,11 +94,12 @@ body {
 .forgot-password {
     display: block;
     text-align: right;
-    margin: 10px 0;
+    margin: 5px 0;
     color: #292623;
     opacity: 0.5;
     text-decoration: none;
     font-size: 14px;
+    margin-left: 230px;
 }
 
 .forgot-password:hover {
@@ -162,11 +163,11 @@ body {
 .remember-me {
     display: flex;
     align-items: center;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
 }
 
 .remember-me input {
-    margin-right: 10px;
+    margin-right: 5px;
 }
 
 .right-panel h2 {

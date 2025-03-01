@@ -9,7 +9,7 @@ const reportsPath = path.join(__dirname, '../models/reports.json');
 
 const authController = require('../../public/javascript/mongo/registerUser.js');
 const { loginUser } = require('../../public/javascript/mongo/loginUser.js');
-const { createPost, deletePost } = require('../../public/javascript/mongo/crudPost.js');
+const { createPost, deletePost, updatePost } = require('../../public/javascript/mongo/crudPost.js');
 const { updateUser } = require('../../public/javascript/mongo/updateUser.js');
 const Post = require('../../public/javascript/mongo/postSchema.js');
 
@@ -434,14 +434,72 @@ router.get('/notifications', (req, res) => {
     });
 });
 
-// Edit post page
-router.get('/editPost', (req, res) => {
-    res.render('editPost', {
-        layout: 'editPost',
-        title: 'Edit your post',
-        isLoggedIn: req.session.isLoggedIn || false,
-        loggedInUser: req.session.loggedInUser || ''
-    });
+// Update GET route
+router.get('/editPost/:id', async (req, res) => {
+    try {
+        // Check if user is logged in
+        if (!req.session.user) {
+            return res.redirect('/login');
+        }
+        
+        const postId = req.params.id;
+        
+        // Fetch the post
+        const post = await Post.findById(postId).populate('author').exec();
+        
+        if (!post) {
+            return res.status(404).send('Post not found');
+        }
+        
+        // Check if the current user is the author of the post
+        if (post.author._id.toString() !== req.session.user._id.toString()) {
+            return res.status(403).send('You are not authorized to edit this post');
+        }
+        
+        // Render the edit page with the post data
+        res.render('editPost', {
+            post,
+            layout: 'editPost',
+            title: 'Edit Post',
+            isLoggedIn: !!req.session.user,
+            loggedInUser: req.session.user ? req.session.user.username : ''
+        });
+    } catch (error) {
+        console.error('Error loading edit post page:', error);
+        res.status(500).send('Server error');
+    }
+});
+
+// Update POST route 
+router.post('/updatePost/:id', async (req, res) => {
+    try {
+        if (!req.session.user) {
+            return res.redirect('/login');
+        }
+        
+        const postId = req.params.id;
+        const { postTitle, postContent, tags } = req.body;
+        const userId = req.session.user._id;
+        
+        const result = await updatePost(postId, postTitle, postContent, tags, userId);
+        
+        if (result.success) {
+            return res.redirect(`/post/${postId}`);
+        } else {
+            const post = await Post.findById(postId).populate('author').exec();
+            return res.render('editPost', { 
+                post,
+                layout: 'editPost',
+                title: 'Edit Post',
+                isLoggedIn: !!req.session.user,
+                loggedInUser: req.session.user ? req.session.user.username : '',
+                error: result.message 
+            });
+        }
+    } catch (error) {
+        console.error('Error updating post:', error);
+        res.status(500).send('Server error');
+    }
 });
 
 // Edit profile page
@@ -552,17 +610,6 @@ router.get('/adminProfile/:username', async (req, res) => {
         console.error('Error fetching user profile:', error);
         res.status(500).send('Internal server error');
     }
-});
-
-// FOR TESTING ONLY
-router.get('/session-test', (req, res) => {
-    console.log('Session Data:', req.session);
-    res.json({
-        isLoggedIn: req.session.isLoggedIn || false,
-        loggedInUser: req.session.loggedInUser || null,
-        user: req.session.user || {},
-        sessionID: req.sessionID
-    });
 });
 
 // Admin menu nav

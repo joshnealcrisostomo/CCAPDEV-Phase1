@@ -20,13 +20,16 @@
                     <span>Return</span>
                 </div>
                 <h2>Edit Post</h2>
-                <form id="edit-form">
+                {{#if error}}
+                    <div class="error-message">{{error}}</div>
+                {{/if}}
+                <form id="edit-form" action="/updatePost/{{post._id}}" method="POST">
                     <div class="create-post-container">
                         <div class="post-title-container">
                             <label for="edit-title">Post Title</label>
-                            <textarea id="edit-title" class="post-title-text-area" rows="2" placeholder="Post Title"></textarea>
+                            <textarea id="edit-title" name="postTitle" class="post-title-text-area" rows="2" placeholder="Post Title">{{post.postTitle}}</textarea>
                             <div class="char-count" id="char-count">
-                                0/200
+                                {{post.postTitle.length}}/200
                             </div>
                         </div>
 
@@ -73,7 +76,7 @@
                                 </div>
 
                                 <div class="body-text-container">
-                                    <textarea id="edit-body" class="body-text-area" rows="5" placeholder="Body"></textarea>
+                                    <textarea id="edit-body" name="postContent" class="body-text-area" rows="5" placeholder="Body">{{post.postContent}}</textarea>
                                 </div>
                             </div>
 
@@ -91,7 +94,33 @@
         </div>
         <script>
             document.querySelector('.return-btn').addEventListener('click', function() {
-                window.history.back(); // This goes back to the last page in the browser's history
+                window.history.back();
+            });
+            
+            // Update character count for title
+            document.addEventListener('DOMContentLoaded', function() {
+                const titleTextarea = document.getElementById('edit-title');
+                const charCount = document.getElementById('char-count');
+                
+                titleTextarea.addEventListener('input', function() {
+                    charCount.textContent = `${this.value.length}/200`;
+                });
+                
+                // Set initial character count
+                charCount.textContent = `${titleTextarea.value.length}/200`;
+                
+                // Set the selected tag based on the post's tag
+                const tagSelect = document.getElementById('edit-tags');
+                const postTag = "{{post.tags}}";
+                
+                if (postTag) {
+                    for (let i = 0; i < tagSelect.options.length; i++) {
+                        if (tagSelect.options[i].value === postTag.toLowerCase()) {
+                            tagSelect.selectedIndex = i;
+                            break;
+                        }
+                    }
+                }
             });
         </script>
     </body>

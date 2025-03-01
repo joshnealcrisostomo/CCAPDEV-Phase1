@@ -63,34 +63,47 @@ async function deletePost(postId) {
   }
 }
 
-async function updatePost(postId, updateData) {
+// Add this to your crudPost.js file
+
+async function updatePost(postId, postTitle, postContent, tags, userId) {
   try {
+    // Validate postId
     if (!ObjectId.isValid(postId)) {
-      return { success: false, message: "Invalid Post ID format" };
+      console.log("PostId is not a valid ObjectId: ", postId);
+      throw new Error('Invalid post ID format');
     }
-
-    // Check if the post exists
+    
+    // Validate userId
+    if (!ObjectId.isValid(userId)) {
+      console.log("UserId is not a valid ObjectId: ", userId);
+      throw new Error('Invalid user ID format');
+    }
+    
+    // Find the post
     const post = await Post.findById(postId);
+    
     if (!post) {
-      return { success: false, message: "Post not found" };
+      throw new Error('Post not found');
     }
-
-    // Update only the fields that are provided
-    const updatedPost = await Post.findByIdAndUpdate(
-      postId,
-      { $set: updateData },
-      { new: true } // Return the updated document
-    );
-
-    console.log("✅ Post updated successfully:", updatedPost);
-    return { 
-      success: true, 
-      message: "Post updated successfully",
-      post: updatedPost
-    };
+    
+    // Check if the user is the author of the post
+    if (post.author.toString() !== userId.toString()) {
+      throw new Error('Not authorized to edit this post');
+    }
+    
+    // Update the post
+    post.postTitle = postTitle;
+    post.postContent = postContent;
+    post.tags = tags;
+    post.updatedAt = Date.now();
+    
+    await post.save();
+    
+    console.log('Post updated successfully!');
+    return { success: true, message: 'Post updated successfully', post };
   } catch (error) {
-    console.error("❌ Error updating post:", error);
-    return { success: false, message: error.message || "Server error" };
+    console.error('Error in updatePost:', error);
+    return { success: false, message: error.message || 'Internal server error' };
   }
 }
 

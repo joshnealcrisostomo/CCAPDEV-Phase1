@@ -48,29 +48,18 @@ async function deletePost(postId) {
     if (!ObjectId.isValid(postId)) {
       return { success: false, message: "Invalid Post ID format" };
     }
-
-    // Check if the post exists
-    const postExists = await Post.findById(postId);
-    if (!postExists) {
-      console.error("❌ Post not found.");
-      return { success: false, message: "Post not found in database" };
+    
+    const result = await Post.findByIdAndDelete(postId);
+    
+    if (!result) {
+      return { success: false, message: "Post not found" };
     }
-
-    console.log("🔍 Found post, proceeding with deletion:", postExists);
-
-    // Delete the post
-    const deleteResult = await Post.deleteOne({ _id: postId });
-
-    if (deleteResult.deletedCount === 0) {
-      console.error("❌ Post deletion failed:", postId);
-      return { success: false, message: "Post could not be deleted" };
-    }
-
-    console.log("✅ Post deleted successfully:", postId);
+    
+    console.log("✅ Post deleted successfully");
     return { success: true, message: "Post deleted successfully" };
   } catch (error) {
     console.error("❌ Error deleting post:", error);
-    return { success: false, message: "Server error" };
+    return { success: false, message: error.message || "Server error" };
   }
 }
 

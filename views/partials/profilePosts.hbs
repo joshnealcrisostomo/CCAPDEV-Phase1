@@ -5,10 +5,10 @@
                 <div>
                     <p class="post-duration">{{createdAt}}</p>
                 </div>
-                <div class="dots">⋮</div>
-                <div id="optionsMenu" class="dots-menu">
-                    <a href="/editPost">Edit</a>
-                    <a href="" class="delete-post-btn">Delete</a>
+                <div class="dots" data-post-id="{{this._id}}">⋮</div>
+                <div id="menu-{{this._id}}" class="dots-menu">
+                    <a href="/editPost/{{this._id}}">Edit</a>
+                    <a href="#" class="delete-post-btn" data-post-id="{{this._id}}">Delete</a>
                 </div>                        
             </div>
             <div class="post-content">

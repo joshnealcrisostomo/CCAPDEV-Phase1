@@ -7,8 +7,16 @@ document.querySelector('.edit-btn').addEventListener('click', function() {
 });
 
 function toggleOptionsMenu(event) {
-    const menu = document.getElementById("optionsMenu");
     const dots = event.target;
+    const postId = dots.getAttribute('data-post-id');
+    const menu = document.getElementById(`menu-${postId}`);
+    
+    // Close all other menus first
+    document.querySelectorAll('.dots-menu').forEach(m => {
+        if (m.id !== `menu-${postId}`) {
+            m.style.display = "none";
+        }
+    });
 
     if (menu.style.display === "block") {
         menu.style.display = "none";
@@ -21,6 +29,7 @@ function toggleOptionsMenu(event) {
     }
 }
 
+// Set up dots menu click listeners
 const dotsElements = document.querySelectorAll('.dots');
 dotsElements.forEach(dots => {
     dots.addEventListener('click', toggleOptionsMenu);
@@ -28,9 +37,10 @@ dotsElements.forEach(dots => {
 
 // Close options menu if clicked outside
 window.addEventListener('click', function(event) {
-    const menu = document.getElementById("optionsMenu");
     if (!event.target.closest('.dots') && !event.target.closest('.dots-menu')) {
-        menu.style.display = "none";
+        document.querySelectorAll('.dots-menu').forEach(menu => {
+            menu.style.display = "none";
+        });
     }
 });
 
@@ -53,15 +63,38 @@ document.addEventListener("DOMContentLoaded", function () {
                 .then(response => response.text())
                 .then(html => {
                     contentDiv.innerHTML = html;
+                    
+                    // Reattach event listeners to newly loaded content
+                    attachDeleteListeners();
+                    attachDotsListeners();
                 })
                 .catch(error => console.error("Error loading content:", error));
         });
     });
+    
+    // Initial attachment of listeners
+    attachDeleteListeners();
+    attachDotsListeners();
 });
 
-document.querySelector(".delete-post-btn").addEventListener("click", async function () {
-    const postId = this.dataset.postId; // Get postId from button dataset
+function attachDotsListeners() {
+    const dotsElements = document.querySelectorAll('.dots');
+    dotsElements.forEach(dots => {
+        dots.addEventListener('click', toggleOptionsMenu);
+    });
+}
+
+function attachDeleteListeners() {
+    document.querySelectorAll(".delete-post-btn").forEach(btn => {
+        btn.addEventListener("click", handleDeletePost);
+    });
+}
+
+async function handleDeletePost(event) {
+    event.preventDefault();
+    const postId = this.getAttribute('data-post-id');
     const confirmDelete = confirm("Are you sure? This action cannot be undone.");
+    
     if (!confirmDelete) return;
 
     try {
@@ -78,7 +111,14 @@ document.querySelector(".delete-post-btn").addEventListener("click", async funct
 
         if (response.ok) {
             alert("✅ Post deleted successfully!");
-            window.location.href = "/dashboard";
+            // Remove the post from the DOM
+            const postElement = this.closest('.post');
+            if (postElement) {
+                postElement.remove();
+            } else {
+                // If DOM removal fails, refresh the page
+                window.location.reload();
+            }
         } else {
             alert(`❌ ${data.message}`);
         }
@@ -86,4 +126,4 @@ document.querySelector(".delete-post-btn").addEventListener("click", async funct
         console.error("❌ Error deleting post:", error);
         alert("❌ Network error. Please try again.");
     }
-});
+}

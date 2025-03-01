@@ -9,7 +9,7 @@ const reportsPath = path.join(__dirname, '../models/reports.json');
 
 const authController = require('../../public/javascript/mongo/registerUser.js');
 const { loginUser } = require('../../public/javascript/mongo/loginUser.js');
-const { createPost } = require('../../public/javascript/mongo/crudPost.js');
+const { createPost, deletePost } = require('../../public/javascript/mongo/crudPost.js');
 const { updateUser } = require('../../public/javascript/mongo/updateUser.js');
 const Post = require('../../public/javascript/mongo/postSchema.js');
 
@@ -389,6 +389,38 @@ router.post('/createPost', async (req, res) => {
     } catch (error) {
         console.error('Error in /createPost:', error);
         res.status(500).json({ success: false, message: 'Internal server error' });
+    }
+});
+
+// Delete post router
+router.delete('/deletePost', async (req, res) => {
+    if (!req.session.user) {
+        return res.status(401).json({ success: false, message: "Unauthorized" });
+    }
+
+    const { postId } = req.body;
+    
+    try {
+        const post = await Post.findById(postId);
+        if (!post) {
+            return res.status(404).json({ success: false, message: "Post not found" });
+        }
+
+        // Check if the user is the author of the post
+        if (post.author.toString() !== req.session.user._id.toString()) {
+            return res.status(403).json({ success: false, message: "You can only delete your own posts" });
+        }
+
+        const result = await deletePost(postId);
+
+        if (result.success) {
+            res.json({ success: true, message: "Post deleted successfully" });
+        } else {
+            res.status(400).json({ success: false, message: result.message });
+        }
+    } catch (error) {
+        console.error("Error in delete post route:", error);
+        res.status(500).json({ success: false, message: "Server error" });
     }
 });
 

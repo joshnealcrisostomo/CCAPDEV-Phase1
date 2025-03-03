@@ -1,5 +1,6 @@
-{{#if postReports.length}}
-    <table>
+<h3>Post Reports</h3>
+<table id="table">
+    {{#if reports.length}}
         <thead>
             <tr>
                 <th>Post ID</th>
@@ -10,20 +11,24 @@
             </tr>
         </thead>
         <tbody>
-            {{#each postReports}}
+            {{#each reports}}
                 <tr data-status="{{status}}" data-post-id="{{_id}}">
                     <td><a href="/adminViewPost/{{reportedItemId}}" class="post-link">{{reportedItemId}}</a></td>
                     <td><a href="/adminProfile/{{author.username}}">{{author.username}}</a></td>
                     <td>{{reason}}</td>
                     <td><span class="badge {{status}}-badge">{{status}}</span></td>
                     <td>
-                        <button class="approve-btn" onclick="approvePost({{_id}})">Approve</button>
-                        <button class="delete-btn" onclick="deletePost({{_id}})">Delete</button>
+                        <button class="approve-btn" onclick="approvePost('{{_id}}')">Approve</button>
+                        <button class="delete-btn" onclick="deletePost('{{_id}}')">Delete</button>
                     </td>
                 </tr>
             {{/each}}
         </tbody>
-    </table>
-{{else}}
-    <p>No post reports available.</p>
-{{/if}}
+    {{else}}
+        <tbody>
+            <tr>
+                <td colspan="5">No post reports available.</td>
+            </tr>
+        </tbody>
+    {{/if}}
+</table>

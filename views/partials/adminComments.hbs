@@ -1,8 +1,9 @@
-{{#if commentReports.length}}
-    <table>
+<h3>Comment Reports</h3>
+<table id="table">
+    {{#if reports.length}}
         <thead>
             <tr>
-                <th>Post ID</th>
+                <th>Comment ID</th>
                 <th>Author</th>
                 <th>Report Reason</th>
                 <th>Status</th>
@@ -10,20 +11,24 @@
             </tr>
         </thead>
         <tbody>
-            {{#each commentReports}}
-                <tr data-status="{{status}}" data-post-id="{{_id}}">
-                    <td><a href="/adminViewPost/{{reportedItemId}}" class="post-link">{{reportedItemId}}</a></td>
+            {{#each reports}}
+                <tr data-status="{{status}}" data-comment-id="{{_id}}">
+                    <td><a href="/adminViewPost/{{reportedItemId}}" class="comment-link">{{reportedItemId}}</a></td>
                     <td><a href="/adminProfile/{{author.username}}">{{author.username}}</a></td>
                     <td>{{reason}}</td>
                     <td><span class="badge {{status}}-badge">{{status}}</span></td>
                     <td>
-                        <button class="approve-btn" onclick="approvePost({{_id}})">Approve</button>
-                        <button class="delete-btn" onclick="deletePost({{_id}})">Delete</button>
+                        <button class="approve-btn" onclick="approveComment('{{_id}}')">Approve</button>
+                        <button class="delete-btn" onclick="deleteComment('{{_id}}')">Delete</button>
                     </td>
                 </tr>
             {{/each}}
         </tbody>
-    </table>
-{{else}}
-    <p>No comment reports available.</p>
-{{/if}}
+    {{else}}
+        <tbody>
+            <tr>
+                <td colspan="5">No comment reports available.</td>
+            </tr>
+        </tbody>
+    {{/if}}
+</table>

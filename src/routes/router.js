@@ -540,32 +540,74 @@ router.get('/editProfile', async (req, res) => {
 });
 
 // Admin page
+// Main admin route
 router.get('/admin', async (req, res) => {
     try {
-        // Get all reports from database
-        const result = await getAllReports();
+        // Get post reports for initial load
+        const result = await getAllReports({ reportedItemType: 'Post' });
         
-        if (!result.success) {
-            console.error('Error fetching reports:', result.message);
-            return res.status(500).send('Error fetching reports');
-        }
-        
-        // Separate reports by type
-        const postReports = result.reports.filter(report => report.reportedItemType === 'Post');
-        const commentReports = result.reports.filter(report => report.reportedItemType === 'Comment');
-        
+        // Render the admin page with post reports
         res.render('admin', {
-            layout: 'admin',
-            title: 'Admin Report',
-            isLoggedIn: req.session.isLoggedIn || false,
-            loggedInUser: req.session.loggedInUser || '',
-            postReports: postReports,
-            commentReports: commentReports,
-            allReports: result.reports
+            user: req.session.user,
+            reports: result.success ? result.reports : [],
+            isAdmin: true
         });
     } catch (error) {
         console.error('Error in admin route:', error);
-        res.status(500).send('Internal server error');
+        res.status(500).render('error', { 
+            message: 'Failed to load admin page', 
+            error: { status: 500, stack: error.stack }
+        });
+    }
+});
+
+router.get('/admin/content/posts', async (req, res) => {
+    try {
+        // Get only post reports
+        const result = await getAllReports({ reportedItemType: 'Post' });
+        
+        if (!result.success) {
+            return res.status(500).send('<div class="error-message">Error fetching reports</div>');
+        }
+        
+        // Render the reports table content
+        res.render('partials/adminPosts', {
+            layout: false,
+            reports: result.reports
+        });
+    } catch (error) {
+        console.error('Error in posts content route:', error);
+        res.status(500).send('<div class="error-message">Internal server error</div>');
+    }
+});
+
+router.get('/admin/content/comments', async (req, res) => {
+    try {
+        // Get only comment reports
+        const result = await getAllReports({ reportedItemType: 'Comment' });
+        
+        if (!result.success) {
+            return res.status(500).send('<div class="error-message">Error fetching reports</div>');
+        }
+        
+        // Render the reports table content
+        res.render('partials/adminComments', {
+            layout: false,
+            reports: result.reports
+        });
+    } catch (error) {
+        console.error('Error in comments content route:', error);
+        res.status(500).send('<div class="error-message">Internal server error</div>');
+    }
+});
+
+router.get('/admin/content/users', async (req, res) => {
+    try {
+        // To 
+        res.send('<h3>User Reports</h3><div class="no-reports">User reports feature coming soon</div>');
+    } catch (error) {
+        console.error('Error in users content route:', error);
+        res.status(500).send('<div class="error-message">Internal server error</div>');
     }
 });
 

@@ -52,20 +52,6 @@ if (fs.existsSync(latestPostsPath)) {
     console.warn(`File ${latestPostsPath} NOT found.`);
 }
 
-// Load reports.json
-/*
-let reportsData = { reports: [] };
-if (fs.existsSync(reportsPath)) {
-    try {
-        reportsData = JSON.parse(fs.readFileSync(reportsPath, 'utf8'));
-        console.log(`File ${reportsPath} found.`);
-    } catch (error) {
-        console.error('Error reading reports.json:', error);
-    }
-} else {
-    console.warn(`File ${reportsPath} NOT found.`);
-}
-*/
 router.get('/dashboard', async (req, res) => {
     try {        
         let posts = await Post.find()
@@ -224,13 +210,15 @@ router.get('/profile/:username/content/:tab', async (req, res) => {
 // Explore route
 router.get('/explore', async (req, res) => {
     try {
-        const posts = await Post.find()
+        let posts = await Post.find()
             .populate('author')
             .sort({ createdAt: -1 })
             .exec();
 
+        let limitedPosts = posts.slice(0, 5);    
+
         res.render('explore', {
-            posts: posts,
+            posts: limitedPosts,
             layout: 'explore',
             title: 'Explore',
             isLoggedIn: req.session.isLoggedIn || false,

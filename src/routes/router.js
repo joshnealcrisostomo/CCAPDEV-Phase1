@@ -338,7 +338,7 @@ router.get('/post/:postId', async (req, res) => {
             title: `${post.author ? post.author.displayName : 'Unknown'}'s Post`,
             comments: post.comments || [],
             isLoggedIn: !!req.session.user,
-            loggedInUser: req.session.user
+            loggedInUser: req.session.loggedInUser
         });
     } catch (error) {
         console.error('Error fetching post:', error);

@@ -11,14 +11,14 @@
         </thead>
         <tbody>
             {{#each reports}}
-                <tr data-status="{{status}}" data-post-id="{{id}}">
-                    <td><a href="/adminViewPost/{{title}}" class="post-link">{{title}}</a></td>
-                    <td><a href="/adminProfile/{{author}}">{{author}}</a></td>
+                <tr data-status="{{status}}" data-post-id="{{_id}}">
+                    <td><a href="/adminViewPost/{{reportedItemId}}" class="post-link">{{reportedItemId}}</a></td>
+                    <td><a href="/adminProfile/{{author.username}}">{{author.username}}</a></td>
                     <td>{{reason}}</td>
                     <td><span class="badge {{status}}-badge">{{status}}</span></td>
                     <td>
-                        <button class="approve-btn" onclick="approvePost({{id}})">Approve</button>
-                        <button class="delete-btn" onclick="deletePost({{id}})">Delete</button>
+                        <button class="approve-btn" onclick="approvePost({{_id}})">Approve</button>
+                        <button class="delete-btn" onclick="deletePost({{_id}})">Delete</button>
                     </td>
                 </tr>
             {{/each}}

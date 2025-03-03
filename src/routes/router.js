@@ -1,7 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const fs = require('fs');
-const path = require('path');
 const { MongoClient } = require('mongodb'); 
 
 const { getAllReports, getReportById } = require('../../public/javascript/mongo/crudReport.js');
@@ -11,6 +9,7 @@ const { createPost, deletePost, updatePost } = require('../../public/javascript/
 const { updateUser } = require('../../public/javascript/mongo/updateUser.js');
 const Post = require('../../public/javascript/mongo/postSchema.js');
 const { createReport } = require('../../public/javascript/mongo/crudReport.js');
+const User = require('../../public/javascript/mongo/UserSchema.js');
 
 // MongoDB connection URI
 const uri = "mongodb+srv://patricklim:Derp634Derp@apdevcluster.chzne.mongodb.net/?retryWrites=true&w=majority&appName=APDEVcluster";
@@ -321,7 +320,6 @@ router.get('/post/:postId', async (req, res) => {
             post,
             author: post.author,
             layout: 'post',
-            title: `${post.author ? post.author.displayName : 'Unknown'}'s Post`,
             comments: post.comments || [],
             isLoggedIn: !!req.session.user,
             loggedInUser: req.session.loggedInUser
@@ -599,38 +597,35 @@ router.get('/adminSettings', (req, res) => {
 });
 
 // Admin single post view
-router.get('/adminViewPost/:postId', (req, res) => {
+router.get('/adminViewPost/:postId', async (req, res) => {
     const { postId } = req.params;
-    const postData = contentsData[postId];
 
-    if (!postData) {
-        return res.status(404).send('Post not found');
+    try {
+        const post = await Post.findById(postId).populate('author').exec();
+
+        res.render('adminViewPost', {
+            post,
+            postId: post._id,
+            layout: 'adminViewPost',
+            title: `${post.displayName}'s Post`,
+            isLoggedIn: req.session.isLoggedIn || false,
+            authorProfile: post.author
+        });
+    } catch (error) {
+        console.error('Error fetching post:', error);
+        res.status(500).send('Internal server error');
     }
-
-    res.render('post', {
-        ...postData,
-        postId,
-        layout: 'adminViewPost',
-        title: `${postData.displayName}'s Post`,
-        isLoggedIn: req.session.isLoggedIn || false
-    });
 });
 
-// Adnin profile route
+// Admin profile route
 router.get('/adminProfile/:username', async (req, res) => {
     let { username } = req.params;
     if (!username.startsWith('@')) username = '@' + username;
-
     try {
-        const db = await connect();
-        const usersCollection = db.collection('users');
-        const viewedUser = await usersCollection.findOne({ username });
-
+        const viewedUser = await User.findOne({ username });
         if (!viewedUser) return res.status(404).send('User not found');
-
-        const userPosts = Object.entries(contentsData)
-            .filter(([postId, post]) => post.postusername === username)
-            .map(([postId, post]) => ({ postId, ...post }));
+        
+        const userPosts = await Post.find({ author: viewedUser._id }).exec();
 
         res.render('adminProfile', {
             displayName: viewedUser.displayName,
@@ -657,7 +652,6 @@ router.get('/admin/content/:tab', async (req, res) => {
     try {
         let filters = {};
         
-        // Set appropriate filters based on tab
         switch (tab) {
             case 'commentsReport':
                 filters.reportedItemType = 'Comment';
@@ -703,10 +697,10 @@ router.get('/report/:id', async (req, res) => {
 
         const id = req.params.id;
         let reportedItem = null;
-        let reportedItemType = 'Post'; // Default to Post
+        let reportedItemType = 'Post';
 
         if (id.startsWith('@')) {
-            const username = id.substring(1); // Remove the '@'
+            const username = id.substring(1);
             const user = await User.findOne({ username: username });
 
             if (!user) {
@@ -749,10 +743,10 @@ router.post('/report/:id', async (req, res) => {
 
         const id = req.params.id;
         const reportType = req.body.reportType;
-        const reporterId = req.session.user._id; // Get the reporter's ID
+        const reporterId = req.session.user._id;
         let reportedItemId;
         let reportedItemType = 'Post';
-        let authorId; // Variable to store the author's ID
+        let authorId;
 
         if (!reportType) {
             return res.status(400).send('Report type is required.');
@@ -781,7 +775,7 @@ router.post('/report/:id', async (req, res) => {
             authorId = post.author._id;
         }
 
-        const reportResult = await createReport(reportedItemId, reportedItemType, authorId, reportType); // Pass authorId
+        const reportResult = await createReport(reportedItemId, reportedItemType, authorId, reportType);
 
         if (reportResult.success) {
             res.send('Report submitted successfully!');
@@ -794,6 +788,5 @@ router.post('/report/:id', async (req, res) => {
         res.status(500).send('Server error');
     }
 });
-
 
 module.exports = router;

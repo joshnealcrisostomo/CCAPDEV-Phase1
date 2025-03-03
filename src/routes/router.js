@@ -222,14 +222,24 @@ router.get('/profile/:username/content/:tab', async (req, res) => {
 });
 
 // Explore route
-router.get('/explore', (req, res) => {
-    res.render('explore', {
-        latestPosts: latestPostsData,
-        layout: 'explore',
-        title: 'Explore',
-        isLoggedIn: req.session.isLoggedIn || false,
-        loggedInUser: req.session.loggedInUser || ''
-    });
+router.get('/explore', async (req, res) => {
+    try {
+        const posts = await Post.find()
+            .populate('author')
+            .sort({ createdAt: -1 })
+            .exec();
+
+        res.render('explore', {
+            posts: posts,
+            layout: 'explore',
+            title: 'Explore',
+            isLoggedIn: req.session.isLoggedIn || false,
+            loggedInUser: req.session.loggedInUser || '',
+        });
+    } catch (error) {
+        console.error('Error fetching posts for explore:', error);
+        res.status(500).send('Internal Server Error');
+    }
 });
 
 // Settings route

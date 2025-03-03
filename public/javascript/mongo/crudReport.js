@@ -9,10 +9,10 @@ const uri = "mongodb+srv://patricklim:Derp634Derp@apdevcluster.chzne.mongodb.net
 
 mongoose.connect(uri);
 
-async function createReport(reportedItemId, reportedItemType, authorId, reporterId, reason, details) {
+async function createReport(reportedItemId, reportedItemType, authorId, reason, details) {
   try {
     // Validate IDs
-    if (!ObjectId.isValid(reportedItemId) || !ObjectId.isValid(authorId) || !ObjectId.isValid(reporterId)) {
+    if (!ObjectId.isValid(reportedItemId) || !ObjectId.isValid(authorId)) {
       console.log("Invalid ObjectId format");
       throw new Error('Invalid ID format');
     }
@@ -40,18 +40,11 @@ async function createReport(reportedItemId, reportedItemType, authorId, reporter
       throw new Error('Author not found');
     }
 
-    // Check if reporter exists
-    const reporter = await User.findById(reporterId);
-    if (!reporter) {
-      throw new Error('Reporter not found');
-    }
-
     // Create
     const newReport = new Report({
       reportedItemId,
       reportedItemType,
       author: authorId,
-      reporter: reporterId,
       reason,
       details: details || '',
       status: 'Pending'
@@ -66,7 +59,7 @@ async function createReport(reportedItemId, reportedItemType, authorId, reporter
     //  duplicate report 
     if (error.code === 11000) {
       console.error('❌ Duplicate report:', error);
-      return { success: false, message: 'This item has already been reported by this user' };
+      return { success: false, message: 'This item has already been reported' };
     }
     
     console.error('❌ Error in createReport:', error);
@@ -81,8 +74,7 @@ async function getReportById(reportId) {
     }
 
     const report = await Report.findById(reportId)
-      .populate('author', 'username email')
-      .populate('reporter', 'username email');
+      .populate('author', 'username email');
     
     if (!report) {
       return { success: false, message: "Report not found" };
@@ -114,7 +106,6 @@ async function getAllReports(filters = {}) {
 
     const reports = await Report.find(query)
       .populate('author', 'username email')
-      .populate('reporter', 'username email')
       .sort({ createdAt: -1 }); // Most recent first
     
     return { success: true, reports };
@@ -140,7 +131,6 @@ async function updateReport(reportId, updateData) {
     delete updateData.reportedItemId;
     delete updateData.reportedItemType;
     delete updateData.author;
-    delete updateData.reporter;
     delete updateData.createdAt;
 
     // Update only the allowed fields

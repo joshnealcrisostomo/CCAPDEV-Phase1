@@ -5,8 +5,8 @@ const path = require('path');
 const { MongoClient } = require('mongodb'); 
 
 const latestPostsPath = path.join(__dirname, '../models/latestPosts.json');
-const reportsPath = path.join(__dirname, '../models/reports.json');
 
+const { getAllReports, getReportById } = require('../../public/javascript/mongo/crudReport.js');
 const authController = require('../../public/javascript/mongo/registerUser.js');
 const { loginUser } = require('../../public/javascript/mongo/loginUser.js');
 const { createPost, deletePost, updatePost } = require('../../public/javascript/mongo/crudPost.js');
@@ -53,6 +53,7 @@ if (fs.existsSync(latestPostsPath)) {
 }
 
 // Load reports.json
+/*
 let reportsData = { reports: [] };
 if (fs.existsSync(reportsPath)) {
     try {
@@ -64,7 +65,7 @@ if (fs.existsSync(reportsPath)) {
 } else {
     console.warn(`File ${reportsPath} NOT found.`);
 }
-
+*/
 router.get('/dashboard', async (req, res) => {
     try {        
         let posts = await Post.find()
@@ -529,15 +530,27 @@ router.get('/editProfile', async (req, res) => {
 });
 
 
-// Admin page route
-router.get('/admin', (req, res) => {
-    res.render('admin', {
-        layout: 'admin',
-        title: 'Admin Report',
-        isLoggedIn: req.session.isLoggedIn || false,
-        loggedInUser: req.session.loggedInUser || '',
-        reports: reportsData.reports
-    });
+router.get('/admin', async (req, res) => {
+    try {
+        // Get all reports from database
+        const result = await getAllReports();
+        
+        if (!result.success) {
+            console.error('Error fetching reports:', result.message);
+            return res.status(500).send('Error fetching reports');
+        }
+        
+        res.render('admin', {
+            layout: 'admin',
+            title: 'Admin Report',
+            isLoggedIn: req.session.isLoggedIn || false,
+            loggedInUser: req.session.loggedInUser || '',
+            reports: result.reports // Use reports from database
+        });
+    } catch (error) {
+        console.error('Error in admin route:', error);
+        res.status(500).send('Internal server error');
+    }
 });
 
 // Admin Notifications page
@@ -615,21 +628,46 @@ router.get('/adminProfile/:username', async (req, res) => {
 // Admin menu nav
 router.get('/admin/content/:tab', async (req, res) => {
     const { tab } = req.params;
-
-    let filteredReports = [];
-
-    switch (tab) {
-        case 'commentsReport':
-            filteredReports = reportsData.reports.filter(report => report.type === 'Comment');
-            res.render('../partials/adminComments', { reports: filteredReports });
-            break;
-        case 'usersReport':
-            filteredReports = reportsData.reports.filter(report => report.type === 'User');
-            res.render('../partials/adminUsers', { reports: filteredReports });
-            break;
-        default:
-            filteredReports = reportsData.reports.filter(report => report.type === 'Post');
-            res.render('../partials/adminPosts', { reports: filteredReports });
+    
+    try {
+        let filters = {};
+        
+        // Set appropriate filters based on tab
+        switch (tab) {
+            case 'commentsReport':
+                filters.reportedItemType = 'Comment';
+                break;
+            case 'usersReport':
+                // Note: Your current schema doesn't support User reports
+                // You may need to add 'User' to the enum in reportSchema
+                filters.reportedItemType = 'User';
+                break;
+            default: // postsReport
+                filters.reportedItemType = 'Post';
+        }
+        
+        // Get filtered reports from database
+        const result = await getAllReports(filters);
+        
+        if (!result.success) {
+            console.error(`Error fetching ${tab} reports:`, result.message);
+            return res.status(500).send(`Error fetching ${tab} reports`);
+        }
+        
+        // Render appropriate partial with reports from database
+        switch (tab) {
+            case 'commentsReport':
+                res.render('../partials/adminComments', { reports: result.reports });
+                break;
+            case 'usersReport':
+                res.render('../partials/adminUsers', { reports: result.reports });
+                break;
+            default:
+                res.render('../partials/adminPosts', { reports: result.reports });
+        }
+    } catch (error) {
+        console.error(`Error in admin/${tab} route:`, error);
+        res.status(500).send('Internal server error');
     }
 });
 

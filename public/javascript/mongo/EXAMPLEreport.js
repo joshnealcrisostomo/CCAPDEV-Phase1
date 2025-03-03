@@ -5,7 +5,7 @@ const {
   getAllReports, 
   updateReport, 
   deleteReport 
-} = require('./crudReports');
+} = require('./crudReport.js');
 
 async function seedReportData() {
     try {

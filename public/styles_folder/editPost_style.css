@@ -210,7 +210,6 @@ body {
     justify-content: center;
 }
 
-
 .body-options-container {
     padding: 5px;
 }
@@ -227,7 +226,6 @@ body {
 .icon-body:hover {
     transform: scale(1.25);
 }
-
 
 .body-icons {
     margin: 5px;

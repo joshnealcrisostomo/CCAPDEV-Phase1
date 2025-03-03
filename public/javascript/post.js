@@ -1,5 +1,29 @@
 document.querySelector('.return-btn').addEventListener('click', function() {
-    window.history.back(); // This goes back to the last page in the browser's history
+    window.history.back();
+});
+
+const dotsElements = document.querySelectorAll('.dots');
+dotsElements.forEach(dots => {
+    dots.addEventListener('click', function(event) {
+        event.stopPropagation();
+        toggleOptionsMenu(this);
+    });
+});
+
+function toggleOptionsMenu(dotsElement) {
+    const postId = dotsElement.closest('.dots-container').querySelector('.dots-menu').id.replace('menu-', '');
+    const menu = document.getElementById(`menu-${postId}`);
+    if (menu) {
+        menu.style.display = menu.style.display === "block" ? "none" : "block";
+    }
+}
+
+window.addEventListener('click', function(event) {
+    if (!event.target.closest('.dots') && !event.target.closest('.dots-menu')) {
+        document.querySelectorAll('.dots-menu').forEach(menu => {
+            menu.style.display = "none";
+        });
+    }
 });
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -38,9 +62,9 @@ document.addEventListener("DOMContentLoaded", function () {
                     commentContainer.appendChild(replyContainer);
 
                     replyInput.addEventListener("input", function () {
-                        this.style.height = "36px"; 
+                        this.style.height = "36px";
                         if (this.scrollHeight > this.clientHeight) {
-                            this.style.height = Math.min(this.scrollHeight, 150) + "px"; 
+                            this.style.height = Math.min(this.scrollHeight, 150) + "px";
                         }
 
                         if (this.scrollHeight >= 100) {
@@ -67,9 +91,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const commentTextArea = document.querySelector(".add-comment-section textarea");
 
     commentTextArea.addEventListener("input", function () {
-        this.style.height = "36px"; 
+        this.style.height = "36px";
         if (this.scrollHeight > this.clientHeight) {
-            this.style.height = Math.min(this.scrollHeight, 150) + "px"; 
+            this.style.height = Math.min(this.scrollHeight, 150) + "px";
         }
 
         if (this.scrollHeight >= 100) {

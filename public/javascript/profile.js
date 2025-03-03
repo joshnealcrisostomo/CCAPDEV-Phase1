@@ -29,13 +29,11 @@ function toggleOptionsMenu(event) {
     }
 }
 
-// Set up dots menu click listeners
 const dotsElements = document.querySelectorAll('.dots');
 dotsElements.forEach(dots => {
     dots.addEventListener('click', toggleOptionsMenu);
 });
 
-// Close options menu if clicked outside
 window.addEventListener('click', function(event) {
     if (!event.target.closest('.dots') && !event.target.closest('.dots-menu')) {
         document.querySelectorAll('.dots-menu').forEach(menu => {

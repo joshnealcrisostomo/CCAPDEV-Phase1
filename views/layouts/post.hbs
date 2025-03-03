@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/styles_folder/post_style.css">
-    <title></title> 
+    <title>{{post.postTitle}} | ByaHero!</title> 
 </head>
 <body>
     <div class="container">
@@ -31,9 +31,9 @@
                             <span class="post-username">{{author.username}}</span>
                             {{#if isLoggedIn}}
                             <div class="dots-container">
-                                <div class="dots" onclick="toggleOptionsMenu(event)">⋮</div>
-                                <div id="dotOptions" class="dots-menu"> 
-                                    <a href="#">Report</a>
+                                <div class="dots">⋮</div>
+                                <div id="menu-{{post._id}}" class="dots-menu"> 
+                                    <a href="/report/{{post._id}}">Report</a>
                                 </div>
                             </div>
                             {{/if}}

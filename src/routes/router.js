@@ -4,14 +4,13 @@ const fs = require('fs');
 const path = require('path');
 const { MongoClient } = require('mongodb'); 
 
-const latestPostsPath = path.join(__dirname, '../models/latestPosts.json');
-
 const { getAllReports, getReportById } = require('../../public/javascript/mongo/crudReport.js');
 const authController = require('../../public/javascript/mongo/registerUser.js');
 const { loginUser } = require('../../public/javascript/mongo/loginUser.js');
 const { createPost, deletePost, updatePost } = require('../../public/javascript/mongo/crudPost.js');
 const { updateUser } = require('../../public/javascript/mongo/updateUser.js');
 const Post = require('../../public/javascript/mongo/postSchema.js');
+const { createReport } = require('../../public/javascript/mongo/crudReport.js');
 
 // MongoDB connection URI
 const uri = "mongodb+srv://patricklim:Derp634Derp@apdevcluster.chzne.mongodb.net/?retryWrites=true&w=majority&appName=APDEVcluster";
@@ -39,19 +38,7 @@ process.on('SIGINT', async () => {
     process.exit();
 });
 
-// Load latestPosts.json
-let latestPostsData = [];
-if (fs.existsSync(latestPostsPath)) {
-    try {
-        latestPostsData = JSON.parse(fs.readFileSync(latestPostsPath, 'utf8'));
-        console.log(`File ${latestPostsPath} found.`);
-    } catch (error) {
-        console.error('Error reading latestPosts.json:', error);
-    }
-} else {
-    console.warn(`File ${latestPostsPath} NOT found.`);
-}
-
+// Dashboard router
 router.get('/dashboard', async (req, res) => {
     try {        
         let posts = await Post.find()
@@ -72,7 +59,7 @@ router.get('/dashboard', async (req, res) => {
     }
 });
 
-// Profile route
+// Profile router
 router.get('/profile/:username', async (req, res) => {
     let { username } = req.params;
     if (!username.startsWith('@')) username = '@' + username;
@@ -125,7 +112,7 @@ router.get('/profile/:username', async (req, res) => {
     }
 });
 
-// Profile menu nav
+// Profile menu navigation
 router.get('/profile/:username/content/:tab', async (req, res) => {
     let { username, tab } = req.params;
 
@@ -240,7 +227,7 @@ router.get('/settings', (req, res) => {
     });
 });
 
-// Registration route
+// Sign up route
 router.get('/register', (req, res) => {
     res.render('register', {
         layout: 'register',
@@ -405,7 +392,6 @@ router.delete('/deletePost', async (req, res) => {
             return res.status(404).json({ success: false, message: "Post not found" });
         }
 
-        // Check if the user is the author of the post
         if (post.author.toString() !== req.session.user._id.toString()) {
             return res.status(403).json({ success: false, message: "You can only delete your own posts" });
         }
@@ -436,26 +422,22 @@ router.get('/notifications', (req, res) => {
 // Update GET route
 router.get('/editPost/:id', async (req, res) => {
     try {
-        // Check if user is logged in
         if (!req.session.user) {
             return res.redirect('/login');
         }
         
         const postId = req.params.id;
         
-        // Fetch the post
         const post = await Post.findById(postId).populate('author').exec();
         
         if (!post) {
             return res.status(404).send('Post not found');
         }
         
-        // Check if the current user is the author of the post
         if (post.author._id.toString() !== req.session.user._id.toString()) {
             return res.status(403).send('You are not authorized to edit this post');
         }
         
-        // Render the edit page with the post data
         res.render('editPost', {
             post,
             layout: 'editPost',
@@ -528,13 +510,10 @@ router.get('/editProfile', async (req, res) => {
 });
 
 // Admin page
-// Main admin route
 router.get('/admin', async (req, res) => {
     try {
-        // Get post reports for initial load
         const result = await getAllReports({ reportedItemType: 'Post' });
         
-        // Render the admin page with post reports
         res.render('admin', {
             user: req.session.user,
             reports: result.success ? result.reports : [],
@@ -549,16 +528,15 @@ router.get('/admin', async (req, res) => {
     }
 });
 
+// Router for post reports
 router.get('/admin/content/posts', async (req, res) => {
     try {
-        // Get only post reports
         const result = await getAllReports({ reportedItemType: 'Post' });
         
         if (!result.success) {
             return res.status(500).send('<div class="error-message">Error fetching reports</div>');
         }
         
-        // Render the reports table content
         res.render('partials/adminPosts', {
             layout: false,
             reports: result.reports
@@ -569,9 +547,9 @@ router.get('/admin/content/posts', async (req, res) => {
     }
 });
 
+// Router for comment reports
 router.get('/admin/content/comments', async (req, res) => {
     try {
-        // Get only comment reports
         const result = await getAllReports({ reportedItemType: 'Comment' });
         
         if (!result.success) {
@@ -589,6 +567,7 @@ router.get('/admin/content/comments', async (req, res) => {
     }
 });
 
+// Router for user reports
 router.get('/admin/content/users', async (req, res) => {
     try {
         // To 
@@ -684,8 +663,6 @@ router.get('/admin/content/:tab', async (req, res) => {
                 filters.reportedItemType = 'Comment';
                 break;
             case 'usersReport':
-                // Note: Your current schema doesn't support User reports
-                // You may need to add 'User' to the enum in reportSchema
                 filters.reportedItemType = 'User';
                 break;
             default: // postsReport
@@ -716,5 +693,107 @@ router.get('/admin/content/:tab', async (req, res) => {
         res.status(500).send('Internal server error');
     }
 });
+
+// Report page router (GET)
+router.get('/report/:id', async (req, res) => {
+    try {
+        if (!req.session.user) {
+            return res.redirect('/login');
+        }
+
+        const id = req.params.id;
+        let reportedItem = null;
+        let reportedItemType = 'Post'; // Default to Post
+
+        if (id.startsWith('@')) {
+            const username = id.substring(1); // Remove the '@'
+            const user = await User.findOne({ username: username });
+
+            if (!user) {
+                return res.status(404).send('User not found');
+            }
+
+            reportedItem = user;
+            reportedItemType = 'User';
+        } else {
+            const post = await Post.findById(id).populate('author').exec();
+
+            if (!post) {
+                return res.status(404).send('Post not found');
+            }
+
+            reportedItem = post;
+        }
+
+        res.render('report', {
+            reportedItem: reportedItem,
+            layout: 'report',
+            title: 'Report Page',
+            isLoggedIn: !!req.session.user,
+            loggedInUser: req.session.user ? req.session.user.username : '',
+            reportedItemType: reportedItemType,
+            reportedItemId: id,
+        });
+    } catch (error) {
+        console.error('Error loading report page:', error);
+        res.status(500).send('Server error');
+    }
+});
+
+// Report submission router (POST)
+router.post('/report/:id', async (req, res) => {
+    try {
+        if (!req.session.user) {
+            return res.redirect('/login');
+        }
+
+        const id = req.params.id;
+        const reportType = req.body.reportType;
+        const reporterId = req.session.user._id; // Get the reporter's ID
+        let reportedItemId;
+        let reportedItemType = 'Post';
+        let authorId; // Variable to store the author's ID
+
+        if (!reportType) {
+            return res.status(400).send('Report type is required.');
+        }
+
+        if (id.startsWith('@')) {
+            const username = id.substring(1);
+            const user = await User.findOne({ username: username });
+
+            if (!user) {
+                return res.status(404).send('User not found');
+            }
+
+            reportedItemId = user._id;
+            reportedItemType = 'User';
+            authorId = user._id;
+        } else {
+            const post = await Post.findById(id).populate('author').exec();
+
+            if (!post) {
+                return res.status(404).send('Post not found');
+            }
+
+            reportedItemId = id;
+            reportedItemType = 'Post';
+            authorId = post.author._id;
+        }
+
+        const reportResult = await createReport(reportedItemId, reportedItemType, authorId, reportType); // Pass authorId
+
+        if (reportResult.success) {
+            res.send('Report submitted successfully!');
+        } else {
+            res.status(500).send(reportResult.message);
+        }
+
+    } catch (error) {
+        console.error('Error submitting report:', error);
+        res.status(500).send('Server error');
+    }
+});
+
 
 module.exports = router;

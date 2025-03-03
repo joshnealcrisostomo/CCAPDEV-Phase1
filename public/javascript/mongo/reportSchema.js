@@ -9,7 +9,7 @@ const ReportSchema = new Schema({
   },
   reportedItemType: {
     type: String,
-    enum: ['Post', 'Comment'],
+    enum: ['Post', 'Comment', 'User'],
     required: true
   },
   // author object
@@ -34,7 +34,6 @@ const ReportSchema = new Schema({
   }
 });
 
-// Create a compound index to ensure unique reports per item, reporter combination
 ReportSchema.index({ reportedItemId: 1, reportedItemType: 1, reporter: 1 }, { unique: true });
 
 module.exports = mongoose.model('Report', ReportSchema);

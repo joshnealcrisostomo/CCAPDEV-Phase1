@@ -1,4 +1,4 @@
-{{#if reports.length}}
+{{#if postReports.length}}
     <table>
         <thead>
             <tr>
@@ -10,7 +10,7 @@
             </tr>
         </thead>
         <tbody>
-            {{#each reports}}
+            {{#each postReports}}
                 <tr data-status="{{status}}" data-post-id="{{_id}}">
                     <td><a href="/adminViewPost/{{reportedItemId}}" class="post-link">{{reportedItemId}}</a></td>
                     <td><a href="/adminProfile/{{author.username}}">{{author.username}}</a></td>

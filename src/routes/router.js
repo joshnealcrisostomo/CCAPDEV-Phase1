@@ -539,7 +539,7 @@ router.get('/editProfile', async (req, res) => {
     }
 });
 
-
+// Admin page
 router.get('/admin', async (req, res) => {
     try {
         // Get all reports from database
@@ -550,12 +550,18 @@ router.get('/admin', async (req, res) => {
             return res.status(500).send('Error fetching reports');
         }
         
+        // Separate reports by type
+        const postReports = result.reports.filter(report => report.reportedItemType === 'Post');
+        const commentReports = result.reports.filter(report => report.reportedItemType === 'Comment');
+        
         res.render('admin', {
             layout: 'admin',
             title: 'Admin Report',
             isLoggedIn: req.session.isLoggedIn || false,
             loggedInUser: req.session.loggedInUser || '',
-            reports: result.reports // Use reports from database
+            postReports: postReports,
+            commentReports: commentReports,
+            allReports: result.reports
         });
     } catch (error) {
         console.error('Error in admin route:', error);

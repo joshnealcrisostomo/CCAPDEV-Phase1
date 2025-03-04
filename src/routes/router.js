@@ -198,7 +198,7 @@ router.get('/explore', async (req, res) => {
     try {
         let posts = await Post.find()
             .populate('author')
-            .sort({ createdAt: -1 })
+            .sort({ votes: -1 })
             .exec();
 
         let limitedPosts = posts.slice(0, 5);    

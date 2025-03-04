@@ -51,11 +51,12 @@ a {
 
 .post {
     display: flex;
-    padding-left: 10px;
+    padding-left: 20px;
     align-items: flex-start;
     padding-top: 10px;
     border-bottom: 0.5px solid #292623;
-    padding: 20px;
+    padding-top: 20px;
+    padding-right: 20px;
     width: 100%;
     justify-content: space-between;
 }
@@ -148,6 +149,58 @@ a {
 .post-item img {
     height: 25px;
     width: 25px;
+}
+
+.post-tags {
+    padding: 5px 10px;
+    border-radius: 5px;
+    color: white;
+    font-size: 12px;
+    display: inline-block;
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+
+.Commute-tag {
+    background-color: #3498db;
+}
+
+.Price-tag {
+    background-color: #27ae60; 
+}
+
+.Route-tag {
+    background-color: #e67e22;
+}
+
+.Location-tag {
+    background-color: #9b59b6;
+}
+
+.Weather-tag {
+    background-color: #34495e;
+}
+
+.vote-container.upvoted {
+    background-color: rgb(255, 232, 201);
+    border-radius: 10px; 
+    padding: 5px 5px; 
+}
+
+.vote-count.upvoted {
+    color: maroon; 
+}
+
+.vote-count {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.vote-btn {
+    background: none;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
 }
 
 @media (max-width: 800px) {

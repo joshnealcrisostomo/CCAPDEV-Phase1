@@ -96,6 +96,7 @@ async function updatePost(postId, postTitle, postContent, tags, userId) {
     post.postContent = postContent;
     post.tags = tags;
     post.updatedAt = Date.now();
+    post.edited = true;
     
     await post.save();
     

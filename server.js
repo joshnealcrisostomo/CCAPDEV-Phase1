@@ -40,15 +40,19 @@ app.set("view engine", "hbs");
 app.set("views", path.join(__dirname, "views/layouts"));
 hbs.registerPartials(path.join(__dirname, "views/partials"));
 
+hbs.registerHelper('isUpvoted', (postId, upvotedPosts) => {
+    if (upvotedPosts && upvotedPosts.includes(postId.toString())) {
+        return true;
+    }
+    return false;
+});
+
 app.use(express.static(path.join(__dirname, "src")));
 app.use(express.static(path.join(__dirname, "public")));
 
 const posts = require("./src/models/contents");
 const router = require('./src/routes/router.js');
 const userRoutes = require("./src/routes/userRouter.js");
-
-console.log("📂 Checking Router Type:", typeof router);
-console.log("📂 Checking UserRouter Type:", typeof userRoutes);
 
 if (typeof router === "function") {
     app.use(router);

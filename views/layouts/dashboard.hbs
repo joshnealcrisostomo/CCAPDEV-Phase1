@@ -34,6 +34,11 @@
                                 <div class="post_headerDescription">
                                     <h2><a href="/post/{{_id}}">{{postTitle}}</a></h2>
                                     <p>{{postContent}}</p>
+                                    {{#if tags}}
+                                        <div class="post-tags {{tags}}-tag">
+                                            {{tags}}
+                                        </div>
+                                    {{/if}}                                    
                                 </div>
                             </div>
 
@@ -76,6 +81,11 @@
                                     <div class="post_headerDescription">
                                         <h2><a href="/post/{{_id}}">{{postTitle}}</a></h2>
                                         <p>{{postContent}}</p>
+                                        {{#if tags}}
+                                            <div class="post-tags {{tags}}-tag">
+                                                {{tags}}
+                                            </div>
+                                        {{/if}}
                                     </div>
                                 </div>
 

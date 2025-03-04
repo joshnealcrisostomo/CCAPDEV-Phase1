@@ -1,11 +1,10 @@
-{{! Combined post template for logged-in users and visitors }}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/styles_folder/post_style.css">
-    <title>{{post.postTitle}} | ByaHero!</title> 
+    <title>{{post.postTitle}} | ByaHero!</title>
 </head>
 <body>
     <div class="container">
@@ -19,7 +18,7 @@
                 </button>
                 <span>Post</span>
             </div>
-            
+
             <div class="post">
                 <div class="post_avatar">
                     <a href="/profile/{{author.username}}"><img src="{{author.profilePic}}" alt="Profile Picture"/></a>
@@ -32,30 +31,46 @@
                             {{#if isLoggedIn}}
                             <div class="dots-container">
                                 <div class="dots">⋮</div>
-                                <div id="menu-{{post._id}}" class="dots-menu"> 
-                                    <a href="/report/{{post._id}}">Report</a>
+                                <div id="menu-{{post._id}}" class="dots-menu">
+                                    {{#unless isAuthor}}
+                                        <a href="/report/{{post._id}}">Report</a>
+                                    {{/unless}}
+                                    {{#if loggedInUser}}
+                                    {{#if isAuthor}}
+                                    <a href="/editPost/{{post._id}}">Edit</a>
+                                    <a href="#" class="delete-post-btn" data-post-id="{{post._id}}">Delete</a>
+                                    {{/if}}
+                                    {{/if}}
                                 </div>
                             </div>
                             {{/if}}
                         </div>
                         <span class="post-duration">{{post.createdAt}}</span>
+                        {{#if post.edited}}
+                            <span class="post-edited"> Edited </span>
+                        {{/if}}
                         <div class="post_headerDescription">
                             <h2>{{post.postTitle}}</h2>
                             <p>{{post.postContent}}</p>
+                            {{#if post.tags}}
+                                <div class="post-tags {{post.tags}}-tag">
+                                    {{post.tags}}
+                                </div>
+                            {{/if}}                        
                         </div>
                     </div>
-                    
+
                     {{#if post.postImage}}
                     <img src="{{post.postImage}}" alt="Post Image" class="post-image"/>
                     {{/if}}
-                    
+
                     <div class="post-actions">
-                        <div class="vote-container">
-                            <a href="#" class="vote-btn">
+                        <div class="vote-container {{#if (isUpvoted post._id upvotedPosts)}}upvoted{{/if}}">
+                            <a href="#" class="vote-btn" data-post-id="{{post._id}}">
                                 <img src="/icons/upvoted.png" alt="upvote">
                             </a>
-                            <span class="vote-count">{{post.votes}}</span>
-                            <a href="#" class="vote-btn">
+                            <span class="vote-count {{#if (isUpvoted post._id upvotedPosts)}}upvoted{{/if}}">{{post.votes}}</span>
+                            <a href="#" class="vote-btn" data-post-id="{{post._id}}">
                                 <img src="/icons/downvoted.png" alt="downvote">
                             </a>
                         </div>
@@ -72,91 +87,92 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="comment-section-container">
-    {{#if isLoggedIn}}
-    <div class="add-comment-section">
-        <textarea placeholder="  Add a comment..."></textarea>
-        <button class="add-comment-btn">Comment</button>
-    </div>
-    {{/if}}
-
-    <div class="sort-section">
-        <label for="sort-comments">Sort by:</label>
-        <select class="sort-options" id="sort-comments">
-            <option value="best">Best</option>
-            <option value="newest">Newest</option>
-            <option value="oldest">Oldest</option>
-        </select>
-    </div>
-
-    <div class="comments-section">
-        {{#each post.comments}}
-        <div class="comment">
-            <div class="user-comment">
-                <strong>{{username}}</strong>
-                <span>{{duration}}</span>
-            </div>
-            <div class="main-comment">
-                {{#if title}}
-                <h2>{{title}}</h2>
-                {{/if}}
-                {{#if content}}
-                    {{#if content.length}}
-                        <ul>
-                            {{#each content}}
-                                <li>{{this}}</li>
-                            {{/each}}
-                        </ul>
-                    {{else}}
-                        <p>{{content}}</p>
-                    {{/if}}
-                {{/if}}
-            </div>
-            <div class="comment-actions">
-                <button class="vote-btn upvote">▲</button>
-                <span class="vote-count">{{votes}}</span>
-                <button class="vote-btn downvote">▼</button>
-                {{#if ../isLoggedIn}}
-                <button class="action-btn">Reply</button>
-                {{/if}}
-                <button class="action-btn">Share</button>
-            </div>
-
-            {{#if nestedComments.length}}
-            <div class="nested-comments">
-                {{#each nestedComments}}
-                <div class="comment nested-comment">
-                    <div class="user-comment">
-                        <strong>{{username}}</strong>
-                        <span>{{duration}}</span>
-                    </div>
-                    <div class="main-comment">
-                        <p>{{content}}</p>
-                    </div>
-                    <div class="comment-actions">
-                        <button class="vote-btn upvote">▲</button>
-                        <span class="vote-count">{{votes}}</span>
-                        <button class="vote-btn downvote">▼</button>
-                        {{#if ../../isLoggedIn}}
-                        <button class="action-btn">Reply</button>
-                        {{/if}}
-                        <button class="action-btn">Share</button>
-                    </div>
+                {{#if isLoggedIn}}
+                <div class="add-comment-section">
+                    <textarea placeholder=" Add a comment..."></textarea>
+                    <button class="add-comment-btn">Comment</button>
                 </div>
-                {{/each}}
+                {{/if}}
+
+                <div class="sort-section">
+                    <label for="sort-comments">Sort by:</label>
+                    <select class="sort-options" id="sort-comments">
+                        <option value="best">Best</option>
+                        <option value="newest">Newest</option>
+                        <option value="oldest">Oldest</option>
+                    </select>
+                </div>
+
+                <div class="comments-section">
+                    {{#each post.comments}}
+                    <div class="comment">
+                        <div class="user-comment">
+                            <strong>{{username}}</strong>
+                            <span>{{duration}}</span>
+                        </div>
+                        <div class="main-comment">
+                            {{#if title}}
+                            <h2>{{title}}</h2>
+                            {{/if}}
+                            {{#if content}}
+                                {{#if content.length}}
+                                    <ul>
+                                        {{#each content}}
+                                            <li>{{this}}</li>
+                                        {{/each}}
+                                    </ul>
+                                {{else}}
+                                    <p>{{content}}</p>
+                                {{/if}}
+                            {{/if}}
+                        </div>
+                        <div class="comment-actions">
+                            <button class="vote-btn upvote">▲</button>
+                            <span class="vote-count">{{votes}}</span>
+                            <button class="vote-btn downvote">▼</button>
+                            {{#if ../isLoggedIn}}
+                            <button class="action-btn">Reply</button>
+                            {{/if}}
+                            <button class="action-btn">Share</button>
+                        </div>
+
+                        {{#if nestedComments.length}}
+                        <div class="nested-comments">
+                            {{#each nestedComments}}
+                            <div class="comment nested-comment">
+                                <div class="user-comment">
+                                    <strong>{{username}}</strong>
+                                    <span>{{duration}}</span>
+                                </div>
+                                <div class="main-comment">
+                                    <p>{{content}}</p>
+                                </div>
+                                <div class="comment-actions">
+                                    <button class="vote-btn upvote">▲</button>
+                                    <span class="vote-count">{{votes}}</span>
+                                    <button class="vote-btn downvote">▼</button>
+                                    {{#if ../../isLoggedIn}}
+                                    <button class="action-btn">Reply</button>
+                                    {{/if}}
+                                    <button class="action-btn">Share</button>
+                                </div>
+                            </div>
+                            {{/each}}
+                        </div>
+                        {{/if}}
+                    </div>
+                    {{/each}}
+                </div>
             </div>
-            {{/if}}
-        </div>
-        {{/each}}
-    </div>
-</div>
 
         </div>
         <div id="right-panel">
-                {{> searchPanel}}
+            {{> searchPanel}}
         </div>
     </div>
     <script src="/javascript/post.js"></script>
+    <script src="/javascript/crudPost.js"></script>
 </body>
 </html>

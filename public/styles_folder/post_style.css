@@ -288,6 +288,16 @@ textarea {
     font-weight: bold;
 }
 
+.vote-container.upvoted {
+    background-color: rgb(255, 232, 201);
+    border-radius: 10px; 
+    padding: 5px 5px; 
+}
+
+.vote-count.upvoted {
+    color: maroon; 
+}
+
 .action-btn {
     background: none;
     border: none;
@@ -306,10 +316,19 @@ textarea {
     right: 0;
 }
 
+.post-edited {
+    color: maroon;
+    opacity: 0.5;
+    font-size: 0.8em;
+    margin-left: 5px;
+}
+
 .dots-menu a {
     text-decoration: none;
     outline: none;
     color: #292623;
+    padding: 4px 12px; 
+    display: block;
 }
 
 .dots-container {
@@ -330,7 +349,36 @@ a {
 
 .dots-menu a:hover {
     background-color: #f0f0f0;
-    border-radius: 50px;
+    border-radius: 2px;
+}
+
+.post-tags {
+    padding: 5px 10px;
+    border-radius: 5px;
+    color: white;
+    font-size: 12px;
+    display: inline-block;
+    margin-top: 10px;
+}
+
+.Commute-tag {
+    background-color: #3498db;
+}
+
+.Price-tag {
+    background-color: #27ae60; 
+}
+
+.Route-tag {
+    background-color: #e67e22;
+}
+
+.Location-tag {
+    background-color: #9b59b6;
+}
+
+.Weather-tag {
+    background-color: #34495e;
 }
 
 @media (max-width: 800px) {

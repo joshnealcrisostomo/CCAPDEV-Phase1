@@ -103,3 +103,144 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 });
+
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".delete-post-btn").forEach(btn => {
+        btn.addEventListener("click", handleDeletePost);
+    });
+
+    document.querySelectorAll(".vote-btn").forEach(btn => {
+        btn.addEventListener("click", handleVote);
+    });
+});
+
+async function handleDeletePost(event) {
+    event.preventDefault();
+    const postId = this.getAttribute('data-post-id');
+    const confirmDelete = confirm("Are you sure? This action cannot be undone.");
+
+    if (!confirmDelete) return;
+
+    try {
+        const response = await fetch("/deletePost", {
+            method: "DELETE",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ postId })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            alert("✅ Post deleted successfully!");
+            const postElement = this.closest('.post');
+            if (postElement) {
+                postElement.remove();
+            } else {
+                window.location.reload();
+            }
+            window.location.href = "/dashboard";
+        } else {
+            alert(`❌ ${data.message}`);
+        }
+    } catch (error) {
+        console.error("❌ Error deleting post:", error);
+        alert("❌ Network error. Please try again.");
+    }
+}
+
+async function handleVote(event) {
+    event.preventDefault();
+    const isPostVote = this.closest('.post-actions');
+    const isCommentVote = this.closest('.comment-actions');
+    const isUpvote = this.querySelector('img[alt="upvote"]') || this.classList.contains('upvote');
+    const postId = this.getAttribute('data-post-id');
+
+    if (!postId) {
+        console.error("Post ID not found");
+        return;
+    }
+
+    let commentId;
+
+    if (isCommentVote) {
+        commentId = this.closest('.comment').getAttribute('data-comment-id');
+    }
+
+    if (isPostVote) {
+        try {
+            const voteContainer = this.closest('.vote-container');
+            const voteCount = voteContainer.querySelector('.vote-count');
+            const isCurrentlyUpvoted = voteContainer.classList.contains('upvoted');
+
+            const response = await fetch(isUpvote ? `/upvotePost/${postId}` : `/downvotePost/${postId}`, {
+                method: "POST",
+                credentials: "include",
+            });
+            const data = await response.json();
+
+            if (response.ok) {
+                voteCount.textContent = data.votes;
+
+                if (isUpvote) {
+                    if (isCurrentlyUpvoted) {
+                        voteContainer.classList.remove('upvoted');
+                        voteCount.classList.remove('upvoted');
+                    } else {
+                        voteContainer.classList.add('upvoted');
+                        voteCount.classList.add('upvoted');
+                    }
+                } else {
+                    // Downvote logic (if needed)
+                    if (isCurrentlyUpvoted) {
+                        voteContainer.classList.remove('upvoted');
+                        voteCount.classList.remove('upvoted');
+                    }
+                }
+            } else {
+                alert(`❌ ${data.message}`);
+            }
+        } catch (error) {
+            console.error("❌ Error voting:", error);
+            alert("❌ Network error. Please try again.");
+        }
+    } else if (isCommentVote) {
+        try {
+            const voteContainer = this.closest('.comment-actions').querySelector('.vote-container');
+            const voteCount = this.closest('.comment-actions').querySelector('.vote-count');
+            const isCurrentlyUpvoted = voteContainer.classList.contains('upvoted');
+
+            const response = await fetch(isUpvote ? `/upvoteComment/${postId}/${commentId}` : `/downvoteComment/${postId}/${commentId}`, {
+                method: "POST",
+                credentials: "include",
+            });
+            const data = await response.json();
+
+            if (response.ok) {
+                voteCount.textContent = data.votes;
+
+                if (isUpvote) {
+                    if (isCurrentlyUpvoted) {
+                        voteContainer.classList.remove('upvoted');
+                        voteCount.classList.remove('upvoted');
+                    } else {
+                        voteContainer.classList.add('upvoted');
+                        voteCount.classList.add('upvoted');
+                    }
+                } else {
+                    if (isCurrentlyUpvoted) {
+                        voteContainer.classList.remove('upvoted');
+                        voteCount.classList.remove('upvoted');
+                    }
+                }
+            } else {
+                alert(`❌ ${data.message}`);
+            }
+        } catch (error) {
+            console.error("❌ Error voting:", error);
+            alert("❌ Network error. Please try again.");
+        }
+    }
+}

@@ -311,22 +311,35 @@ router.get('/welcome', (req, res) => {
 
 // Individual post route
 router.get('/post/:postId', async (req, res) => {
-    const { postId } = req.params;
-
     try {
-        const post = await Post.findById(postId).populate('author').exec();
+        const postId = req.params.postId;
+        const post = await Post.findById(postId).populate('author').populate('comments.author');
+
+        if (!post) {
+            return res.status(404).send('Post not found');
+        }
+
+        let upvotedPosts = [];
+        if (req.session.user) {
+            const user = await User.findById(req.session.user._id);
+            if (user && user.upvotedPosts) {
+                upvotedPosts = user.upvotedPosts;
+            }
+        }
+
+        const isAuthor = req.session.user && post.author._id.toString() === req.session.user._id;
 
         res.render('post', {
-            post,
-            author: post.author,
-            layout: 'post',
-            comments: post.comments || [],
+            post: post.toObject(),
+            author: post.author.toObject(),
+            isAuthor: isAuthor,
             isLoggedIn: !!req.session.user,
-            loggedInUser: req.session.loggedInUser
+            loggedInUser: req.session.user,
+            upvotedPosts: upvotedPosts,
         });
-    } catch (error) {
-        console.error('Error fetching post:', error);
-        res.status(500).send('Error loading post: ' + error.message);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Server Error');
     }
 });
 
@@ -449,30 +462,44 @@ router.get('/editPost/:id', async (req, res) => {
     }
 });
 
-// Update POST route 
+// Update POST route
 router.post('/updatePost/:id', async (req, res) => {
     try {
         if (!req.session.user) {
             return res.redirect('/login');
         }
-        
+
         const postId = req.params.id;
         const { postTitle, postContent, tags } = req.body;
         const userId = req.session.user._id;
-        
+
         const result = await updatePost(postId, postTitle, postContent, tags, userId);
-        
+
         if (result.success) {
-            return res.redirect(`/post/${postId}`);
+            // Fetch the updated post
+            const updatedPost = await Post.findById(postId).populate('author').exec();
+
+            if (updatedPost) {
+                // Render the post view with the updated post
+                return res.render('post', {
+                    post: updatedPost,
+                    author: updatedPost.author,
+                    isLoggedIn: !!req.session.user,
+                    loggedInUser: req.session.user ? req.session.user.username : '',
+                    isAuthor: req.session.user && req.session.user._id.toString() === updatedPost.author._id.toString()
+                });
+            } else {
+                return res.status(404).send('Post not found after update.');
+            }
         } else {
             const post = await Post.findById(postId).populate('author').exec();
-            return res.render('editPost', { 
+            return res.render('editPost', {
                 post,
                 layout: 'editPost',
                 title: 'Edit Post',
                 isLoggedIn: !!req.session.user,
                 loggedInUser: req.session.user ? req.session.user.username : '',
-                error: result.message 
+                error: result.message
             });
         }
     } catch (error) {
@@ -786,6 +813,88 @@ router.post('/report/:id', async (req, res) => {
     } catch (error) {
         console.error('Error submitting report:', error);
         res.status(500).send('Server error');
+    }
+});
+
+// Upvote post
+router.post('/upvotePost/:postId', async (req, res) => {
+    if (!req.session.user) {
+        return res.status(401).json({ success: false, message: 'Unauthorized' });
+    }
+
+    const { postId } = req.params;
+    const userId = req.session.user._id;
+
+    try {
+        const post = await Post.findById(postId);
+        if (!post) {
+            return res.status(404).json({ success: false, message: 'Post not found' });
+        }
+
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+
+        if (!user.upvotedPosts) {
+            user.upvotedPosts = [];
+        }
+
+        const upvotedIndex = user.upvotedPosts.indexOf(postId);
+
+        if (upvotedIndex === -1) {
+            user.upvotedPosts.push(postId);
+            post.votes += 1;
+        } else {
+            user.upvotedPosts.splice(upvotedIndex, 1);
+            post.votes -= 1;
+        }
+
+        await post.save();
+        await user.save();
+
+        res.json({ success: true, votes: post.votes });
+    } catch (error) {
+        console.error('Error upvoting post:', error);
+        res.status(500).json({ success: false, message: 'Internal server error' });
+    }
+});
+
+// Downvote post route
+router.post('/downvotePost/:postId', async (req, res) => {
+    if (!req.session.user) {
+        return res.status(401).json({ success: false, message: 'Unauthorized' });
+    }
+    const { postId } = req.params;
+    const userId = req.session.user._id;
+    try {
+        const post = await Post.findById(postId);
+        if (!post) {
+            return res.status(404).json({ success: false, message: 'Post not found' });
+        }
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+        const upvotedIndex = user.upvotedPosts.indexOf(postId);
+
+        if (upvotedIndex !== -1) {
+            user.upvotedPosts.splice(upvotedIndex, 1);
+            if (post.votes > 0) {
+                post.votes -= 1;
+            }
+        } else {
+            if (post.votes > 0) {
+                post.votes -= 1;
+            }
+        }
+
+        await post.save();
+        await user.save();
+        res.json({ success: true, votes: post.votes });
+    } catch (error) {
+        console.error('Error downvoting post:', error);
+        res.status(500).json({ success: false, message: 'Internal server error' });
     }
 });
 

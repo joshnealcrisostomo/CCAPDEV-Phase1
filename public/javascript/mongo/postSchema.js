@@ -1,4 +1,3 @@
-// postSchema.js
 const mongoose = require('mongoose');
 
 const postSchema = new mongoose.Schema({
@@ -22,10 +21,10 @@ const postSchema = new mongoose.Schema({
         type: String,
         default: '',
     },
-    comments: {
-        type: String,
-        default: '',
-    },
+    comments: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Comment',
+    }],
     author: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',

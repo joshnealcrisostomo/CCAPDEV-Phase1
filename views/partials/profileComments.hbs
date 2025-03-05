@@ -1,9 +1,30 @@
 {{#if comments.length}}
     {{#each comments}}
-    <div class="comment">
-        <p>{{commentText}}</p>
-        <a href="#" class="delete-comment-btn" onclick="deleteComment(event)">Delete Comment</a>
-    </div>
+        <div class="comment">
+            <div class="comment-header">
+                <div>
+                    <p class="comment-duration">{{createdAt}}</p>
+                </div>
+                <div class="comment-dots" data-comment-id="{{this._id}}">⋮</div>
+                <div id="comment-menu-{{this._id}}" class="comment-dots-menu">
+                    <a href="/editComment/{{_id}}" class="edit-comment-btn">Edit</a>
+                    <a href="#" class="delete-comment-btn" data-comment-id="{{this._id}}">Delete</a>
+                </div>
+            </div>
+            <div class="comment-content">
+                <p><strong>On Post:</strong>  
+                    {{#if postId.postTitle}}
+                        <a href="/post/{{postId._id}}">{{postId.postTitle}}</a>
+                    {{else}}
+                        <span>⚠️ Post Title Not Available</span>
+                    {{/if}}
+                </p>
+                <p>{{content}}</p>
+            </div>
+            <div class="comment-footer">
+                <span>▲ {{votes}} ▼</span>
+            </div>
+        </div>
     {{/each}}
 {{else}}
     <img src="/icons/comments.png" alt="comment-icon" class="empty-icon">

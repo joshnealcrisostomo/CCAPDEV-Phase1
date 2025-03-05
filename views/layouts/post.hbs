@@ -113,20 +113,7 @@
                             <span>{{duration}}</span>
                         </div>
                         <div class="main-comment">
-                            {{#if title}}
-                            <h2>{{title}}</h2>
-                            {{/if}}
-                            {{#if content}}
-                                {{#if content.length}}
-                                    <ul>
-                                        {{#each content}}
-                                            <li>{{this}}</li>
-                                        {{/each}}
-                                    </ul>
-                                {{else}}
-                                    <p>{{content}}</p>
-                                {{/if}}
-                            {{/if}}
+                            <p>{{content}}</p>
                         </div>
                         <div class="comment-actions">
                             <button class="vote-btn upvote">▲</button>

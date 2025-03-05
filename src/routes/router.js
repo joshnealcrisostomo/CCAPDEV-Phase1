@@ -10,6 +10,8 @@ const { updateUser } = require('../../public/javascript/mongo/updateUser.js');
 const Post = require('../../public/javascript/mongo/postSchema.js');
 const { createReport } = require('../../public/javascript/mongo/crudReport.js');
 const User = require('../../public/javascript/mongo/UserSchema.js');
+const { addComment, getComments, updateComment, deleteComment } = require('../../public/javascript/mongo/crudComments.js');
+const Comment = require( '../../public/javascript/mongo/commentSchema.js');
 
 // MongoDB connection URI
 const uri = "mongodb+srv://patricklim:Derp634Derp@apdevcluster.chzne.mongodb.net/?retryWrites=true&w=majority&appName=APDEVcluster";
@@ -133,10 +135,10 @@ router.get('/profile/:username/content/:tab', async (req, res) => {
         if(isOwnProfile) {
             switch (tab) {
                 case 'comments':
-                    const comments = await Post.find({ "comments.author": viewedUser._id })
-                                             .populate('author')
-                                             .exec();
-                    res.render('../partials/profileComments', { comments });
+                    const userComments = await Comment.find({ username: viewedUser.username })
+                                                .sort({ createdAt: -1 })
+                                                .exec();
+                    res.render('../partials/profileComments', { comments: userComments, viewedUser });
                     break;
                 case 'bookmark':
                     const bookmarkedPosts = await Post.find({ _id: { $in: viewedUser.bookmarks || [] } })
@@ -420,6 +422,120 @@ router.delete('/deletePost', async (req, res) => {
     }
 });
 
+// CREATE COMMENT
+router.post("/comments", async (req, res) => {
+    console.log("📩 Received Comment Request:", req.body);
+
+    let { postId, username, content } = req.body;
+    if (!postId || !username || !content) {
+        console.log("❌ Missing required fields!", { postId, username, content });
+        return res.status(400).json({ success: false, message: "Missing required fields" });
+    }
+
+    try {
+        const newComment = await addComment(postId, username, content);
+        if (newComment.error) {
+            console.log("❌ Comment creation failed!");
+            return res.status(500).json({ success: false, message: newComment.error });
+        }
+
+        res.json({ success: true, comment: newComment });
+    } catch (error) {
+        console.error("❌ Error saving comment:", error);
+        res.status(500).json({ success: false, message: "Internal server error" });
+    }
+});
+
+
+// READ comments for a post
+router.get('/comments/:postId', async (req, res) => { 
+    const { postId } = req.params;
+
+    console.log(`📥 Fetching comments for post: ${postId}`);
+
+    const response = await getComments(postId);
+
+    console.log(`🔎 Comments fetched:`, response);
+
+    res.json(response);
+});
+
+
+
+// Update comment
+router.post('/updateComment/:id', async (req, res) => {
+    try {
+        if (!req.session.user) {
+            return res.redirect('/login');
+        }
+
+        const commentId = req.params.id;
+        let { commentText, postId } = req.body; // ✅ Get postId from request
+
+        console.log("📝 Editing Comment ID:", commentId);
+        console.log("📩 Received Post ID from request:", postId);
+
+        const comment = await Comment.findById(commentId);
+        if (!comment) {
+            return res.status(404).send('❌ Comment not found');
+        }
+
+        if (comment.username !== req.session.user.username) {
+            return res.status(403).send('❌ You are not authorized to edit this comment');
+        }
+
+        comment.content = commentText;
+        await comment.save();
+
+        // 🔍 Try getting postId from the database if missing
+        if (!postId) {
+            console.log("⚠️ postId missing from request. Fetching from database...");
+            postId = comment.postId; // ✅ Fetch from the comment itself
+        }
+
+        // ❗️ Final check: If postId is still missing, redirect to dashboard
+        if (!postId) {
+            console.log("Still no Post ID. Redirecting to dashboard.");
+            return res.redirect('/dashboard');
+        }
+
+        console.log("✅ Redirecting to post:", `/post/${postId}`);
+        res.redirect(`/post/${postId}`); // ✅ Correct redirection to post
+    } catch (error) {
+        console.error('❌ Error updating comment:', error);
+        res.status(500).send('Server error');
+    }
+});
+
+// Delete comment
+router.delete('/comments/:commentId', async (req, res) => {
+    try {
+        if (!req.session.user) {
+            return res.status(401).json({ success: false, message: "Unauthorized" });
+        }
+
+        const { commentId } = req.params;
+        console.log("🗑️ Attempting to delete comment:", commentId);
+
+        const comment = await Comment.findById(commentId);
+        if (!comment) {
+            return res.status(404).json({ success: false, message: "Comment not found" });
+        }
+
+        if (comment.username !== req.session.user.username) {
+            return res.status(403).json({ success: false, message: "You can only delete your own comments" });
+        }
+
+        await Comment.findByIdAndDelete(commentId);
+        console.log("✅ Comment deleted successfully:", commentId);
+
+        res.json({ success: true, message: "Comment deleted successfully" });
+    } catch (error) {
+        console.error("❌ Error deleting comment:", error);
+        res.status(500).json({ success: false, message: "Server error" });
+    }
+});
+
 // Notifications page
 router.get('/notifications', (req, res) => {
     res.render('notifications', {
@@ -428,6 +544,62 @@ router.get('/notifications', (req, res) => {
         isLoggedIn: req.session.isLoggedIn || false,
         loggedInUser: req.session.loggedInUser || ''
     });
+});
+
+// GET route to load the edit comment page
+router.get('/editComment/:id', async (req, res) => {
+    try {
+        if (!req.session.user) {
+            return res.redirect('/login');
+        }
+
+        const commentId = req.params.id;
+        const comment = await Comment.findById(commentId).exec();
+        
+        if (!comment) {
+            return res.status(404).send('Comment not found');
+        }
+
+        if (comment.username !== req.session.user.username) {
+            return res.status(403).send('You are not authorized to edit this comment');
+        }
+
+        res.render("editComment", { 
+            comment,
+            title: 'Edit Comment',
+            isLoggedIn: !!req.session.user,
+            loggedInUser: req.session.user ? req.session.user.username : ''
+        });        
+        
+    } catch (error) {
+        console.error('❌ Error loading edit comment page:', error);
+        res.status(500).send('Server error');
+    }
+});
+
+router.get("/profile/comments", async (req, res) => {
+    try {
+        if (!req.session.user) {
+            return res.redirect("/login");
+        }
+
+        // Fetch comments made by the logged-in user
+        const comments = await Comment.find({ username: req.session.user.username })
+            .populate({
+                path: "postId",
+                select: "_id postTitle"
+            })
+            .exec();
+
+            console.log("📝 Retrieved Comments Data:", comments);
+        res.render("profileComments", {
+            comments,
+            isLoggedIn: true
+        });
+    } catch (error) {
+        console.error("❌ Error fetching profile comments:", error);
+        res.status(500).send("Server error");
+    }
 });
 
 // Update GET route

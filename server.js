@@ -135,6 +135,55 @@ app.delete("/users/:id", async (req, res) => {
     }
 });
 
+const Comment = require("./public/javascript/mongo/commentSchema.js"); // Import comment schema
+const Post = require("./public/javascript/mongo/postSchema.js"); // Import post schema
+
+// API Route to Add a Comment to a Post
+app.post("/add-comment", async (req, res) => {
+    try {
+        const { postId, username, content } = req.body;
+
+        if (!postId || !username || !content) {
+            return res.status(400).json({ success: false, message: "Missing required fields" });
+        }
+
+        // Create a new comment
+        const newComment = new Comment({ username: String(username), content });
+        const savedComment = await newComment.save();
+
+        const updatedPost = await Post.findByIdAndUpdate(
+            postId,
+            { $push: { comments: savedComment._id } },
+            { new: true }
+        );
+
+        if (!updatedPost) {
+            return res.status(404).json({ success: false, message: "Post not found" });
+        }
+
+        res.json({ success: true, comment: savedComment });
+    } catch (error) {
+        console.error("❌ Error adding comment:", error);
+        res.status(500).json({ success: false, message: "Server error" });
+    }
+});
+
+
+async function fixCommentsField() {
+    try {
+        const result = await Post.updateMany(
+            { comments: { $type: "string" } }, // Find posts where comments is a string
+            { $set: { comments: [] } } // Convert to an empty array
+        );
+        console.log("✅ Fixed comments field for posts:", result);
+    } catch (error) {
+        console.error("❌ Error fixing comments field:", error);
+    }
+}
+
+// Run the fix once when the server starts
+fixCommentsField();
+
 // Start Server
 app.listen(PORT, () => {
     console.log(`Server running at http://localhost:${PORT}`);

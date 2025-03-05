@@ -9,22 +9,22 @@ const commentSchema = new mongoose.Schema({
       type: String,
       default: ''
     },
-    content: [{
-      type: String
-    }],
+    content: {
+      type: String,
+      required: true
+    },
     votes: {
       type: Number,
       default: 0
     },
-    comments: [{ // Nested comments use the same structure
+    comments: [{  
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Comment' // Self-reference
+      ref: 'Comment' 
     }],
     createdAt: {
       type: Date,
       default: Date.now
     }
-  });
+});
 
 module.exports = mongoose.model('Comment', commentSchema);
-

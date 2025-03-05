@@ -63,8 +63,6 @@ async function deletePost(postId) {
   }
 }
 
-// Add this to your crudPost.js file
-
 async function updatePost(postId, postTitle, postContent, tags, userId) {
   try {
     // Validate postId

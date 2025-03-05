@@ -62,9 +62,9 @@ document.addEventListener("DOMContentLoaded", function () {
                     commentContainer.appendChild(replyContainer);
 
                     replyInput.addEventListener("input", function () {
-                        this.style.height = "36px";
+                        this.style.height = "36px"; 
                         if (this.scrollHeight > this.clientHeight) {
-                            this.style.height = Math.min(this.scrollHeight, 150) + "px";
+                            this.style.height = Math.min(this.scrollHeight, 150) + "px"; 
                         }
 
                         if (this.scrollHeight >= 100) {
@@ -83,6 +83,102 @@ document.addEventListener("DOMContentLoaded", function () {
                     });
                 }
             });
+        }
+    });
+
+    // Comment Button Functionality
+    async function fetchComments() {
+        let postId = window.location.pathname.split("/").pop();
+        const commentsContainer = document.querySelector(".comments-section");
+
+        try {
+            let response = await fetch(`/comments/${postId}`);
+            let data = await response.json();
+
+            commentsContainer.innerHTML = ""; // Clear comments section before adding new ones
+
+            if (Array.isArray(data)) {
+                data.forEach(comment => {
+                    console.log("🛠️ Comment Data:", comment);
+                    let newComment = document.createElement("div");
+                    newComment.classList.add("comment");
+                    newComment.innerHTML = `
+                        <div class="user-comment">
+                        <strong>${comment.username}</strong>
+                            <span>${new Date(comment.createdAt).toLocaleString()}</span>
+                        </div>
+                        <div class="main-comment">
+                            <p>${comment.content}</p>
+                        </div>
+                        <div class="comment-actions">
+                            <button class="vote-btn upvote">▲</button>
+                            <span class="vote-count">${comment.votes}</span>
+                            <button class="vote-btn downvote">▼</button>
+                            <button class="action-btn">Reply</button>
+                        </div>
+                    `;
+                    commentsContainer.appendChild(newComment);
+                });
+            }
+        } catch (error) {
+            console.error("❌ Error fetching comments:", error);
+        }
+    }
+
+    // Fetch comments when the page loads
+    fetchComments();
+    
+
+    // Add new comment functionality
+    console.log("🛠 Checking if comment button exists...");
+    const commentBtn = document.querySelector("#comment-btn");
+    const commentInput = document.querySelector("#comment-input");
+
+    if (!commentBtn || !commentInput) {
+        console.error("❌ Comment button or input not found! Skipping event listener setup.");
+        return; 
+    }
+
+    console.log("✅ Comment button found!");
+
+    commentBtn.addEventListener("click", async function () {
+        console.log("🛑 Comment button clicked!");
+
+        let commentText = commentInput.value.trim();
+        if (commentText === "") {
+            console.warn("⚠️ Empty comment!");
+            return;
+        }
+
+        let postId = window.location.pathname.split("/").pop(); 
+        let username = document.querySelector(".logged-in-user")?.dataset.username || "Anonymous";
+
+        console.log("📌 Extracted postId:", postId, "Type:", typeof postId);
+        console.log("📩 Sending Comment - Username:", username, "Type:", typeof username);
+
+        if (!postId) {
+            console.error("❌ postId is MISSING! Cannot send comment.");
+            return;
+        }
+
+        try {
+            let response = await fetch("/comments", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ postId, username, content: commentText })
+            });
+
+            let data = await response.json();
+            console.log("📩 API Response:", data);
+
+            if (data.success) {
+                commentInput.value = "";
+                fetchComments();
+            } else {
+                console.error("❌ Failed to save comment:", data.message);
+            }
+        } catch (error) {
+            console.error("❌ Error saving comment:", error);
         }
     });
 });

@@ -128,7 +128,6 @@ document.addEventListener("DOMContentLoaded", function () {
     // Fetch comments when the page loads
     fetchComments();
     
-
     // Add new comment functionality
     console.log("🛠 Checking if comment button exists...");
     const commentBtn = document.querySelector("#comment-btn");
@@ -141,6 +140,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     console.log("✅ Comment button found!");
 
+    let username = document.body.getAttribute('data-username') || "Anonymous";
+
     commentBtn.addEventListener("click", async function () {
         console.log("🛑 Comment button clicked!");
 
@@ -151,7 +152,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         let postId = window.location.pathname.split("/").pop(); 
-        let username = document.querySelector(".logged-in-user")?.dataset.username || "Anonymous";
 
         console.log("📌 Extracted postId:", postId, "Type:", typeof postId);
         console.log("📩 Sending Comment - Username:", username, "Type:", typeof username);

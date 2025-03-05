@@ -7,22 +7,20 @@
                 </div>
                 <div class="comment-dots" data-comment-id="{{this._id}}">⋮</div>
                 <div id="comment-menu-{{this._id}}" class="comment-dots-menu">
-                    <a href="/editComment/{{_id}}" class="edit-comment-btn">Edit</a>
+                    <a href="/editComment/{{this._id}}" class="edit-comment-btn">Edit</a>
                     <a href="#" class="delete-comment-btn" data-comment-id="{{this._id}}">Delete</a>
                 </div>
             </div>
             <div class="comment-content">
-                <p><strong>On Post:</strong>  
-                    {{#if postId.postTitle}}
-                        <a href="/post/{{postId._id}}">{{postId.postTitle}}</a>
-                    {{else}}
-                        <span>⚠️ Post Title Not Available</span>
-                    {{/if}}
-                </p>
-                <p>{{content}}</p>
+                {{#if this.postId.postTitle}}
+                    <h3><a href="/post/{{this.postId._id}}">{{this.postId.postTitle}}</a></h3>
+                {{else}}
+                    <h3><span>⚠️ Post Title Not Available</span></h3>
+                {{/if}}
+                <p>{{this.content}}</p>
             </div>
             <div class="comment-footer">
-                <span>▲ {{votes}} ▼</span>
+                <span>▲ {{this.votes}} ▼</span>
             </div>
         </div>
     {{/each}}

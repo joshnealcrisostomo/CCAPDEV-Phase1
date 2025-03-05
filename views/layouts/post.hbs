@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="/styles_folder/post_style.css">
     <title>{{post.postTitle}} | ByaHero!</title>
 </head>
-<body>
+<body data-username="{{loggedInUser}}">
     <div class="container">
         <div id="left-panel">
             {{> navBar}}
@@ -91,8 +91,8 @@
             <div class="comment-section-container">
                 {{#if isLoggedIn}}
                 <div class="add-comment-section">
-                    <textarea placeholder=" Add a comment..."></textarea>
-                    <button class="add-comment-btn">Comment</button>
+                    <textarea id="comment-input" placeholder="  Add a comment..."></textarea>
+                    <button id="comment-btn" class="add-comment-btn">Comment</button>
                 </div>
                 {{/if}}
 
@@ -161,5 +161,6 @@
     </div>
     <script src="/javascript/post.js"></script>
     <script src="/javascript/crudPost.js"></script>
+    <script src="/javascript/crudComments.js"></script>
 </body>
 </html>

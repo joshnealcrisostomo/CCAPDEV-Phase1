@@ -73,13 +73,23 @@ router.get('/profile/:username', async (req, res) => {
         if (!viewedUser) return res.status(404).send('User not found');
 
         const userPosts = await Post.find({ author: viewedUser._id })
-                                   .populate('author')
-                                   .sort({ createdAt: -1 })
-                                   .exec();
+            .populate('author')
+            .sort({ createdAt: -1 })
+            .exec();
+
+        // Fetch comments made by the viewed user.
+        const userComments = await Comment.find({ user: viewedUser._id })
+            .populate({
+                path: 'postId',
+                select: 'postTitle _id' // Select the fields you need
+            })
+            .sort({createdAt: -1})
+            .exec();
 
         const loggedInUser = req.session.user ? req.session.user.username : '';
         const isOwnProfile = req.session.user && req.session.user.username === viewedUser.username;
 
+        console.log("User Comments:", userComments);
         if (isOwnProfile) {
             res.render('profile.hbs', {
                 displayName: viewedUser.displayName,
@@ -87,6 +97,7 @@ router.get('/profile/:username', async (req, res) => {
                 profilePic: viewedUser.profilePic,
                 bio: viewedUser.bio,
                 posts: userPosts,
+                comments: userComments,
                 layout: 'profile',
                 title: `${viewedUser.displayName}'s Profile`,
                 isLoggedIn: !!req.session.user,
@@ -100,6 +111,7 @@ router.get('/profile/:username', async (req, res) => {
                 profilePic: viewedUser.profilePic,
                 bio: viewedUser.bio,
                 posts: userPosts,
+                comments: userComments,
                 layout: 'publicProfile',
                 title: `${viewedUser.displayName}'s Profile`,
                 isLoggedIn: !!req.session.user,
@@ -336,7 +348,7 @@ router.get('/post/:postId', async (req, res) => {
             author: post.author.toObject(),
             isAuthor: isAuthor,
             isLoggedIn: !!req.session.user,
-            loggedInUser: req.session.user,
+            loggedInUser: req.session.user.username,
             upvotedPosts: upvotedPosts,
         });
     } catch (err) {
@@ -459,8 +471,6 @@ router.get('/comments/:postId', async (req, res) => {
 
     res.json(response);
 });
-
-
 
 // Update comment
 router.post('/updateComment/:id', async (req, res) => {

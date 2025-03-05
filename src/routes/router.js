@@ -347,6 +347,8 @@ router.get('/post/:postId', async (req, res) => {
 
         const isAuthor = req.session.user && post.author._id.toString() === req.session.user._id;
 
+        console.log(req.session.user.username);
+
         res.render('post', {
             post: post.toObject(),
             author: post.author.toObject(),

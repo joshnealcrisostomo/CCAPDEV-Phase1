@@ -5,19 +5,16 @@
                 <div>
                     <p class="comment-duration">{{createdAt}}</p>
                 </div>
-                <div class="comment-dots" data-comment-id="{{this._id}}">⋮</div>
-                <div id="comment-menu-{{this._id}}" class="comment-dots-menu">
-                    <a href="/editComment/{{this._id}}" class="edit-comment-btn">Edit</a>
-                    <a href="#" class="delete-comment-btn" data-comment-id="{{this._id}}">Delete</a>
+                <div class="comment-dots" data-comment-id="{{this.commentId}}">⋮</div>
+                <div id="comment-menu-{{this.commentId}}" class="comment-dots-menu">
+                    <a href="/editComment/{{this.commentId}}" class="edit-comment-btn">Edit</a>
+                    <a href="#" class="delete-comment-btn" data-comment-id="{{this.commentId}}">Delete</a>
                 </div>
             </div>
             <div class="comment-content">
-                {{#if this.postId.postTitle}}
-                    <h3><a href="/post/{{this.postId._id}}">{{this.postId.postTitle}}</a></h3>
-                {{else}}
-                    <h3><span>⚠️ Post Title Not Available</span></h3>
-                {{/if}}
-                <p>{{this.content}}</p>
+                <a href="/post/{{this.postId._id}}" class="full-link">
+                    <p>{{this.content}}</p>
+                </a>
             </div>
             <div class="comment-footer">
                 <span>▲ {{this.votes}} ▼</span>

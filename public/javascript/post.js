@@ -128,36 +128,21 @@ document.addEventListener("DOMContentLoaded", function () {
     // Fetch comments when the page loads
     fetchComments();
     
-    // Add new comment functionality
-    console.log("🛠 Checking if comment button exists...");
     const commentBtn = document.querySelector("#comment-btn");
     const commentInput = document.querySelector("#comment-input");
 
     if (!commentBtn || !commentInput) {
-        console.error("❌ Comment button or input not found! Skipping event listener setup.");
-        return; 
+        console.error("❌ Comment button or input not found!");
+        return;
     }
 
-    console.log("✅ Comment button found!");
-
     let username = document.body.getAttribute('data-username') || "Anonymous";
+    let postId = window.location.pathname.split("/").pop();
 
     commentBtn.addEventListener("click", async function () {
-        console.log("🛑 Comment button clicked!");
-
         let commentText = commentInput.value.trim();
         if (commentText === "") {
             console.warn("⚠️ Empty comment!");
-            return;
-        }
-
-        let postId = window.location.pathname.split("/").pop(); 
-
-        console.log("📌 Extracted postId:", postId, "Type:", typeof postId);
-        console.log("📩 Sending Comment - Username:", username, "Type:", typeof username);
-
-        if (!postId) {
-            console.error("❌ postId is MISSING! Cannot send comment.");
             return;
         }
 

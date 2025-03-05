@@ -77,19 +77,23 @@ router.get('/profile/:username', async (req, res) => {
             .sort({ createdAt: -1 })
             .exec();
 
-        // Fetch comments made by the viewed user.
-        const userComments = await Comment.find({ user: viewedUser._id })
+        const userComments = await Comment.find({ username: viewedUser.username })
             .populate({
                 path: 'postId',
-                select: 'postTitle _id' // Select the fields you need
+                model: 'Post',
+                select: 'postTitle _id'
             })
-            .sort({createdAt: -1})
+            .sort({ createdAt: -1 })
             .exec();
+
+        const formattedComments = userComments.map(comment => ({
+            commentId: comment._id.toString(),
+            postId: comment.postId
+        }));
 
         const loggedInUser = req.session.user ? req.session.user.username : '';
         const isOwnProfile = req.session.user && req.session.user.username === viewedUser.username;
 
-        console.log("User Comments:", userComments);
         if (isOwnProfile) {
             res.render('profile.hbs', {
                 displayName: viewedUser.displayName,
@@ -97,7 +101,7 @@ router.get('/profile/:username', async (req, res) => {
                 profilePic: viewedUser.profilePic,
                 bio: viewedUser.bio,
                 posts: userPosts,
-                comments: userComments,
+                comments: formattedComments,
                 layout: 'profile',
                 title: `${viewedUser.displayName}'s Profile`,
                 isLoggedIn: !!req.session.user,
@@ -111,7 +115,7 @@ router.get('/profile/:username', async (req, res) => {
                 profilePic: viewedUser.profilePic,
                 bio: viewedUser.bio,
                 posts: userPosts,
-                comments: userComments,
+                comments: formattedComments,  // Pass formatted comments
                 layout: 'publicProfile',
                 title: `${viewedUser.displayName}'s Profile`,
                 isLoggedIn: !!req.session.user,
@@ -451,12 +455,13 @@ router.post("/comments", async (req, res) => {
             return res.status(500).json({ success: false, message: newComment.error });
         }
 
-        res.json({ success: true, comment: newComment });
+        res.json({ success: true, comment: newComment, postId });
     } catch (error) {
         console.error("❌ Error saving comment:", error);
         res.status(500).json({ success: false, message: "Internal server error" });
     }
 });
+
 
 
 // READ comments for a post
@@ -480,7 +485,7 @@ router.post('/updateComment/:id', async (req, res) => {
         }
 
         const commentId = req.params.id;
-        let { commentText, postId } = req.body; // ✅ Get postId from request
+        let { commentText, postId } = req.body; 
 
         console.log("📝 Editing Comment ID:", commentId);
         console.log("📩 Received Post ID from request:", postId);
@@ -497,20 +502,18 @@ router.post('/updateComment/:id', async (req, res) => {
         comment.content = commentText;
         await comment.save();
 
-        // 🔍 Try getting postId from the database if missing
         if (!postId) {
             console.log("⚠️ postId missing from request. Fetching from database...");
-            postId = comment.postId; // ✅ Fetch from the comment itself
+            postId = comment.postId;
         }
 
-        // ❗️ Final check: If postId is still missing, redirect to dashboard
         if (!postId) {
             console.log("Still no Post ID. Redirecting to dashboard.");
             return res.redirect('/dashboard');
         }
 
         console.log("✅ Redirecting to post:", `/post/${postId}`);
-        res.redirect(`/post/${postId}`); // ✅ Correct redirection to post
+        res.redirect(`/post/${postId}`);
     } catch (error) {
         console.error('❌ Error updating comment:', error);
         res.status(500).send('Server error');

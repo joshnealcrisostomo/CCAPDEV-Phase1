@@ -11,11 +11,11 @@ async function addComment(postId, username, content) {
 
         content = String(content).trim();
 
-        // Create a new comment
-        const newComment = new Comment({ username, content });
+        // Create a new comment with postId
+        const newComment = new Comment({ postId, username, content });
         const savedComment = await newComment.save();
 
-        // ✅ Ensure we push an array, not a string
+        // ✅ Ensure the post gets updated with the new comment
         const post = await Post.findByIdAndUpdate(
             postId,
             { $push: { comments: savedComment._id } }, 
@@ -34,6 +34,7 @@ async function addComment(postId, username, content) {
         return { error: error.message };
     }
 }
+
 
 async function getComments(postId) {
     try {

@@ -443,8 +443,10 @@ body {
 
 /* Comment content */
 .comment-content p {
-    font-size: 14px;
-    color: #333;
+    font-size: 18px;
+    color: #292623;
+    opacity: 1;
+    font-weight: bold;
     margin-top: 5px;
 }
 
@@ -485,4 +487,12 @@ body {
 .comment-post-title a:hover {
     text-decoration: underline; /* Only underline on hover */
     color: #292623; /* Match post hover color */
+}
+
+.full-link {
+    display: block; /* Make the anchor tag behave as a block-level element */
+    width: 100%; /* Ensure the link takes up the full width of the parent div */
+    height: 100%; /* Optionally set a height to fill the container */
+    text-decoration: none; /* Remove the default underline from the link */
+    color: inherit; /* Inherit the color from the parent */
 }

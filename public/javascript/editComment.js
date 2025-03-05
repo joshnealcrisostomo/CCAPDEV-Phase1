@@ -17,7 +17,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
             const formData = new FormData(this);
             const commentData = {
-                commentText: formData.get('commentText')
+                commentText: formData.get('commentText'),
+                postId: postId
             };
 
             try {

@@ -31,22 +31,31 @@
                     <label><input type="checkbox"> Search title only</label>
                 </div>
                 <div class="advanced-options">
-                    <select>
-                        <option>Routes</option>
-                        <option>Tips</option>
-                        <option>Misc</option>
-                        <option>Sort by Last Post Date</option>
-                        <option>Sort by User</option>
-                        <option>Sort by View Count</option>
-                        <option>Sort by Reply Count</option>
-                    </select>
-                    <div class="radio-options">
-                        <label>
-                            <input type="radio" name="sortOrder" value="ascending"> Ascending
-                        </label>
-                        <label>
-                            <input type="radio" name="sortOrder" value="descending"> Descending
-                        </label>
+                    <div class="sort-options">
+                        <label for="sort-by">Sort by:</label>
+                        <select id="sort-by">
+                            <option>Last Post Date</option>
+                            <option>View Count</option>
+                            <option>Reply Count</option>
+                        </select>
+                        <div class="radio-options">
+                            <label>
+                                <input type="radio" name="sortOrder" value="ascending"> Ascending
+                            </label>
+                            <label>
+                                <input type="radio" name="sortOrder" value="descending"> Descending
+                            </label>
+                        </div>
+                    </div>
+                    <div class="tag-options">
+                        <label for="tag-select">Tags:</label>
+                        <select id="tag-select">
+                            <option>Commute</option>
+                            <option>Price</option>
+                            <option>Route</option>
+                            <option>Location</option>
+                            <option>Weather</option>
+                        </select>
                     </div>
                 </div>
                 <br>

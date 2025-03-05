@@ -347,14 +347,12 @@ router.get('/post/:postId', async (req, res) => {
 
         const isAuthor = req.session.user && post.author._id.toString() === req.session.user._id;
 
-        console.log(req.session.user.username);
-
         res.render('post', {
             post: post.toObject(),
             author: post.author.toObject(),
             isAuthor: isAuthor,
             isLoggedIn: !!req.session.user,
-            loggedInUser: req.session.user.username,
+            loggedInUser: req.session.loggedInUser,
             upvotedPosts: upvotedPosts,
         });
     } catch (err) {

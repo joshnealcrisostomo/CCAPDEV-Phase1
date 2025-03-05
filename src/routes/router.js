@@ -156,23 +156,11 @@ router.get('/profile/:username/content/:tab', async (req, res) => {
                                                 .exec();
                     res.render('../partials/profileComments', { comments: userComments, viewedUser });
                     break;
-                case 'bookmark':
-                    const bookmarkedPosts = await Post.find({ _id: { $in: viewedUser.bookmarks || [] } })
-                                                    .populate('author')
-                                                    .exec();
-                    res.render('../partials/profileBookmarks', { bookmarks: bookmarkedPosts });
-                    break;
                 case 'upvoted':
-                    const upvotedPosts = await Post.find({ _id: { $in: viewedUser.upvoted || [] } })
+                    const upvotes = await Post.find({ _id: { $in: viewedUser.upvotedPosts || [] } })
                                                  .populate('author')
                                                  .exec();
-                    res.render('../partials/profileUpvoted', { upvoted: upvotedPosts });
-                    break;
-                case 'downvoted':
-                    const downvotedPosts = await Post.find({ _id: { $in: viewedUser.downvoted || [] } })
-                                                   .populate('author')
-                                                   .exec();
-                    res.render('../partials/profileDownvoted', { downvoted: downvotedPosts });
+                    res.render('../partials/profileUpvoted', { upvoted: upvotes });
                     break;
                 default:
                     const userPosts = await Post.find({ author: viewedUser._id })
@@ -184,16 +172,16 @@ router.get('/profile/:username/content/:tab', async (req, res) => {
         } else {
             switch (tab) {
                 case 'comments':
-                    const comments = await Post.find({ "comments.author": viewedUser._id })
-                                             .populate('author')
-                                             .exec();
-                    res.render('../partials/pubProfileComments', { comments });
+                    const userComments = await Comment.find({ username: viewedUser.username })
+                                                .sort({ createdAt: -1 })
+                                                .exec();
+                    res.render('../partials/pubProfileComments', { comments: userComments, viewedUser });
                     break;
                 case 'upvoted':
-                    const upvotedPosts = await Post.find({ _id: { $in: viewedUser.upvoted || [] } })
+                    const upvotes = await Post.find({ _id: { $in: viewedUser.upvotedPosts || [] } })
                                                  .populate('author')
                                                  .exec();
-                    res.render('../partials/pubProfileUpvoted', { upvoted: upvotedPosts });
+                    res.render('../partials/pubProfileUpvoted', { upvoted: upvotes });
                     break;
                 default:
                     const userPosts = await Post.find({ author: viewedUser._id })

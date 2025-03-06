@@ -37,7 +37,6 @@ body {
     width: 70%;
 }
 
-
 .top-menu {
     display: flex;
     align-items: center;
@@ -210,13 +209,12 @@ body {
     outline: none;
     cursor: pointer;
     text-decoration: none;
-    height: 15px;  /* Adjusted for better visibility */
-    width: 15px;   /* Equal to height */
+    height: 15px;  
+    width: 15px; 
     display: inline-flex;
     align-items: center;
     justify-content: center;
 }
-
 
 .body-options-container {
     padding: 5px;
@@ -239,7 +237,6 @@ body {
 .body-icons {
     margin: 5px;
 }
-
 
 #image-preview {
     max-width: 100%;

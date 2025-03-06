@@ -76,14 +76,11 @@
             .then(result => {
                 if (result.success) {
                     if (result.redirect) {
-                        // Redirect to the specified URL (e.g., /admin)
                         window.location.href = result.redirect;
                     } else {
-                        // Redirect to the dashboard by default
                         window.location.href = '/dashboard';
                     }
                 } else {
-                    // If login failed, show error message
                     alert(result.message);
                 }
             })

@@ -1,6 +1,6 @@
 // Event listener for return button
 document.querySelector('.return-btn').addEventListener('click', function() {
-    window.history.back(); // This goes back to the last page in the browser's history
+    window.history.back();
 });
 
 document.addEventListener("DOMContentLoaded", function () {

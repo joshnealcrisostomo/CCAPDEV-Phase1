@@ -1,16 +1,15 @@
 // editProfile.js
 // Event listener for return button
 document.querySelector('.exit-btn').addEventListener('click', function() {
-    window.history.back(); // This goes back to the last page in the browser's history
+    window.history.back();
 });
 
-// Profile picture change functionality
 const profilePicInput = document.getElementById('profile-pic-input');
 const editForPfpButton = document.querySelector('.edit-for-pfp');
 const profilePic = document.getElementById('profile-pic');
 
 editForPfpButton.addEventListener('click', () => {
-    profilePicInput.click(); // Trigger file input
+    profilePicInput.click();
 });
 
 profilePicInput.addEventListener('change', (event) => {
@@ -18,7 +17,7 @@ profilePicInput.addEventListener('change', (event) => {
     if (file) {
         const reader = new FileReader();
         reader.onload = (e) => {
-            profilePic.src = e.target.result; // Update preview
+            profilePic.src = e.target.result;
         };
         reader.readAsDataURL(file);
     }

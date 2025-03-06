@@ -29,7 +29,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 if (result.success) {
                     alert('✅ Post updated successfully!');
-                    // Redirect to the post or profile page
                     window.location.href = `/post/${postId}`;
                 } else {
                     alert(`❌ ${result.message}`);
@@ -41,7 +40,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Cancel button functionality
     const cancelButton = document.querySelector('.cancel-btn');
     if (cancelButton) {
         cancelButton.addEventListener('click', function(event) {

@@ -95,7 +95,7 @@ document.addEventListener("DOMContentLoaded", function () {
             let response = await fetch(`/comments/${postId}`);
             let data = await response.json();
 
-            commentsContainer.innerHTML = ""; // Clear comments section before adding new ones
+            commentsContainer.innerHTML = "";
 
             if (Array.isArray(data)) {
                 data.forEach(comment => {
@@ -125,7 +125,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    // Fetch comments when the page loads
     fetchComments();
     
     const commentBtn = document.querySelector("#comment-btn");
@@ -274,7 +273,6 @@ async function handleVote(event) {
                         voteCount.classList.add('upvoted');
                     }
                 } else {
-                    // Downvote logic (if needed)
                     if (isCurrentlyUpvoted) {
                         voteContainer.classList.remove('upvoted');
                         voteCount.classList.remove('upvoted');

@@ -22,7 +22,6 @@ async function deleteUser(userId) {
         const db = await connectDB();
         const usersCollection = db.collection("users");
 
-        // Convert userId to ObjectId
         const objectId = new ObjectId(userId);
 
         // Check if the user exists

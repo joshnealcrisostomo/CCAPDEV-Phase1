@@ -2,7 +2,6 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const ReportSchema = new Schema({
-  // polymorphic relationship
   reportedItemId: {
     type: Schema.Types.ObjectId,
     required: true
@@ -12,7 +11,6 @@ const ReportSchema = new Schema({
     enum: ['Post', 'Comment', 'User'],
     required: true
   },
-  // author object
   author: {
     type: Schema.Types.ObjectId,
     ref: 'User',
@@ -27,7 +25,6 @@ const ReportSchema = new Schema({
     enum: ['Pending', 'Reviewed', 'Resolved', 'Rejected'],
     default: 'Pending'
   },
-  // Timestamps for when the report was created and last updated
   createdAt: {
     type: Date,
     default: Date.now

@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (reportForm) {
         reportForm.addEventListener('submit', async (event) => {
-            event.preventDefault(); // Prevent default form submission
+            event.preventDefault();
 
             const formData = new FormData(reportForm);
             const reportType = formData.get('reportType');

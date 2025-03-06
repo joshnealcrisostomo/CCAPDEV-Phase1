@@ -7,8 +7,6 @@ document.addEventListener('DOMContentLoaded', function() {
             
             const commentId = updateCommentForm.getAttribute('data-comment-id');
             const postId = updateCommentForm.getAttribute('data-post-id');
-            console.log("📝 Editing Comment ID:", commentId); // Debugging
-            console.log("📩 Redirecting to Post ID:", postId); // Debugging
 
             if (!commentId) {
                 alert("❌ Error: Comment ID is missing!");
@@ -46,7 +44,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Cancel button functionality
     const cancelButton = document.querySelector('.cancel-btn');
     if (cancelButton) {
         cancelButton.addEventListener('click', function(event) {

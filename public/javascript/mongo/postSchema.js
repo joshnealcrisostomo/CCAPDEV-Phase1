@@ -30,7 +30,7 @@ const postSchema = new mongoose.Schema({
         ref: 'User',
         required: true,
     },
-    edited: { // Add this field
+    edited: {
         type: Boolean,
         default: false,
     },

@@ -129,7 +129,7 @@
                 console.log(data);
 
                 if (data.success) {
-                    window.location.href = "/dashboard";  // Redirect after successful post
+                    window.location.href = "/dashboard"; 
                 } else {
                     alert("Failed to create post: " + data.message);
                 }
@@ -150,7 +150,7 @@
                     const reader = new FileReader();
                     reader.onload = function (e) {
                         const imgTag = `<img src="${e.target.result}" alt="Inserted Image" style="max-width: 100%; height: auto;">`;
-                        bodyTextArea.value += "\n" + imgTag; // Append image to textarea
+                        bodyTextArea.value += "\n" + imgTag;
                     };
                     reader.readAsDataURL(file);
                 }

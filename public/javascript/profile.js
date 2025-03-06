@@ -11,7 +11,6 @@ function toggleOptionsMenu(event) {
     const postId = dots.getAttribute('data-post-id');
     const menu = document.getElementById(`menu-${postId}`);
     
-    // Close all other menus first
     document.querySelectorAll('.dots-menu').forEach(m => {
         if (m.id !== `menu-${postId}`) {
             m.style.display = "none";
@@ -34,7 +33,6 @@ function toggleCommentOptionsMenu(event) {
     const commentId = dots.getAttribute('data-comment-id');
     const menu = document.getElementById(`comment-menu-${commentId}`);
     
-    // Close all other comment menus
     document.querySelectorAll('.comment-dots-menu').forEach(m => {
         if (m.id !== `comment-menu-${commentId}`) {
             m.style.display = "none";
@@ -91,7 +89,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 .then(html => {
                     contentDiv.innerHTML = html;
                     
-                    // Reattach event listeners to newly loaded content
                     attachDeleteListeners();
                     attachDotsListeners();
                     attachCommentDotsListeners();
@@ -100,7 +97,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
     
-    // Initial attachment of listeners
     attachDeleteListeners();
     attachDotsListeners();
     attachCommentDotsListeners();
@@ -122,8 +118,6 @@ function attachDeleteListeners() {
 async function handleDeleteComment(event) {
     event.preventDefault();
     const commentId = this.getAttribute('data-comment-id');
-    
-    console.log("🗑️ Delete button clicked for comment:", commentId); // Debugging
 
     if (!commentId) {
         alert("❌ Comment ID not found!");
@@ -134,9 +128,7 @@ async function handleDeleteComment(event) {
     if (!confirmDelete) return;
 
     try {
-        console.log("📡 Sending DELETE request to /comments/" + commentId); // Debugging
-
-        const response = await fetch(`/comments/${commentId}`, {  // ✅ FIXED ROUTE
+        const response = await fetch(`/comments/${commentId}`, {
             method: "DELETE",
             credentials: "include",
             headers: {
@@ -145,13 +137,12 @@ async function handleDeleteComment(event) {
         });
 
         const data = await response.json();
-        console.log("📝 Server Response:", data); // Debugging
 
         if (response.ok) {
             alert("✅ Comment deleted successfully!");
             const commentElement = this.closest('.comment');
             if (commentElement) {
-                commentElement.remove(); // ✅ Removes from UI
+                commentElement.remove();
             } else {
                 window.location.reload();
             }
@@ -166,7 +157,6 @@ async function handleDeleteComment(event) {
 
 document.addEventListener("click", function (event) {
     if (event.target.classList.contains("delete-comment-btn")) {
-        console.log("🗑️ Delete comment button clicked:", event.target); // Debugging
         handleDeleteComment.call(event.target, event);
     }
 });
@@ -197,7 +187,6 @@ async function handleDeletePost(event) {
             if (postElement) {
                 postElement.remove();
             } else {
-                // If DOM removal fails, refresh the page
                 window.location.reload();
             }
         } else {

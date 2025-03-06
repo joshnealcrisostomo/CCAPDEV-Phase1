@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", function () {
             this.classList.add("active");
             
             // Get the content type from the button class
-            let contentType = this.className.split('-')[0]; // Changed to use className instead of classList[0]
+            let contentType = this.className.split('-')[0];
             
             // Load content for the selected tab
             fetch(`/admin/content/${contentType}`)

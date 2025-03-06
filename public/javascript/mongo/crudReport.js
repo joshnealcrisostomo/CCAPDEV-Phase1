@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
 const { ObjectId } = require("mongodb");
-const Report = require('./reportSchema.js'); // Adjust path as needed
-const User = require('./UserSchema'); // Adjust path as needed
-const Post = require('./postSchema'); // Adjust path as needed
-const Comment = require('./commentSchema'); // Adjust path as needed
+const Report = require('./reportSchema.js'); 
+const User = require('./UserSchema'); 
+const Post = require('./postSchema'); 
+const Comment = require('./commentSchema');
 
 const uri = "mongodb+srv://patricklim:Derp634Derp@apdevcluster.chzne.mongodb.net/?retryWrites=true&w=majority&appName=APDEVcluster";
 
@@ -11,18 +11,15 @@ mongoose.connect(uri);
 
 async function createReport(reportedItemId, reportedItemType, authorId, reason, details) {
   try {
-    // Validate IDs
     if (!ObjectId.isValid(reportedItemId) || !ObjectId.isValid(authorId)) {
       console.log("Invalid ObjectId format");
       throw new Error('Invalid ID format');
     }
 
-    // Validate reportedItemType
     if (!['Post', 'Comment'].includes(reportedItemType)) {
       throw new Error('Invalid reportedItemType. Must be either Post or Comment');
     }
 
-    // Check if the reported item exists
     let reportedItem;
     if (reportedItemType === 'Post') {
       reportedItem = await Post.findById(reportedItemId);
@@ -34,13 +31,11 @@ async function createReport(reportedItemId, reportedItemType, authorId, reason, 
       throw new Error(`${reportedItemType} not found`);
     }
 
-    // Check if author exists
     const author = await User.findById(authorId);
     if (!author) {
       throw new Error('Author not found');
     }
 
-    // Create
     const newReport = new Report({
       reportedItemId,
       reportedItemType,
@@ -50,13 +45,11 @@ async function createReport(reportedItemId, reportedItemType, authorId, reason, 
       status: 'Pending'
     });
 
-    // Save the report
     await newReport.save();
 
     console.log('✅ Report created successfully!');
     return { success: true, message: 'Report created successfully', report: newReport };
   } catch (error) {
-    //  duplicate report 
     if (error.code === 11000) {
       console.error('❌ Duplicate report:', error);
       return { success: false, message: 'This item has already been reported' };
@@ -89,7 +82,6 @@ async function getReportById(reportId) {
 
 async function getAllReports(filters = {}) {
   try {
-    // Apply any filters (status, reportedItemType, etc.)
     const query = {};
     
     if (filters.status) {
@@ -106,7 +98,7 @@ async function getAllReports(filters = {}) {
 
     const reports = await Report.find(query)
       .populate('author', 'username email')
-      .sort({ createdAt: -1 }); // Most recent first
+      .sort({ createdAt: -1 });
     
     return { success: true, reports };
   } catch (error) {
@@ -121,23 +113,20 @@ async function updateReport(reportId, updateData) {
       return { success: false, message: "Invalid Report ID format" };
     }
 
-    // Check if the report exists
     const report = await Report.findById(reportId);
     if (!report) {
       return { success: false, message: "Report not found" };
     }
 
-    // Prevent updating critical fields
     delete updateData.reportedItemId;
     delete updateData.reportedItemType;
     delete updateData.author;
     delete updateData.createdAt;
 
-    // Update only the allowed fields
     const updatedReport = await Report.findByIdAndUpdate(
       reportId,
       { $set: updateData },
-      { new: true } // Return the updated document
+      { new: true }
     );
 
     console.log("✅ Report updated successfully:", updatedReport);
@@ -158,7 +147,6 @@ async function deleteReport(reportId) {
       return { success: false, message: "Invalid Report ID format" };
     }
 
-    // Check if the report exists
     const reportExists = await Report.findById(reportId);
     if (!reportExists) {
       console.error("❌ Report not found.");
@@ -167,7 +155,6 @@ async function deleteReport(reportId) {
 
     console.log("🔍 Found report, proceeding with deletion:", reportExists);
 
-    // Delete the report
     const deleteResult = await Report.deleteOne({ _id: reportId });
 
     if (deleteResult.deletedCount === 0) {

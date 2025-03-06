@@ -1,7 +1,6 @@
 const Comment = require("./commentSchema");
 const Post = require("./postSchema");
 
-// CREATE COMMENT
 async function addComment(postId, username, content) {
     try {
         if (!postId || !username || !content) {
@@ -11,11 +10,9 @@ async function addComment(postId, username, content) {
 
         content = String(content).trim();
 
-        // Create a new comment with postId
         const newComment = new Comment({ postId, username, content });
         const savedComment = await newComment.save();
 
-        // ✅ Ensure the post gets updated with the new comment
         const post = await Post.findByIdAndUpdate(
             postId,
             { $push: { comments: savedComment._id } }, 
@@ -34,7 +31,6 @@ async function addComment(postId, username, content) {
         return { error: error.message };
     }
 }
-
 
 async function getComments(postId) {
     try {
@@ -58,7 +54,6 @@ async function getComments(postId) {
     }
 }
 
-// DELETE COMMENT
 async function deleteComment(commentId) {
     try {
         const comment = await Comment.findByIdAndDelete(commentId);
@@ -67,7 +62,6 @@ async function deleteComment(commentId) {
             return { success: false, message: "Comment not found" };
         }
 
-        // Remove comment reference from the post
         await Post.updateMany({}, { $pull: { comments: commentId } });
 
         console.log("✅ Comment deleted successfully:", commentId);

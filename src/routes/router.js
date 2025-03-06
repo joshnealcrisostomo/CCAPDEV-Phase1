@@ -115,7 +115,7 @@ router.get('/profile/:username', async (req, res) => {
                 profilePic: viewedUser.profilePic,
                 bio: viewedUser.bio,
                 posts: userPosts,
-                comments: formattedComments,  // Pass formatted comments
+                comments: formattedComments,
                 layout: 'publicProfile',
                 title: `${viewedUser.displayName}'s Profile`,
                 isLoggedIn: !!req.session.user,
@@ -428,8 +428,6 @@ router.delete('/deletePost', async (req, res) => {
 
 // CREATE COMMENT
 router.post("/comments", async (req, res) => {
-    console.log("📩 Received Comment Request:", req.body);
-
     let { postId, username, content } = req.body;
     if (!postId || !username || !content) {
         console.log("❌ Missing required fields!", { postId, username, content });
@@ -456,11 +454,7 @@ router.post("/comments", async (req, res) => {
 router.get('/comments/:postId', async (req, res) => { 
     const { postId } = req.params;
 
-    console.log(`📥 Fetching comments for post: ${postId}`);
-
     const response = await getComments(postId);
-
-    console.log(`🔎 Comments fetched:`, response);
 
     res.json(response);
 });
@@ -474,9 +468,6 @@ router.post('/updateComment/:id', async (req, res) => {
 
         const commentId = req.params.id;
         let { commentText, postId } = req.body; 
-
-        console.log("📝 Editing Comment ID:", commentId);
-        console.log("📩 Received Post ID from request:", postId);
 
         const comment = await Comment.findById(commentId);
         if (!comment) {
@@ -516,7 +507,6 @@ router.delete('/comments/:commentId', async (req, res) => {
         }
 
         const { commentId } = req.params;
-        console.log("🗑️ Attempting to delete comment:", commentId);
 
         const comment = await Comment.findById(commentId);
         if (!comment) {
@@ -592,7 +582,6 @@ router.get("/profile/comments", async (req, res) => {
             })
             .exec();
 
-            console.log("📝 Retrieved Comments Data:", comments);
         res.render("profileComments", {
             comments,
             isLoggedIn: true
@@ -649,7 +638,6 @@ router.post('/updatePost/:id', async (req, res) => {
         const result = await updatePost(postId, postTitle, postContent, tags, userId);
 
         if (result.success) {
-            // Fetch the updated post
             const updatedPost = await Post.findById(postId).populate('author').exec();
 
             if (updatedPost) {

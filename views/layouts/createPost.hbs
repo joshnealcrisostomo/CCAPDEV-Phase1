@@ -66,15 +66,19 @@
                                     <a href="#" class="body-item" onclick="">
                                         <img src="/icons/list.png" alt="list-btn" class="icon-body">
                                     </a>
-                                    <a href="#" class="body-item" onclick="">
+                                    <a href="#" class="body-item image-upload-btn">
                                         <img src="/icons/image.png" alt="image-btn" class="icon-body">
                                     </a>
-                                    <input type="file" id="image-upload" accept="image/*" style="display: none;">
+                                    <input type="file" id="image-upload" name="postImage" accept="image/*" style="display: none;">
                                 </div>
                             </div>
                             <div class="body-text-container">
                                 <textarea class="body-text-area" placeholder="Body"></textarea>
                             </div>
+                            <div id="image-preview" style="display: none; margin: 10px 0;">
+                                <img id="preview-img" src="" alt="Image Preview" style="max-width: 100%; max-height: 300px;">
+                                <button type="button" id="remove-image" style="display: block; margin-top: 5px;">Remove Image</button>
+                            </div>                            
                             <div class="create-post-btns">
                                 <a href="#" class="drafts-btn" onclick="">Drafts</a>
                                 <button type="button" class="save-draft-btn">Save as draft</button>
@@ -106,23 +110,31 @@
                 const postusername = document.getElementById('loggedInUsername')?.value;
                 const displayName = document.getElementById('loggedInDisplayName')?.value;
                 const posterpfp = document.getElementById('loggedInPfp')?.value;
+                const imageFile = document.getElementById('image-upload').files[0];    
 
                 if (!postTitle || !postContent) {
                     alert("Post title and content cannot be empty!");
                     return;
                 }
 
+                // Create FormData object instead of JSON
+                const formData = new FormData();
+                
+                formData.append('postTitle', postTitle);
+                formData.append('postContent', postContent);
+                formData.append('tags', tags);
+                formData.append('postusername', postusername);
+                formData.append('displayName', displayName);
+                formData.append('posterpfp', posterpfp);
+                
+
+                if (imageFile) {
+                    formData.append('postImage', imageFile);
+                }
+
                 const response = await fetch('/createPost', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        postTitle,
-                        postContent,
-                        tags,
-                        postusername,
-                        displayName,
-                        posterpfp
-                    }),
+                    body: formData,
                 });
 
                 const data = await response.json();
@@ -135,26 +147,35 @@
                 }
             });
 
-            // Image upload functionality
+            // Image upload and preview
             const imageUpload = document.getElementById("image-upload");
-            const imageButton = document.querySelector(".body-options-container img[alt='image-btn']");
-            const bodyTextArea = document.querySelector(".body-text-area");
+            const imageButton = document.querySelector(".image-upload-btn");
+            const imagePreview = document.getElementById("image-preview");
+            const previewImg = document.getElementById("preview-img");
+            const removeImageBtn = document.getElementById("remove-image");
 
-            imageButton.addEventListener("click", function () {
+            imageButton.addEventListener("click", function(e) {
+                e.preventDefault();
                 imageUpload.click();
             });
 
-            imageUpload.addEventListener("change", function () {
+            imageUpload.addEventListener("change", function() {
                 const file = this.files[0];
                 if (file) {
                     const reader = new FileReader();
-                    reader.onload = function (e) {
-                        const imgTag = `<img src="${e.target.result}" alt="Inserted Image" style="max-width: 100%; height: auto;">`;
-                        bodyTextArea.value += "\n" + imgTag;
+                    reader.onload = function(e) {
+                        previewImg.src = e.target.result;
+                        imagePreview.style.display = "block";
                     };
                     reader.readAsDataURL(file);
                 }
             });
+
+            removeImageBtn.addEventListener("click", function() {
+                imageUpload.value = "";
+                imagePreview.style.display = "none";
+                previewImg.src = "";
+            }); 
         });
         </script>
     </body>

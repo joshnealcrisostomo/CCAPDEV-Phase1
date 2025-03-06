@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const { MongoClient } = require('mongodb'); 
+const { MongoClient } = require('mongodb');
+const multer = require('multer');
+const path = require('path'); 
 
 const { getAllReports, getReportById } = require('../../public/javascript/mongo/crudReport.js');
 const authController = require('../../public/javascript/mongo/registerUser.js');
@@ -39,6 +41,31 @@ process.on('SIGINT', async () => {
     process.exit();
 });
 
+// Configure storage
+const storage = multer.diskStorage({
+    destination: function(req, file, cb) {
+        cb(null, 'public/postImages/');
+    },
+    filename: function(req, file, cb) {
+        cb(null, Date.now() + path.extname(file.originalname));
+    }
+});
+
+  // File filter for images
+const fileFilter = (req, file, cb) => {
+    if (file.mimetype.startsWith('image/')) {
+        cb(null, true);
+    } else {
+        cb(new Error('Only images are allowed'), false);
+    }
+};
+
+const upload = multer({ 
+    storage: storage,
+    limits: { fileSize: 5 * 1024 * 1024 },  // 5MB limit
+    fileFilter: fileFilter
+});
+
 // Dashboard router
 router.get('/dashboard', async (req, res) => {
     try {        
@@ -46,6 +73,12 @@ router.get('/dashboard', async (req, res) => {
                               .populate('author')
                               .sort({ createdAt: -1 })
                               .exec();
+
+        console.log('Posts with images:', posts.map(p => ({ 
+            id: p._id, 
+            title: p.postTitle, 
+            imagePath: p.postImage 
+        })));
         
         res.render('dashboard', {
             posts,
@@ -360,34 +393,36 @@ router.get('/createPost', (req, res) => {
     });
 });
 
-// Create post route
-router.post('/createPost', async (req, res) => {
+// Create Post
+router.post('/createPost', upload.single('postImage'), async (req, res) => {
     try {
         if (!req.session.isLoggedIn) {
             return res.status(403).json({ success: false, message: 'Unauthorized' });
         }
-
+        
         const {
             postTitle,
             postContent,
-            postImage,
             tags,
         } = req.body;
-
+        
+        // Get the image path from multer
+        const postImage = req.file ? `/postImages/${req.file.filename}` : '';
+        
         const userId = req.session.user._id;
         
         const result = await createPost(
-            postTitle, 
-            postContent, 
-            postImage, 
-            tags, 
-            userId
+        postTitle, 
+        postContent, 
+        postImage,
+        tags, 
+        userId
         );
-
+        
         if (result.success) {
-            return res.status(201).json(result);
+        return res.status(201).json(result);
         } else {
-            return res.status(400).json(result);
+        return res.status(400).json(result);
         }
     } catch (error) {
         console.error('Error in /createPost:', error);

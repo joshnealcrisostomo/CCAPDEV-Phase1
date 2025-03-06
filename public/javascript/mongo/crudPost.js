@@ -26,7 +26,7 @@ async function createPost(postTitle, postContent, postImage, tags, userId) {
       postImage: postImage || '',
       votes: 0, 
       tags: tags || '', 
-      comments: '', 
+      comments: [], 
       author: user._id, 
     });
 

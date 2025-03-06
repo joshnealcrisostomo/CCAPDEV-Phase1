@@ -24,7 +24,6 @@ async function addComment(postId, username, content) {
             return { error: "Post not found" };
         }
 
-        console.log("✅ Comment added successfully:", savedComment);
         return savedComment;
     } catch (error) {
         console.error("❌ Error adding comment:", error);
@@ -46,7 +45,6 @@ async function getComments(postId) {
             return [];
         }
 
-        console.log("✅ Comments Retrieved:", post.comments);
         return post.comments;
     } catch (error) {
         console.error("❌ Error fetching comments:", error);
@@ -64,7 +62,6 @@ async function deleteComment(commentId) {
 
         await Post.updateMany({}, { $pull: { comments: commentId } });
 
-        console.log("✅ Comment deleted successfully:", commentId);
         return { success: true, message: "Comment deleted successfully" };
     } catch (error) {
         console.error("❌ Error deleting comment:", error);

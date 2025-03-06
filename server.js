@@ -172,8 +172,8 @@ app.post("/add-comment", async (req, res) => {
 async function fixCommentsField() {
     try {
         const result = await Post.updateMany(
-            { comments: { $type: "string" } }, // Find posts where comments is a string
-            { $set: { comments: [] } } // Convert to an empty array
+            { comments: { $type: "string" } }, 
+            { $set: { comments: [] } } 
         );
         console.log("✅ Fixed comments field for posts:", result);
     } catch (error) {

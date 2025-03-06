@@ -300,13 +300,20 @@ router.get('/login', (req, res) => {
 
 // Login POST route
 router.post('/loginPost', async (req, res) => {
-    const { username, password } = req.body;
+    const { username, password, rememberMe } = req.body; 
 
     try {
         if (username === '@admin' && password === 'admin123') {
             req.session.isLoggedIn = true;
             req.session.loggedInUser = username;
             req.session.user = { username: 'admin' };
+
+            if (rememberMe) {
+                req.session.cookie.maxAge = 1000 * 60 * 60 * 24 * 21; // 3 weeks
+            } else {
+                req.session.cookie.expires = false; 
+            }
+
             return res.json({ success: true, redirect: '/admin' });
         }
 
@@ -315,7 +322,14 @@ router.post('/loginPost', async (req, res) => {
             req.session.isLoggedIn = true;
             req.session.loggedInUser = username;
             req.session.user = result.user;
-            res.json({ success: true, user: result.user });
+
+            if (rememberMe) {
+                req.session.cookie.maxAge = 1000 * 60 * 60 * 24 * 21; // 3 weeks
+            } else {
+                req.session.cookie.expires = false; 
+            }
+
+            res.json({ success: true, redirect: '/dashboard' });
         } else {
             res.json({ success: false, message: result.message });
         }
@@ -324,6 +338,7 @@ router.post('/loginPost', async (req, res) => {
         res.status(500).json({ success: false, message: 'Internal server error' });
     }
 });
+
 
 // Logout route
 router.get('/logout', (req, res) => {

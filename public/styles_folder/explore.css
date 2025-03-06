@@ -96,7 +96,7 @@ body {
 
 .search-section .btn-login {
     padding: 10px 20px;
-    background: linear-gradient(135deg, #DFDAC8, #242b6d);
+    background: #0079d3;
     color: white;
     font-size: 16px;
     border: none;
@@ -105,7 +105,7 @@ body {
 }
 
 .search-section .btn-login:hover {
-    background: linear-gradient(135deg, #764aa6, #B04898);
+    background: #242b6d
 }
 
 .search-options {

@@ -109,7 +109,7 @@
                     {{#each post.comments}}
                     <div class="comment">
                         <div class="user-comment">
-                            <strong>{{username}}</strong>
+                            <strong><a href="/profile/{{username}}">{{username}}</a></strong>
                             <span>{{createdAt}}</span>
                         </div>
                         <div class="main-comment">
@@ -130,7 +130,7 @@
                             {{#each nestedComments}}
                             <div class="comment nested-comment">
                                 <div class="user-comment">
-                                    <strong>{{username}}</strong>
+                                    <strong><a href="/profile/{{username}}">{{username}}</a></strong>
                                     <span>{{createdAt}}</span>
                                 </div>
                                 <div class="main-comment">

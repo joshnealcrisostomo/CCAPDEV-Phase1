@@ -73,12 +73,6 @@ router.get('/dashboard', async (req, res) => {
                               .populate('author')
                               .sort({ createdAt: -1 })
                               .exec();
-
-        console.log('Posts with images:', posts.map(p => ({ 
-            id: p._id, 
-            title: p.postTitle, 
-            imagePath: p.postImage 
-        })));
         
         res.render('dashboard', {
             posts,
@@ -676,7 +670,6 @@ router.post('/updatePost/:id', async (req, res) => {
             const updatedPost = await Post.findById(postId).populate('author').exec();
 
             if (updatedPost) {
-                // Render the post view with the updated post
                 return res.render('post', {
                     post: updatedPost,
                     author: updatedPost.author,

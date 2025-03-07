@@ -7,26 +7,21 @@ const { ObjectId } = require("mongodb");
 const multer = require('multer');
 const path = require('path');
 
-// Configure storage for profile pictures
+// Storage Configuration for Profile & Header Pictures
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'public/profilePictures/'); // Save profile pictures here
-    },
-    filename: function (req, file, cb) {
-        cb(null, Date.now() + path.extname(file.originalname)); // Unique filename
-    }
-});
-
-// Configure storage for header pictures
-const headerStorage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, 'public/headerPictures/');
+        if (file.fieldname === "profilePic") {
+            cb(null, 'public/profilePictures/'); // Profile pictures go here
+        } else if (file.fieldname === "headerPic") {
+            cb(null, 'public/headerPictures/'); // Header pictures go here
+        }
     },
     filename: function (req, file, cb) {
         cb(null, Date.now() + path.extname(file.originalname));
     }
 });
 
+//  File Filter
 const fileFilter = (req, file, cb) => {
     if (file.mimetype.startsWith('image/')) {
         cb(null, true);
@@ -35,15 +30,10 @@ const fileFilter = (req, file, cb) => {
     }
 };
 
-// Initialize Multer
-const upload = multer({ 
-    storage: storage,
-    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
-    fileFilter: fileFilter
-});
+// Multer Upload Configuration (Profile & Header)
+const upload = multer({ storage, fileFilter });
 
-
-// DELETE: Delete user account
+// DELETE: Delete User Account
 router.delete("/deleteAccount", async (req, res) => {
     if (!req.session.user) {
         return res.status(401).json({ message: "Unauthorized. Please log in." });
@@ -74,47 +64,35 @@ router.delete("/deleteAccount", async (req, res) => {
     }
 });
 
-router.post('/updateProfile', upload.fields([{ name: 'profilePic' }, { name: 'headerPic' }]), async (req, res) => {
+//  POST: Update Profile (Profile & Header Picture Upload)
+router.post('/updateProfile', upload.fields([
+    { name: 'profilePic', maxCount: 1 },
+    { name: 'headerPic', maxCount: 1 }
+]), async (req, res) => {
     try {
+        console.log("Files received:", req.files);
+
         const { username, displayName, bio } = req.body;
+
         const profilePic = req.files['profilePic'] ? `/profilePictures/${req.files['profilePic'][0].filename}` : null;
-        const headerPic = req.files['headerPic'] ? `/profileHeaders/${req.files['headerPic'][0].filename}` : null;
+        const headerPic = req.files['headerPic'] ? `/headerPictures/${req.files['headerPic'][0].filename}` : null;
+
+        console.log("Profile Pic Path:", profilePic);
+        console.log("Header Pic Path:", headerPic);
 
         const result = await updateUser(username, displayName, bio, profilePic, headerPic);
 
         if (result.success) {
-    console.log("✅ Profile successfully updated in DB");
-    res.json({ success: true, headerPic, username }); // Include username in response
-} else {
-    console.log("❌ Profile update failed:", result.message);
-    res.status(400).json({ success: false, message: result.message });
-}
-
+            console.log("✅ Profile successfully updated in DB");
+            res.redirect('/profile/' + username);
+        } else {
+            console.log("❌ Profile update failed:", result.message);
+            res.status(400).send(result.message);
+        }
     } catch (error) {
         console.error('❌ Error updating profile:', error);
         res.status(500).send('Server error');
     }
 });
-
-router.get("/getUserData", async (req, res) => {
-    if (!req.session.user) {
-        return res.status(401).json({ message: "Unauthorized" });
-    }
-
-    try {
-        const user = await User.findOne({ username: req.session.user.username });
-
-        if (!user) {
-            return res.status(404).json({ message: "User not found" });
-        }
-
-        res.json({ headerPic: user.headerPic });
-    } catch (error) {
-        console.error("Error fetching user data:", error);
-        res.status(500).json({ message: "Server error" });
-    }
-});
-
-
 
 module.exports = router;

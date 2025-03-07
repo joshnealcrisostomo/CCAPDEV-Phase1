@@ -17,6 +17,16 @@ const storage = multer.diskStorage({
     }
 });
 
+// Configure storage for header pictures
+const headerStorage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'public/headerPictures/');
+    },
+    filename: function (req, file, cb) {
+        cb(null, Date.now() + path.extname(file.originalname));
+    }
+});
+
 const fileFilter = (req, file, cb) => {
     if (file.mimetype.startsWith('image/')) {
         cb(null, true);
@@ -64,25 +74,47 @@ router.delete("/deleteAccount", async (req, res) => {
     }
 });
 
-router.post('/updateProfile', upload.single('profilePic'), async (req, res) => {
+router.post('/updateProfile', upload.fields([{ name: 'profilePic' }, { name: 'headerPic' }]), async (req, res) => {
     try {
         const { username, displayName, bio } = req.body;
-        const profilePic = req.file ? `/profilePictures/${req.file.filename}` : null;
+        const profilePic = req.files['profilePic'] ? `/profilePictures/${req.files['profilePic'][0].filename}` : null;
+        const headerPic = req.files['headerPic'] ? `/profileHeaders/${req.files['headerPic'][0].filename}` : null;
 
-        const result = await updateUser(username, displayName, bio, profilePic);
+        const result = await updateUser(username, displayName, bio, profilePic, headerPic);
 
         if (result.success) {
-            console.log("✅ Profile successfully updated in DB");
-            res.redirect('/profile/' + username);
-        } else {
-            console.log("❌ Profile update failed:", result.message);
-            res.status(400).send(result.message);
-        }
+    console.log("✅ Profile successfully updated in DB");
+    res.json({ success: true, headerPic, username }); // Include username in response
+} else {
+    console.log("❌ Profile update failed:", result.message);
+    res.status(400).json({ success: false, message: result.message });
+}
+
     } catch (error) {
         console.error('❌ Error updating profile:', error);
         res.status(500).send('Server error');
     }
 });
+
+router.get("/getUserData", async (req, res) => {
+    if (!req.session.user) {
+        return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    try {
+        const user = await User.findOne({ username: req.session.user.username });
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        res.json({ headerPic: user.headerPic });
+    } catch (error) {
+        console.error("Error fetching user data:", error);
+        res.status(500).json({ message: "Server error" });
+    }
+});
+
 
 
 module.exports = router;

@@ -128,12 +128,19 @@ body {
     border-bottom: 4px solid ghostwhite;
 }
 
-.edit-header-img img {
+.edit-header-overlay img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
 }
+
+
+.header-img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+  }  
 
 .edit-header-overlay {
     background-color: black;

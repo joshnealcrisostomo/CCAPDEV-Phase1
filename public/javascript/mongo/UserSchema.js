@@ -33,6 +33,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     trim: true,
   },
+  headerPic: {
+    type: String,
+    trim: true,
+  },
   upvotedPosts: [{ 
     type: mongoose.Schema.Types.ObjectId, 
     ref: 'Post' 

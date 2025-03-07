@@ -286,7 +286,6 @@ body {
     border: 4px solid ghostwhite;
     overflow: hidden;
     background-color: #DFDAC8;
-    display: flex;
     align-items: center;
     justify-content: center;
 }

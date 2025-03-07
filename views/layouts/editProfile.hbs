@@ -18,34 +18,34 @@
                 <h3>Edit Profile</h3>
                 <button type="submit" class="save-btn" form="updateProfileForm">Save</button>
             </div>
-           
-
-            <div class="edit-header-profile">
-                <div class="edit-header-btn">
-                    <button type="button" class="edit-btn">
-                        <img src="/icons/edit_pic.png" alt="edit-icon">
-                        <div class="edit-btn-overlay"></div>
-                    </button>
-                </div>
-                <div class="edit-header-overlay">
-                    <div class="edit-header-img"></div>
-                </div>
-
-                <div class="edit-pfp">
-                    <img src="{{profilePic}}" id="profile-pic" alt="Profile picture">
-                    <div class="edit-pfp-overlay"></div>
-                    <button type="button" class="edit-for-pfp">
-                        <img src="/icons/edit_pic.png" alt="edit-icon">
-                    </button>
-                    <input type="file" id="profile-pic-input" accept="image/*" style="display: none;">
-                </div>
-
-            </div>
 
             <!-- Single Form -->
-            <form id="updateProfileForm" action="/updateProfile" method="POST">
+            <form id="updateProfileForm" action="/updateProfile" method="POST" enctype="multipart/form-data">
                 <input type="hidden" name="username" value="{{loggedInUser}}">
-                
+
+                <div class="edit-header-profile">
+                    <div class="edit-header-btn">
+                        <button type="button" class="edit-btn">
+                            <img src="/icons/edit_pic.png" alt="edit-icon">
+                            <div class="edit-btn-overlay"></div>
+                        </button>
+                    </div>
+                    <div class="edit-header-overlay">
+                        <div class="edit-header-img"></div>
+                    </div>
+
+                    <!-- Profile Picture Upload Inside Form -->
+                    <div class="edit-pfp">
+                        <img src="{{profilePic}}" id="profile-pic" alt="Profile picture">
+                        <div class="edit-pfp-overlay"></div>
+                        <button type="button" class="edit-for-pfp">
+                            <img src="/icons/edit_pic.png" alt="edit-icon">
+                        </button>
+                        <input type="file" name="profilePic" id="profile-pic-input" accept="image/*">
+                    </div>
+                </div>
+
+                <!-- Editable Fields (Display Name & Bio) -->
                 <div class="edit-fields">
                     <div class="name-field">
                         <input type="text" class="name-input" id="display-name" name="displayName" placeholder="Display Name" value="{{displayName}}">
@@ -55,6 +55,8 @@
                     </div>
                 </div>
             </form>
+            <!-- End of Form -->
+            
         </div>
     </div>
 

@@ -1,10 +1,11 @@
 // updateUser.js
+
 const { MongoClient } = require('mongodb');
 
 const uri = "mongodb+srv://patricklim:Derp634Derp@apdevcluster.chzne.mongodb.net/?retryWrites=true&w=majority&appName=APDEVcluster";
 
-async function updateUser(username, displayName, bio) {
-    console.log("updateUser called with:", username, displayName, bio);
+async function updateUser(username, displayName, bio, profilePic) {
+    console.log("updateUser called with:", username, displayName, bio, profilePic);
     const client = new MongoClient(uri);
 
     try {
@@ -12,9 +13,12 @@ async function updateUser(username, displayName, bio) {
         const db = client.db('test');
         const usersCollection = db.collection('users');
 
+        const updateFields = { displayName, bio };
+        if (profilePic) updateFields.profilePic = profilePic;
+
         const result = await usersCollection.updateOne(
             { username: username },
-            { $set: { displayName: displayName, bio: bio } }
+            { $set: updateFields }
         );
 
         if (result.matchedCount === 0) {
@@ -29,5 +33,6 @@ async function updateUser(username, displayName, bio) {
         await client.close();
     }
 }
+
 
 module.exports = { updateUser };

@@ -4,6 +4,35 @@ const { deleteUser } = require("../../public/javascript/mongo/deleteUser");
 const { updateUser } = require('../../public/javascript/mongo/updateUser.js');
 const { ObjectId } = require("mongodb");
 
+const multer = require('multer');
+const path = require('path');
+
+// Configure storage for profile pictures
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'public/profilePictures/'); // Save profile pictures here
+    },
+    filename: function (req, file, cb) {
+        cb(null, Date.now() + path.extname(file.originalname)); // Unique filename
+    }
+});
+
+const fileFilter = (req, file, cb) => {
+    if (file.mimetype.startsWith('image/')) {
+        cb(null, true);
+    } else {
+        cb(new Error('Only images are allowed'), false);
+    }
+};
+
+// Initialize Multer
+const upload = multer({ 
+    storage: storage,
+    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+    fileFilter: fileFilter
+});
+
+
 // DELETE: Delete user account
 router.delete("/deleteAccount", async (req, res) => {
     if (!req.session.user) {
@@ -35,20 +64,23 @@ router.delete("/deleteAccount", async (req, res) => {
     }
 });
 
-// POST: Update user profile
-router.post('/updateProfile', async (req, res) => {
-    const { username, displayName, bio } = req.body;
-
+router.post('/updateProfile', upload.single('profilePic'), async (req, res) => {
     try {
-        const result = await updateUser(username, displayName, bio);
+        const { username, displayName, bio } = req.body;
+        const profilePic = req.file ? `/profilePictures/${req.file.filename}` : null;
+
+        const result = await updateUser(username, displayName, bio, profilePic);
+
         if (result.success) {
-            res.redirect(`/profile/${username}`);
+            console.log("✅ Profile successfully updated in DB");
+            res.redirect('/profile/' + username);
         } else {
+            console.log("❌ Profile update failed:", result.message);
             res.status(400).send(result.message);
         }
     } catch (error) {
-        console.error('Error updating profile:', error);
-        res.status(500).send('Internal server error');
+        console.error('❌ Error updating profile:', error);
+        res.status(500).send('Server error');
     }
 });
 

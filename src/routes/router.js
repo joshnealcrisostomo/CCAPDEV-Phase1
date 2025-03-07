@@ -14,7 +14,7 @@ const { createReport } = require('../../public/javascript/mongo/crudReport.js');
 const User = require('../../public/javascript/mongo/UserSchema.js');
 const { addComment, getComments, updateComment, deleteComment } = require('../../public/javascript/mongo/crudComments.js');
 const Comment = require( '../../public/javascript/mongo/commentSchema.js');
-
+const adminRouter = require('../routes/adminRouter.js');
 // MongoDB connection URI
 const uri = "mongodb+srv://patricklim:Derp634Derp@apdevcluster.chzne.mongodb.net/?retryWrites=true&w=majority&appName=APDEVcluster";
 
@@ -65,6 +65,8 @@ const upload = multer({
     limits: { fileSize: 5 * 1024 * 1024 },  // 5MB limit
     fileFilter: fileFilter
 });
+
+
 
 // Dashboard router
 router.get('/dashboard', async (req, res) => {
@@ -1136,5 +1138,7 @@ router.post('/downvotePost/:postId', async (req, res) => {
         res.status(500).json({ success: false, message: 'Internal server error' });
     }
 });
+
+router.use('/', adminRouter);
 
 module.exports = router;

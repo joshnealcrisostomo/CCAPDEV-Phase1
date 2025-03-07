@@ -155,6 +155,22 @@ async function handleDeleteComment(event) {
     }
 }
 
+document.addEventListener("DOMContentLoaded", function () {
+    fetch("/getUserData")
+        .then(response => response.json())
+        .then(data => {
+            if (data.headerPic) {
+                const headerImage = document.getElementById("profile-header-pic");
+                if (headerImage) {
+                    headerImage.src = data.headerPic;
+                }
+            }
+        })
+        .catch(error => console.error("Error loading header image:", error));
+});
+
+
+
 document.addEventListener("click", function (event) {
     if (event.target.classList.contains("delete-comment-btn")) {
         handleDeleteComment.call(event.target, event);

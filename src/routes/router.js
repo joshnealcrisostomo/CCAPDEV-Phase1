@@ -931,6 +931,7 @@ router.get('/report/:id', async (req, res) => {
         let reportedItemType = 'Post';
 
         if (id.startsWith('@')) {
+            // Reporting a User
             const username = id.substring(1);
             const user = await User.findOne({ username: username });
 
@@ -941,13 +942,30 @@ router.get('/report/:id', async (req, res) => {
             reportedItem = user;
             reportedItemType = 'User';
         } else {
+            // Check if it's a Post
             const post = await Post.findById(id).populate('author').exec();
 
-            if (!post) {
-                return res.status(404).send('Post not found');
-            }
+            if (post) {
+                reportedItem = post;
+                reportedItemType = 'Post';
+            } else {
+                // Check if it's a Comment
+                const comment = await Comment.findById(id).exec();
 
-            reportedItem = post;
+                if (comment) {
+                    reportedItem = comment;
+                    reportedItemType = 'Comment';
+                    // Find the user based on the username field.
+                    const user = await User.findOne({ username: comment.username });
+                    // add the user object to the comment object.
+                    if (user) {
+                        reportedItem.author = user;
+                    }
+
+                } else {
+                    return res.status(404).send('Item not found');
+                }
+            }
         }
 
         res.render('report', {
@@ -973,17 +991,18 @@ router.post('/report/:id', async (req, res) => {
         }
 
         const id = req.params.id;
-        const reportType = req.body.reportType;
+        const reason = req.body.reportType;
         const reporterId = req.session.user._id;
         let reportedItemId;
-        let reportedItemType = 'Post';
+        let reportedItemType;
         let authorId;
 
-        if (!reportType) {
-            return res.status(400).send('Report type is required.');
+        if (!reason) {
+            return res.status(400).send('Reason is required.');
         }
 
         if (id.startsWith('@')) {
+            // Reporting a User
             const username = id.substring(1);
             const user = await User.findOne({ username: username });
 
@@ -995,18 +1014,34 @@ router.post('/report/:id', async (req, res) => {
             reportedItemType = 'User';
             authorId = user._id;
         } else {
+            // Check if Post
             const post = await Post.findById(id).populate('author').exec();
 
-            if (!post) {
-                return res.status(404).send('Post not found');
-            }
+            if (post) {
+                reportedItemId = id;
+                reportedItemType = 'Post';
+                authorId = post.author._id;
+            } else {
+                // Check if Comment
+                const comment = await Comment.findById(id).exec(); // Removed populate
 
-            reportedItemId = id;
-            reportedItemType = 'Post';
-            authorId = post.author._id;
+                if (comment) {
+                    reportedItemId = id;
+                    reportedItemType = 'Comment';
+                    // Fetch the user based on the username field.
+                    const user = await User.findOne({ username: comment.username });
+                    if (user) {
+                        authorId = user._id;
+                    } else {
+                        return res.status(404).send('Author user not found.');
+                    }
+                } else {
+                    return res.status(404).send('Item not found');
+                }
+            }
         }
 
-        const reportResult = await createReport(reportedItemId, reportedItemType, authorId, reportType);
+        const reportResult = await createReport(reportedItemId, reportedItemType, authorId, reason, req.body.details);
 
         if (reportResult.success) {
             res.send('Report submitted successfully!');

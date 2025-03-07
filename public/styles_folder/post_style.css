@@ -180,7 +180,7 @@ body {
 }
 
 .comment-section-container {
-    padding: 20px;
+    padding: 10px;
     height: 100%; 
     width: 100%;   
     padding: 30px;
@@ -202,7 +202,6 @@ textarea {
     border-radius: 40px;
     resize: none;
     overflow-y: hidden;
-
 }
 
 .add-comment-btn {
@@ -250,15 +249,55 @@ textarea {
 
 .user-comment {
     padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
 }
 
-.user-comment strong {
-    font-size: 18px;
+.comment-header-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
-.user-comment span {
-    font-size: 12px;
+.comment-dots-container {
+    position: relative;
+    display: inline-block;
+}
+
+.comment-dots {
+    cursor: pointer;
+    font-size: 20px;
+}
+
+.comment-dots-menu {
+    display: none;
+    position: absolute;
+    background: ghostwhite;
+    border: 0.5px solid #292623;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    border-radius: 5px;
+    right: 0;
+    z-index: 10;
+}
+
+.comment-header-right span {
+    font-size: 10px;
     opacity: 0.5;
+}
+
+.comment-dots-menu a {
+    text-decoration: none;
+    outline: none;
+    color: #292623;
+    padding: 4px 12px; 
+    display: block;
+}
+
+.comment-dots-menu a:hover {
+    background-color: #f0f0f0;
+    border-radius: 2px;
 }
 
 .main-comment {

@@ -90,40 +90,98 @@ document.addEventListener("DOMContentLoaded", function () {
     async function fetchComments() {
         let postId = window.location.pathname.split("/").pop();
         const commentsContainer = document.querySelector(".comments-section");
-
+    
         try {
             let response = await fetch(`/comments/${postId}`);
             let data = await response.json();
-
+    
             commentsContainer.innerHTML = "";
-
+    
             if (Array.isArray(data)) {
                 data.forEach(comment => {
-                    console.log("🛠️ Comment Data:", comment);
-                    let newComment = document.createElement("div");
-                    newComment.classList.add("comment");
-                    newComment.innerHTML = `
-                        <div class="user-comment">
-                        <strong>${comment.username}</strong>
-                            <span>${new Date(comment.createdAt).toLocaleString()}</span>
-                        </div>
-                        <div class="main-comment">
-                            <p>${comment.content}</p>
-                        </div>
-                        <div class="comment-actions">
-                            <button class="vote-btn upvote">▲</button>
-                            <span class="vote-count">${comment.votes}</span>
-                            <button class="vote-btn downvote">▼</button>
-                            <button class="action-btn">Reply</button>
-                        </div>
-                    `;
-                    commentsContainer.appendChild(newComment);
+                    let commentHTML = generateCommentHTML(comment, document.body.getAttribute('data-username'));
+                    commentsContainer.appendChild(commentHTML);
                 });
             }
+    
         } catch (error) {
             console.error("❌ Error fetching comments:", error);
         }
     }
+    
+    function generateCommentHTML(comment, loggedInUser) {
+        let isAuthor = loggedInUser && loggedInUser === comment.username;
+        let isLoggedIn = !!loggedInUser;
+    
+        let commentDiv = document.createElement("div");
+        commentDiv.classList.add("comment");
+    
+        let dotsMenuHTML = "";
+        if (isLoggedIn) {
+            dotsMenuHTML = `
+                <div class="dots-container">
+                    <div class="dots">⋮</div>
+                    <div id="menu-${comment._id}" class="dots-menu">
+                        ${!isAuthor ? `<a href="/report/${comment._id}">Report</a>` : ''}
+                        ${isAuthor ? `<a href="/editComment/${comment._id}">Edit</a>` : ''}
+                        ${isAuthor ? `<a href="#" class="delete-comment-btn" data-comment-id="${comment._id}">Delete</a>` : ''}
+                    </div>
+                </div>
+            `;
+        }
+    
+        commentDiv.innerHTML = `
+            <div class="user-comment">
+                <strong>${comment.username}</strong>
+                <span>${new Date(comment.createdAt).toLocaleString()}</span>
+                ${dotsMenuHTML}
+            </div>
+            <div class="main-comment">
+                <p>${comment.content}</p>
+            </div>
+            <div class="comment-actions">
+                <button class="vote-btn upvote">▲</button>
+                <span class="vote-count">${comment.votes}</span>
+                <button class="vote-btn downvote">▼</button>
+                ${isLoggedIn ? '<button class="action-btn">Reply</button>' : ''}
+                <button class="action-btn">Share</button>
+            </div>
+        `;
+    
+        if (comment.nestedComments && comment.nestedComments.length > 0) {
+            let nestedCommentsDiv = document.createElement("div");
+            nestedCommentsDiv.classList.add("nested-comments");
+    
+            comment.nestedComments.forEach(nestedComment => {
+                let nestedCommentHTML = generateCommentHTML(nestedComment, loggedInUser);
+                nestedCommentsDiv.appendChild(nestedCommentHTML);
+            });
+    
+            commentDiv.appendChild(nestedCommentsDiv);
+        }
+    
+        return commentDiv;
+    }
+    
+    // Centralized event delegation for all ellipsis clicks
+    document.addEventListener('click', function(event) {
+        if (event.target.classList.contains('dots')) {
+            event.stopPropagation();
+            const dotsElement = event.target;
+            const menu = dotsElement.nextElementSibling;
+            if (menu) {
+                menu.style.display = menu.style.display === "block" ? "none" : "block";
+            }
+        } else if (!event.target.closest('.dots') && !event.target.closest('.dots-menu')) {
+            document.querySelectorAll('.dots-menu').forEach(menu => {
+                menu.style.display = "none";
+            });
+        }
+    });
+    
+    document.addEventListener("DOMContentLoaded", function(){
+        fetchComments();
+    });
 
     fetchComments();
     

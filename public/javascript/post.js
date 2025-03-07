@@ -119,9 +119,9 @@ document.addEventListener("DOMContentLoaded", function () {
         let dotsMenuHTML = "";
         if (isLoggedIn) {
             dotsMenuHTML = `
-                <div class="dots-container">
-                    <div class="dots">⋮</div>
-                    <div id="menu-${comment._id}" class="dots-menu">
+                <div class="comment-dots-container">
+                    <div class="comment-dots">⋮</div>
+                    <div id="menu-${comment._id}" class="comment-dots-menu">
                         ${!isAuthor ? `<a href="/report/${comment._id}">Report</a>` : ''}
                         ${isAuthor ? `<a href="/editComment/${comment._id}">Edit</a>` : ''}
                         ${isAuthor ? `<a href="#" class="delete-comment-btn" data-comment-id="${comment._id}">Delete</a>` : ''}
@@ -133,8 +133,10 @@ document.addEventListener("DOMContentLoaded", function () {
         commentDiv.innerHTML = `
             <div class="user-comment">
                 <strong>${comment.username}</strong>
-                <span>${new Date(comment.createdAt).toLocaleString()}</span>
-                ${dotsMenuHTML}
+                <div class="comment-header-right">
+                    <span>${new Date(comment.createdAt).toLocaleString()}</span>
+                    ${dotsMenuHTML}
+                </div>
             </div>
             <div class="main-comment">
                 <p>${comment.content}</p>
@@ -165,19 +167,21 @@ document.addEventListener("DOMContentLoaded", function () {
     
     // Centralized event delegation for all ellipsis clicks
     document.addEventListener('click', function(event) {
-        if (event.target.classList.contains('dots')) {
+        if (event.target.classList.contains('dots') || event.target.classList.contains('comment-dots')) {
             event.stopPropagation();
             const dotsElement = event.target;
             const menu = dotsElement.nextElementSibling;
             if (menu) {
                 menu.style.display = menu.style.display === "block" ? "none" : "block";
             }
-        } else if (!event.target.closest('.dots') && !event.target.closest('.dots-menu')) {
-            document.querySelectorAll('.dots-menu').forEach(menu => {
+        } else if (!event.target.closest('.dots') && !event.target.closest('.dots-menu') &&
+                   !event.target.closest('.comment-dots') && !event.target.closest('.comment-dots-menu')) {
+            document.querySelectorAll('.dots-menu, .comment-dots-menu').forEach(menu => {
                 menu.style.display = "none";
             });
         }
     });
+    
     
     document.addEventListener("DOMContentLoaded", function(){
         fetchComments();

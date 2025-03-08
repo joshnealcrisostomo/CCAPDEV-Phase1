@@ -4,7 +4,8 @@ const Report = require('./reportSchema.js');
 const User = require('./UserSchema'); 
 const Post = require('./postSchema'); 
 const Comment = require('./commentSchema');
-
+const {deleteComment} = require('./crudComments')
+const {deletePost} = require('./crudPost')
 const uri = "mongodb+srv://patricklim:Derp634Derp@apdevcluster.chzne.mongodb.net/?retryWrites=true&w=majority&appName=APDEVcluster";
 
 mongoose.connect(uri);
@@ -109,38 +110,39 @@ async function getAllReports(filters = {}) {
 
 async function updateReport(reportId, updateData) {
   try {
-    if (!ObjectId.isValid(reportId)) {
-      return { success: false, message: "Invalid Report ID format" };
-    }
+      if (!ObjectId.isValid(reportId)) {
+          return { success: false, message: "Invalid Report ID format" };
+      }
 
-    const report = await Report.findById(reportId);
-    if (!report) {
-      return { success: false, message: "Report not found" };
-    }
+      const report = await Report.findById(reportId).populate('reportedItemId');
 
-    delete updateData.reportedItemId;
-    delete updateData.reportedItemType;
-    delete updateData.author;
-    delete updateData.createdAt;
+      if (!report) {
+          return { success: false, message: "Report not found" };
+      }
 
-    const updatedReport = await Report.findByIdAndUpdate(
-      reportId,
-      { $set: updateData },
-      { new: true }
-    );
+      if (report.reportedItemType === 'Post') {
+          await deletePost(report.reportedItemId._id);
+      } else if (report.reportedItemType === 'Comment') {
+          await deleteComment(report.reportedItemId._id);
+      }
 
-    console.log("✅ Report updated successfully:", updatedReport);
-    return { 
-      success: true, 
-      message: "Report updated successfully",
-      report: updatedReport
-    };
+      const updatedReport = await Report.findByIdAndUpdate(
+          reportId,
+          { $set: updateData },
+          { new: true }
+      );
+
+      console.log("✅ Report updated successfully:", updatedReport);
+      return {
+          success: true,
+          message: "Report updated successfully",
+          report: updatedReport
+      };
   } catch (error) {
-    console.error("❌ Error updating report:", error);
-    return { success: false, message: error.message || "Server error" };
+      console.error("❌ Error updating report:", error);
+      return { success: false, message: error.message || "Server error" };
   }
 }
-
 async function deleteReport(reportId) {
   try {
     if (!ObjectId.isValid(reportId)) {

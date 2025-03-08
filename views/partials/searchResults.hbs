@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Search Results</title>
+</head>
+<body>
+    <h1>Search Results</h1>
+    {{#each posts}}
+        <div class="post">
+            <div class="post-title">{{postTitle}}</div>
+            <div class="post-meta">
+                <span class="username">by {{author.username}}</span>
+                <span class="upvotes">▲ {{votes}} ▼</span>
+            </div>
+        </div>
+    {{else}}
+        <p>No results found.</p>
+    {{/each}}
+</body>
+</html>

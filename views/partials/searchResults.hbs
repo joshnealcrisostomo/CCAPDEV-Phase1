@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Search Results</title>
+</head>
+<body>
+    <div class="container">
+        <div id="left-panel">
+            {{> navBar}}
+        </div>
+
+        <div class="middle-panel">
+            <div class="search-container">
+                <div class="return-container">
+                    <button type="button" class="return-btn">
+                        <img src="/icons/left_arrow.png" alt="return-btn">
+                    </button>
+                    <span>Return</span>
+                </div>
+                <hr>
+                <br>                
+                <h1>Search Results</h1>
+                {{#each posts}}
+                        <div class="post">
+                            <div class="post-title">{{postTitle}}</div>
+                            <div class="post-meta">
+                                <span class="username">by {{author.username}}</span>
+                                <span class="upvotes">▲ {{votes}} ▼</span>
+                            </div>
+                        </div>
+                    {{else}}
+                        <p>No results found.</p>
+                    {{/each}}
+            </div>
+        </div>                            
+    </div>        
+</body>
+</html>

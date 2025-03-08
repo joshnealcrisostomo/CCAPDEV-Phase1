@@ -24,7 +24,7 @@
                 <h2>Search</h2>
                 <div class="search-section">
                     <input type="text" id="search" placeholder="Search by Keyword">
-                    <button type="button" class="btn-login">Search</button>
+                    <a href="#" id="searchLink" class="btn-login">Search</a>
                 </div>
                 <div class="search-options">
                     <label><input type="checkbox"> Search entire post</label>
@@ -76,10 +76,31 @@
             </div>
         </div>
     </div>
+
+
+
+
+    
     <script>
         document.querySelector('.return-btn').addEventListener('click', function() {
             window.history.back();
         });
-    </script>     
+
+        document.getElementById('searchLink').addEventListener('click', function(event) {
+            event.preventDefault();
+
+            const keyword = document.getElementById('search').value;
+            const searchEntirePost = document.querySelector('input[type="checkbox"]:nth-child(1)').checked;
+            const searchTitleOnly = document.querySelector('input[type="checkbox"]:nth-child(2)').checked;
+            const sortBy = document.getElementById('sort-by').value;
+            const sortOrder = document.querySelector('input[name="sortOrder"]:checked').value;
+            const tag = document.getElementById('tag-select').value;
+
+            const url = `/search?keyword=${encodeURIComponent(keyword)}&searchEntirePost=${searchEntirePost}&searchTitleOnly=${searchTitleOnly}&sortBy=${encodeURIComponent(sortBy)}&sortOrder=${sortOrder}&tag=${encodeURIComponent(tag)}`;
+
+            this.href = url;
+            window.location.href = url;
+        });
+    </script>
 </body>
 </html>

@@ -51,7 +51,6 @@ hbs.registerHelper('isUpvoted', (postId, upvotedPosts) => {
 app.use(express.static(path.join(__dirname, "src")));
 app.use(express.static(path.join(__dirname, "public")));
 
-const posts = require("./src/models/contents");
 const router = require('./src/routes/router.js');
 const userRoutes = require("./src/routes/userRouter.js");
 

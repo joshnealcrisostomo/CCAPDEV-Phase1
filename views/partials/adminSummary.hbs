@@ -11,52 +11,66 @@
         <div class="right-panel">
             <div class="total-reports">
                 <h3>Total Reports:</h3>
-                <h2>24</h2>
+                <h2>{{totalReports}}</h2>
                 <div class="progress-bar">
-                    <div class="progress pending"></div>
-                    <div class="progress in-progress"></div>
-                    <div class="progress resolved"></div>
+                    <div class="progress pending" style="width: {{pendingReportsPercentage}}%; background-color: red;"></div>
+                    <div class="progress in-progress" style="width: {{inProgressReportsPercentage}}%; background-color: yellow;"></div>
+                    <div class="progress resolved" style="width: {{resolvedReportsPercentage}}%; background-color: green;"></div>
                 </div>
                 <div class="report-status">
                     <div class="status-item">
-                        <span class="dot pending-dot"></span> Pending Reports <span class="badge pending-badge">12</span>
+                        <span class="dot pending-dot"></span> Pending Reports <span class="badge pending-badge">{{pendingReports}}</span>
                     </div>
                     <div class="status-item">
-                        <span class="dot in-progress-dot"></span> In-Progress Reports <span class="badge in-progress-badge">6</span>
+                        <span class="dot in-progress-dot"></span> In-Progress Reports <span class="badge in-progress-badge">{{inProgressReports}}</span>
                     </div>
                     <div class="status-item">
-                        <span class="dot resolved-dot"></span> Resolved Reports <span class="badge resolved-badge">6</span>
+                        <span class="dot resolved-dot"></span> Resolved Reports <span class="badge resolved-badge">{{resolvedReports}}</span>
                     </div>
                 </div>
             </div>
             <div class="statistics">
                 <h3>Report Category</h3>
-                
+
                 <div class="stat">
-                    <p>Spam <span class="percentage">90%</span></p>
+                    <p>Hate <span class="percentage">{{hatePercentage}}%</span></p>
                     <div class="progress-bar">
-                        <div class="progress" style="width: 90%; background-color: purple;"></div>
+                        <div class="progress" style="width: {{hatePercentage}}%; background-color: red;"></div>
                     </div>
                 </div>
-            
+
                 <div class="stat">
-                    <p>Abuse/Harassment <span class="percentage">80%</span></p>
+                    <p>Bug <span class="percentage">{{bugPercentage}}%</span></p>
                     <div class="progress-bar">
-                        <div class="progress" style="width: 80%; background-color: green;"></div>
+                        <div class="progress" style="width: {{bugPercentage}}%; background-color: orange;"></div>
                     </div>
                 </div>
-            
+
                 <div class="stat">
-                    <p>Bug Reports <span class="percentage">60%</span></p>
+                    <p>Spam <span class="percentage">{{spamPercentage}}%</span></p>
                     <div class="progress-bar">
-                        <div class="progress" style="width: 60%; background-color: orange;"></div>
+                        <div class="progress" style="width: {{spamPercentage}}%; background-color: purple;"></div>
                     </div>
                 </div>
-            
+
                 <div class="stat">
-                    <p>Other <span class="percentage">40%</span></p>
+                    <p>Inappropriate Content <span class="percentage">{{inappropriatePercentage}}%</span></p>
                     <div class="progress-bar">
-                        <div class="progress" style="width: 40%; background-color: gray;"></div>
+                        <div class="progress" style="width: {{inappropriatePercentage}}%; background-color: blue;"></div>
+                    </div>
+                </div>
+
+                <div class="stat">
+                    <p>Privacy <span class="percentage">{{privacyPercentage}}%</span></p>
+                    <div class="progress-bar">
+                        <div class="progress" style="width: {{privacyPercentage}}%; background-color: yellow;"></div>
+                    </div>
+                </div>
+
+                <div class="stat">
+                    <p>Illegal <span class="percentage">{{illegalPercentage}}%</span></p>
+                    <div class="progress-bar">
+                        <div class="progress" style="width: {{illegalPercentage}}%; background-color: gray;"></div>
                     </div>
                 </div>
             </div>

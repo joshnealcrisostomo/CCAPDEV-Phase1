@@ -264,9 +264,11 @@ router.get('/search', async (req, res) => {
         const searchTitleOnly = req.query.searchTitleOnly === 'true';
         const sortBy = req.query.sortBy;
         const sortOrder = req.query.sortOrder === 'ascending' ? 1 : -1;
-        const tag = req.query.tag;
-
+        const tag = req.query.tag !== 'Any' ? req.query.tag : null;
+        
         let query = {};
+        
+        // Build search query
         if (keyword) {
             const regex = new RegExp(keyword, 'i');
             if (searchEntirePost) {
@@ -277,24 +279,28 @@ router.get('/search', async (req, res) => {
                 query = { postTitle: regex };
             }
         }
+        
         if (tag) {
             query.tags = tag;
         }
-
+        
+        // Set sort options
         let sortOptions = {};
         if (sortBy === 'Last Post Date') {
             sortOptions = { createdAt: sortOrder };
-        } else if (sortBy === 'View Count') {
-            sortOptions = { views: sortOrder };
+        } else if (sortBy === 'Upvotes') {
+            sortOptions = { votes: sortOrder };
         } else if (sortBy === 'Reply Count') {
-            sortOptions = { replies: sortOrder };
+            sortOptions = { replyCount: sortOrder };
         }
-
+        
         const searchResults = await Post.find(query).sort(sortOptions).populate('author');
-
-        res.render('../partials/searchResults', {
+        
+        // Render the full explore layout with search results
+        res.render('explore', {
             posts: searchResults,
-            layout: 'explore',
+            isSearchResults: true,
+            searchQuery: keyword,
             title: 'Search Results',
             isLoggedIn: req.session.isLoggedIn || false,
             loggedInUser: req.session.loggedInUser || '',

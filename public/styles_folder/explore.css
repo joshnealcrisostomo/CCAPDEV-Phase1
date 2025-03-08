@@ -36,7 +36,12 @@ body {
     align-items: center;
     justify-content: center;
     margin-right: 10px;
-}     
+}   
+
+.post a {
+    text-decoration: none;
+    color:#242b6d;
+}
 
 .return-container button:hover {
     background-color: rgba(12, 95, 179, 0.2); 
@@ -46,6 +51,10 @@ body {
 .return-container button img {
     width: 20px;
     height: 20px;
+}
+
+.search-container a {
+    text-decoration: none;
 }
 
 .return-container span {

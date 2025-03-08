@@ -16,7 +16,7 @@ const { addComment, getComments, updateComment, deleteComment } = require('../..
 const Comment = require( '../../public/javascript/mongo/commentSchema.js');
 const adminRouter = require('../routes/adminRouter.js');
 const Report = require('../../public/javascript/mongo/reportSchema.js')
-// Approve Report Route
+
 // MongoDB connection URI
 const uri = "mongodb+srv://patricklim:Derp634Derp@apdevcluster.chzne.mongodb.net/?retryWrites=true&w=majority&appName=APDEVcluster";
 

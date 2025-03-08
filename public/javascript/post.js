@@ -246,6 +246,57 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
+// Add this code to add event listeners for delete comment buttons
+document.addEventListener('click', async function(event) {
+    // Check if clicked element is a delete comment button
+    if (event.target.classList.contains('delete-comment-btn') || 
+        (event.target.parentElement && event.target.parentElement.classList.contains('delete-comment-btn'))) {
+        
+        event.preventDefault();
+        
+        // Get the comment ID from the data attribute
+        const element = event.target.classList.contains('delete-comment-btn') ? 
+                        event.target : event.target.parentElement;
+        const commentId = element.getAttribute('data-comment-id');
+        
+        if (!commentId) {
+            console.error("❌ Comment ID not found");
+            return;
+        }
+        
+        // Confirm deletion
+        const confirmDelete = confirm("Are you sure you want to delete this comment? This action cannot be undone.");
+        if (!confirmDelete) return;
+        
+        try {
+            // Send delete request
+            const response = await fetch(`/comments/${commentId}`, {
+                method: "DELETE",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok) {
+                // Remove the comment from the DOM
+                const commentElement = element.closest('.comment');
+                if (commentElement) {
+                    commentElement.remove();
+                }
+                console.log("✅ Comment deleted successfully");
+            } else {
+                alert(`❌ ${data.message}`);
+            }
+        } catch (error) {
+            console.error("❌ Error deleting comment:", error);
+            alert("❌ Network error. Please try again.");
+        }
+    }
+});
+
 document.addEventListener("DOMContentLoaded", function () {
     document.querySelectorAll(".delete-post-btn").forEach(btn => {
         btn.addEventListener("click", handleDeletePost);

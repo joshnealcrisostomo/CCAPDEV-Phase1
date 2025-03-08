@@ -90,6 +90,7 @@ router.get('/dashboard', async (req, res) => {
 });
 
 // Profile router
+/*
 router.get('/profile/:username', async (req, res) => {
     let { username } = req.params;
     if (!username.startsWith('@')) username = '@' + username;
@@ -157,6 +158,79 @@ router.get('/profile/:username', async (req, res) => {
         res.status(500).send('Internal server error');
     }
 });
+*/
+
+// Profile router
+router.get('/profile/:username', async (req, res) => {
+    let { username } = req.params;
+    if (!username.startsWith('@')) username = '@' + username;
+
+    try {
+        const db = await connect();
+        const usersCollection = db.collection('users');
+        const viewedUser = await usersCollection.findOne({ username });
+
+        if (!viewedUser) return res.status(404).send('User not found');
+
+        const userPosts = await Post.find({ author: viewedUser._id })
+            .populate('author')
+            .sort({ createdAt: -1 })
+            .exec();
+
+        const userComments = await Comment.find({ username: viewedUser.username })
+            .populate({
+                path: 'postId',
+                model: 'Post',
+                select: 'postTitle _id'
+            })
+            .sort({ createdAt: -1 })
+            .exec();
+
+        const formattedComments = userComments.map(comment => ({
+            commentId: comment._id.toString(),
+            postId: comment.postId
+        }));
+
+        const loggedInUser = req.session.user ? req.session.user.username : '';
+        const isOwnProfile = req.session.user && req.session.user.username === viewedUser.username;
+
+        if (isOwnProfile) {
+            res.render('profile.hbs', {
+                displayName: viewedUser.displayName,
+                username: viewedUser.username,
+                profilePic: viewedUser.profilePic,
+                headerPic: viewedUser.headerPic || '/headerPictures/default.jpg',  // ✅ Added headerPic
+                bio: viewedUser.bio,
+                posts: userPosts,
+                comments: formattedComments,
+                layout: 'profile',
+                title: `${viewedUser.displayName}'s Profile`,
+                isLoggedIn: !!req.session.user,
+                loggedInUser,
+                viewedUser
+            });
+        } else {
+            res.render('publicProfile.hbs', {
+                displayName: viewedUser.displayName,
+                username: viewedUser.username,
+                profilePic: viewedUser.profilePic,
+                headerPic: viewedUser.headerPic || '/headerPictures/default.jpg',  // ✅ Added headerPic
+                bio: viewedUser.bio,
+                posts: userPosts,
+                comments: formattedComments,
+                layout: 'publicProfile',
+                title: `${viewedUser.displayName}'s Profile`,
+                isLoggedIn: !!req.session.user,
+                loggedInUser,
+                viewedUser
+            });
+        }
+    } catch (error) {
+        console.error('Error fetching user profile:', error);
+        res.status(500).send('Internal server error');
+    }
+});
+
 
 // Profile menu navigation
 router.get('/profile/:username/content/:tab', async (req, res) => {
@@ -728,6 +802,7 @@ router.get('/editProfile', async (req, res) => {
         res.render('editProfile', {
             profilePic: user.profilePic,
             displayName: user.displayName,
+            headerPic: user.headerPic,
             bio: user.bio,
             layout: 'editProfile',
             title: 'Edit your profile',

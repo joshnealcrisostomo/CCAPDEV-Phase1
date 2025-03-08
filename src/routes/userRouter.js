@@ -95,4 +95,6 @@ router.post('/updateProfile', upload.fields([
     }
 });
 
+
+
 module.exports = router;

@@ -27,8 +27,8 @@
                     <a href="#" id="searchLink" class="btn-login">Search</a>
                 </div>
                 <div class="search-options">
-                    <label><input type="checkbox"> Search entire post</label>
-                    <label><input type="checkbox"> Search title only</label>
+                    <label><input type="checkbox" id="entirePostCheckbox"> Search entire post</label>
+                    <label><input type="checkbox" id="titleOnlyCheckbox"> Search title only</label>
                 </div>
                 <div class="advanced-options">
                     <div class="sort-options">
@@ -40,7 +40,7 @@
                         </select>
                         <div class="radio-options">
                             <label>
-                                <input type="radio" name="sortOrder" value="ascending"> Ascending
+                                <input type="radio" name="sortOrder" value="ascending" checked> Ascending
                             </label>
                             <label>
                                 <input type="radio" name="sortOrder" value="descending"> Descending
@@ -60,7 +60,6 @@
                 </div>
                 <br>
                 <hr>
-
                 <div class="latest-posts">
                     <h2>Trending</h2>
                     {{#each posts}} 
@@ -76,30 +75,39 @@
             </div>
         </div>
     </div>
-
-
-
-
-    
     <script>
-        document.querySelector('.return-btn').addEventListener('click', function() {
-            window.history.back();
-        });
+        document.addEventListener('DOMContentLoaded', function() {
+            // Return Button Fix
+            const returnBtn = document.querySelector('.return-btn');
+            if (returnBtn) {
+                returnBtn.addEventListener('click', function() {
+                    window.history.back();
+                });
+            }
 
-        document.getElementById('searchLink').addEventListener('click', function(event) {
-            event.preventDefault();
+            // Search Link Fix
+            const searchLink = document.getElementById('searchLink');
+            if (searchLink) {
+                searchLink.addEventListener('click', function(event) {
+                    event.preventDefault();
 
-            const keyword = document.getElementById('search').value;
-            const searchEntirePost = document.querySelector('input[type="checkbox"]:nth-child(1)').checked;
-            const searchTitleOnly = document.querySelector('input[type="checkbox"]:nth-child(2)').checked;
-            const sortBy = document.getElementById('sort-by').value;
-            const sortOrder = document.querySelector('input[name="sortOrder"]:checked').value;
-            const tag = document.getElementById('tag-select').value;
+                    const keyword = document.getElementById('search').value;
+                    const searchEntirePost = document.getElementById('entirePostCheckbox').checked;
+                    const searchTitleOnly = document.getElementById('titleOnlyCheckbox').checked;
+                    const sortBy = document.getElementById('sort-by').value;
+                    
+                    // Check if a radio button is selected before accessing its value
+                    const selectedSortOrder = document.querySelector('input[name="sortOrder"]:checked');
+                    const sortOrder = selectedSortOrder ? selectedSortOrder.value : 'ascending';
+                    
+                    const tagSelect = document.getElementById('tag-select');
+                    const tag = tagSelect ? tagSelect.value : '';
 
-            const url = `/search?keyword=${encodeURIComponent(keyword)}&searchEntirePost=${searchEntirePost}&searchTitleOnly=${searchTitleOnly}&sortBy=${encodeURIComponent(sortBy)}&sortOrder=${sortOrder}&tag=${encodeURIComponent(tag)}`;
+                    const url = `/search?keyword=${encodeURIComponent(keyword)}&searchEntirePost=${searchEntirePost}&searchTitleOnly=${searchTitleOnly}&sortBy=${encodeURIComponent(sortBy)}&sortOrder=${sortOrder}&tag=${encodeURIComponent(tag)}`;
 
-            this.href = url;
-            window.location.href = url;
+                    window.location.href = url;
+                });
+            }
         });
     </script>
 </body>

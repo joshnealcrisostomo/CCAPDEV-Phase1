@@ -362,9 +362,9 @@ router.get('/search', async (req, res) => {
 
         const searchResults = await Post.find(query).sort(sortOptions).populate('author');
 
-        res.render('searchResults', {
+        res.render('../partials/searchResults', {
             posts: searchResults,
-            layout: 'explore', // Or your desired layout
+            layout: 'explore',
             title: 'Search Results',
             isLoggedIn: req.session.isLoggedIn || false,
             loggedInUser: req.session.loggedInUser || '',

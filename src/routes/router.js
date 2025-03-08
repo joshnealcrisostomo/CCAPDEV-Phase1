@@ -327,6 +327,54 @@ router.get('/explore', async (req, res) => {
     }
 });
 
+router.get('/search', async (req, res) => {
+    try {
+        const keyword = req.query.keyword;
+        const searchEntirePost = req.query.searchEntirePost === 'true';
+        const searchTitleOnly = req.query.searchTitleOnly === 'true';
+        const sortBy = req.query.sortBy;
+        const sortOrder = req.query.sortOrder === 'ascending' ? 1 : -1;
+        const tag = req.query.tag;
+
+        let query = {};
+        if (keyword) {
+            const regex = new RegExp(keyword, 'i');
+            if (searchEntirePost) {
+                query = { $or: [{ postTitle: regex }, { postContent: regex }] };
+            } else if (searchTitleOnly) {
+                query = { postTitle: regex };
+            } else {
+                query = { postTitle: regex };
+            }
+        }
+        if (tag) {
+            query.tags = tag;
+        }
+
+        let sortOptions = {};
+        if (sortBy === 'Last Post Date') {
+            sortOptions = { createdAt: sortOrder };
+        } else if (sortBy === 'View Count') {
+            sortOptions = { views: sortOrder };
+        } else if (sortBy === 'Reply Count') {
+            sortOptions = { replies: sortOrder };
+        }
+
+        const searchResults = await Post.find(query).sort(sortOptions).populate('author');
+
+        res.render('searchResults', {
+            posts: searchResults,
+            layout: 'explore', // Or your desired layout
+            title: 'Search Results',
+            isLoggedIn: req.session.isLoggedIn || false,
+            loggedInUser: req.session.loggedInUser || '',
+        });
+    } catch (error) {
+        console.error('Error in search route:', error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
 // Settings route
 router.get('/settings', (req, res) => {
     res.render('settings', {

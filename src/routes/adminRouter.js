@@ -1,8 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const {updateReport, deleteReport} = require('../../public/javascript/mongo/crudReport.js'); 
-
-// Approve Report Route
 router.post('/admin/report/:id/approve', async (req, res) => {
     try {
         const reportId = req.params.id;
@@ -69,7 +67,5 @@ router.post('/admin/comment-report/:id/delete', async (req, res) => {
         res.status(500).send('Server error');
     }
 });
-
-
 
 module.exports = router;

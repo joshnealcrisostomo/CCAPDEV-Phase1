@@ -15,6 +15,8 @@ const User = require('../../public/javascript/mongo/UserSchema.js');
 const { addComment, getComments, updateComment, deleteComment } = require('../../public/javascript/mongo/crudComments.js');
 const Comment = require( '../../public/javascript/mongo/commentSchema.js');
 const adminRouter = require('../routes/adminRouter.js');
+const Report = require('../../public/javascript/mongo/reportSchema.js')
+// Approve Report Route
 // MongoDB connection URI
 const uri = "mongodb+srv://patricklim:Derp634Derp@apdevcluster.chzne.mongodb.net/?retryWrites=true&w=majority&appName=APDEVcluster";
 
@@ -818,19 +820,72 @@ router.get('/editProfile', async (req, res) => {
 // Admin page
 router.get('/admin', async (req, res) => {
     try {
-        const result = await getAllReports({ reportedItemType: 'Post' });
+       
+        const postReportsResult = await getAllReports({ reportedItemType: 'Post' });
+
         
+        const allReports = await Report.find();
+
+       
+        const totalReports = allReports.length;
+        const pendingReports = allReports.filter(report => report.status === 'Pending').length;
+        const inProgressReports = allReports.filter(report => report.status === 'In-Progress').length;
+        const resolvedReports = allReports.filter(report => report.status === 'Resolved').length;
+
+       
+        const hateReports = allReports.filter(report => report.reason === 'Hate').length;
+        const bugReports = allReports.filter(report => report.reason === 'Bug').length;
+        const spamReports = allReports.filter(report => report.reason === 'Spam').length;
+        const inappropriateReports = allReports.filter(report => report.reason === 'Inappropriate Content').length;
+        const privacyReports = allReports.filter(report => report.reason === 'Privacy').length;
+        const illegalReports = allReports.filter(report => report.reason === 'Illegal').length;
+
+        let hatePercentage = 0;
+        let bugPercentage = 0;
+        let spamPercentage = 0;
+        let inappropriatePercentage = 0;
+        let privacyPercentage = 0;
+        let illegalPercentage = 0;
+        let pendingReportsPercentage = 0;
+        let inProgressReportsPercentage = 0;
+        let resolvedReportsPercentage = 0;
+
+        if (totalReports > 0) {
+            hatePercentage = (hateReports / totalReports) * 100;
+            bugPercentage = (bugReports / totalReports) * 100;
+            spamPercentage = (spamReports / totalReports) * 100;
+            inappropriatePercentage = (inappropriateReports / totalReports) * 100;
+            privacyPercentage = (privacyReports / totalReports) * 100;
+            illegalPercentage = (illegalReports / totalReports) * 100;
+            pendingReportsPercentage = (pendingReports / totalReports) * 100;
+            inProgressReportsPercentage = (inProgressReports / totalReports) * 100;
+            resolvedReportsPercentage = (resolvedReports / totalReports) * 100;
+        }
+
+      
         res.render('admin', {
             user: req.session.user,
-            reports: result.success ? result.reports : [],
-            isAdmin: true
+            reports: postReportsResult.success ? postReportsResult.reports : [],
+            isAdmin: true,
+            totalReports,
+            pendingReports,
+            inProgressReports,
+            resolvedReports,
+            hatePercentage,
+            bugPercentage,
+            spamPercentage,
+            inappropriatePercentage,
+            privacyPercentage,
+            illegalPercentage,
+            pendingReportsPercentage,
+            inProgressReportsPercentage,
+            resolvedReportsPercentage
         });
+
     } catch (error) {
         console.error('Error in admin route:', error);
-        res.status(500).render('error', { 
-            message: 'Failed to load admin page', 
-            error: { status: 500, stack: error.stack }
-        });
+
+        res.status(500).send('Server error');
     }
 });
 

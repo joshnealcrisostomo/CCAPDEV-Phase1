@@ -20,7 +20,9 @@
                 <span>{{displayName}}</span>
             </div>
             <div class="header-profile">
-                <div class="header-img"></div>
+                <div class="header-img">
+                    <img src="{{headerPic}}" id="profile-header-pic" onerror="this.style.display='none'">
+                </div>            
                 <div class="pfp">
                     <img src="{{profilePic}}" alt="Profile picture">
                 </div>
@@ -46,7 +48,7 @@
             </div>
 
             <div class="content">
-               {{> pubProfileContent}}
+                {{> pubProfileContent}}
             </div>
         </div>
         <div id="right-panel">

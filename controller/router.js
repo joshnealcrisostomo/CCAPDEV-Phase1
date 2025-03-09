@@ -4,18 +4,18 @@ const { MongoClient } = require('mongodb');
 const multer = require('multer');
 const path = require('path'); 
 
-const { getAllReports, getReportById } = require('../../public/javascript/mongo/crudReport.js');
-const authController = require('../../public/javascript/mongo/registerUser.js');
-const { loginUser } = require('../../public/javascript/mongo/loginUser.js');
-const { createPost, deletePost, updatePost } = require('../../public/javascript/mongo/crudPost.js');
-const { updateUser } = require('../../public/javascript/mongo/updateUser.js');
-const Post = require('../../public/javascript/mongo/postSchema.js');
-const { createReport } = require('../../public/javascript/mongo/crudReport.js');
-const User = require('../../public/javascript/mongo/UserSchema.js');
-const { addComment, getComments, updateComment, deleteComment } = require('../../public/javascript/mongo/crudComments.js');
-const Comment = require( '../../public/javascript/mongo/commentSchema.js');
-const adminRouter = require('../routes/adminRouter.js');
-const Report = require('../../public/javascript/mongo/reportSchema.js')
+const { getAllReports, getReportById } = require('../model/crudReport.js');
+const authController = require('../model/registerUser.js');
+const { loginUser } = require('../model/loginUser.js');
+const { createPost, deletePost, updatePost } = require('../model/crudPost.js');
+const { updateUser } = require('../model/updateUser.js');
+const Post = require('../model/postSchema.js');
+const { createReport } = require('../model/crudReport.js');
+const User = require('../model/UserSchema.js');
+const { addComment, getComments, updateComment, deleteComment } = require('../model/crudComments.js');
+const Comment = require( '../model/commentSchema.js');
+const adminRouter = require('../controller/adminRouter.js');
+const Report = require('../model/reportSchema.js')
 
 // MongoDB connection URI
 const uri = "mongodb+srv://patricklim:Derp634Derp@apdevcluster.chzne.mongodb.net/?retryWrites=true&w=majority&appName=APDEVcluster";
@@ -64,7 +64,7 @@ const fileFilter = (req, file, cb) => {
 
 const upload = multer({ 
     storage: storage,
-    limits: { fileSize: 5 * 1024 * 1024 },  // 5MB limit
+    limits: { fileSize: 5 * 1024 * 1024 },
     fileFilter: fileFilter
 });
 
@@ -130,7 +130,7 @@ router.get('/profile/:username', async (req, res) => {
                 displayName: viewedUser.displayName,
                 username: viewedUser.username,
                 profilePic: viewedUser.profilePic,
-                headerPic: viewedUser.headerPic || '/headerPictures/default.jpg',
+                headerPic: viewedUser.headerPic || '../public/headerPictures/default.jpg',
                 bio: viewedUser.bio,
                 posts: userPosts,
                 comments: formattedComments,
@@ -145,7 +145,7 @@ router.get('/profile/:username', async (req, res) => {
                 displayName: viewedUser.displayName,
                 username: viewedUser.username,
                 profilePic: viewedUser.profilePic,
-                headerPic: viewedUser.headerPic || '/headerPictures/default.jpg', 
+                headerPic: viewedUser.headerPic || '../public/headerPictures/default.jpg', 
                 bio: viewedUser.bio,
                 posts: userPosts,
                 comments: formattedComments,

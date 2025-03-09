@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const {updateReport, deleteReport} = require('../../public/javascript/mongo/crudReport.js'); 
+const {updateReport, deleteReport} = require('../model/crudReport.js'); 
 router.post('/admin/report/:id/approve', async (req, res) => {
     try {
         const reportId = req.params.id;

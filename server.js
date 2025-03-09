@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const uri = "mongodb+srv://patricklim:Derp634Derp@apdevcluster.chzne.mongodb.net/?retryWrites=true&w=majority&appName=APDEVcluster";
-const { deleteUser } = require("./public/javascript/mongo/deleteUser");
+const { deleteUser } = require("./model/deleteUser.js");
 
 const express = require("express");
 const cors = require("cors");
@@ -51,8 +51,8 @@ hbs.registerHelper('isUpvoted', (postId, upvotedPosts) => {
 app.use(express.static(path.join(__dirname, "src")));
 app.use(express.static(path.join(__dirname, "public")));
 
-const router = require('./src/routes/router.js');
-const userRoutes = require("./src/routes/userRouter.js");
+const router = require('./controller/router.js');
+const userRoutes = require("./controller/userRouter.js");
 
 if (typeof router === "function") {
     app.use(router);
@@ -74,7 +74,7 @@ app.get("/dashboard", (req, res) => {
     res.render("dashboard", { posts: Object.values(posts), isLoggedIn: true });
 });
 
-const User = require("./public/javascript/mongo/UserSchema.js");
+const User = require("./model/UserSchema.js");
 
 app.use(async (req, res, next) => {
     if (req.session.userId) {
@@ -135,8 +135,8 @@ app.delete("/users/:id", async (req, res) => {
     }
 });
 
-const Comment = require("./public/javascript/mongo/commentSchema.js"); // Import comment schema
-const Post = require("./public/javascript/mongo/postSchema.js"); // Import post schema
+const Comment = require("./model/commentSchema.js"); // Import comment schema
+const Post = require("./model/postSchema.js"); // Import post schema
 
 // API Route to Add a Comment to a Post
 app.post("/add-comment", async (req, res) => {
@@ -167,7 +167,6 @@ app.post("/add-comment", async (req, res) => {
         res.status(500).json({ success: false, message: "Server error" });
     }
 });
-
 
 async function fixCommentsField() {
     try {

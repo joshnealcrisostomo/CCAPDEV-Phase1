@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const { deleteUser } = require("../../public/javascript/mongo/deleteUser");
-const { updateUser } = require('../../public/javascript/mongo/updateUser.js');
+const { deleteUser } = require("../model/deleteUser.js");
+const { updateUser } = require('../model/updateUser.js');
 const { ObjectId } = require("mongodb");
 
 const multer = require('multer');

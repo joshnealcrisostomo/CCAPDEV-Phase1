@@ -804,19 +804,14 @@ router.get('/editProfile', async (req, res) => {
 // Admin page
 router.get('/admin', async (req, res) => {
     try {
-       
         const postReportsResult = await getAllReports({ reportedItemType: 'Post' });
-
-        
         const allReports = await Report.find();
 
-       
         const totalReports = allReports.length;
         const pendingReports = allReports.filter(report => report.status === 'Pending').length;
         const inProgressReports = allReports.filter(report => report.status === 'In-Progress').length;
         const resolvedReports = allReports.filter(report => report.status === 'Resolved').length;
 
-       
         const hateReports = allReports.filter(report => report.reason === 'Hate').length;
         const bugReports = allReports.filter(report => report.reason === 'Bug').length;
         const spamReports = allReports.filter(report => report.reason === 'Spam').length;
@@ -835,18 +830,17 @@ router.get('/admin', async (req, res) => {
         let resolvedReportsPercentage = 0;
 
         if (totalReports > 0) {
-            hatePercentage = (hateReports / totalReports) * 100;
-            bugPercentage = (bugReports / totalReports) * 100;
-            spamPercentage = (spamReports / totalReports) * 100;
-            inappropriatePercentage = (inappropriateReports / totalReports) * 100;
-            privacyPercentage = (privacyReports / totalReports) * 100;
-            illegalPercentage = (illegalReports / totalReports) * 100;
-            pendingReportsPercentage = (pendingReports / totalReports) * 100;
-            inProgressReportsPercentage = (inProgressReports / totalReports) * 100;
-            resolvedReportsPercentage = (resolvedReports / totalReports) * 100;
+            hatePercentage = parseFloat(((hateReports / totalReports) * 100).toFixed(2));
+            bugPercentage = parseFloat(((bugReports / totalReports) * 100).toFixed(2));
+            spamPercentage = parseFloat(((spamReports / totalReports) * 100).toFixed(2));
+            inappropriatePercentage = parseFloat(((inappropriateReports / totalReports) * 100).toFixed(2));
+            privacyPercentage = parseFloat(((privacyReports / totalReports) * 100).toFixed(2));
+            illegalPercentage = parseFloat(((illegalReports / totalReports) * 100).toFixed(2));
+            pendingReportsPercentage = parseFloat(((pendingReports / totalReports) * 100).toFixed(2));
+            inProgressReportsPercentage = parseFloat(((inProgressReports / totalReports) * 100).toFixed(2));
+            resolvedReportsPercentage = parseFloat(((resolvedReports / totalReports) * 100).toFixed(2));
         }
 
-      
         res.render('admin', {
             user: req.session.user,
             reports: postReportsResult.success ? postReportsResult.reports : [],
@@ -868,7 +862,6 @@ router.get('/admin', async (req, res) => {
 
     } catch (error) {
         console.error('Error in admin route:', error);
-
         res.status(500).send('Server error');
     }
 });

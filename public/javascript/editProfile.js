@@ -1,6 +1,3 @@
-// editProfile.js
-
-// Event listener for return button
 document.querySelector('.exit-btn').addEventListener('click', function() {
     window.history.back();
 });

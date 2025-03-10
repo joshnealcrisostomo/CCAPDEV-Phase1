@@ -135,8 +135,8 @@ app.delete("/users/:id", async (req, res) => {
     }
 });
 
-const Comment = require("./model/commentSchema.js"); // Import comment schema
-const Post = require("./model/postSchema.js"); // Import post schema
+const Comment = require("./model/commentSchema.js");
+const Post = require("./model/postSchema.js");
 
 // API Route to Add a Comment to a Post
 app.post("/add-comment", async (req, res) => {

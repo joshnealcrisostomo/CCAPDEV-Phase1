@@ -7,7 +7,7 @@
     <title>{{title}}</title>
     <style>
         .post {
-            cursor: pointer; /* Change cursor to pointer for clickable effect */
+            cursor: pointer;
         }
     </style>
 </head>
@@ -114,7 +114,6 @@
                 });
             }
 
-            // Make .post divs clickable
             const postDivs = document.querySelectorAll('.post');
             postDivs.forEach(postDiv => {
                 postDiv.addEventListener('click', function() {

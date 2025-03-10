@@ -35,6 +35,6 @@ const ReportSchema = new Schema({
     }
 });
 
-ReportSchema.index({ reportedItemId: 1, reportedItemType: 1, reason: 1 }, { unique: true }); // Changed to author
+ReportSchema.index({ reportedItemId: 1, reportedItemType: 1, reason: 1 }, { unique: true });
 
 module.exports = mongoose.model('Report', ReportSchema);

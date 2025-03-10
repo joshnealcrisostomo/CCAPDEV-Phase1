@@ -122,9 +122,9 @@ body {
     }
 
     .menu-item:hover {
-        background-color: unset; /* Remove hover background change */
-        color: unset; /* Remove hover color change */
-        transform: none; /* Remove scaling effect */ 
+        background-color: unset; 
+        color: unset; 
+        transform: none; 
     }
 
     .menu-text {
@@ -132,19 +132,19 @@ body {
     }
 
     .logo img {
-        width: 50px; /* Shrink the logo */
+        width: 50px; 
         height: auto;
         margin-left: 0;
     }
 
     .btn-post span {
-        display: none; /* Hide original text */
+        display: none; 
     }
 
     .btn-post {
-        width: 50px; /* Adjust width to fit the + sign */
+        width: 50px; 
         height: 50px;
-        font-size: 30px; /* Make the plus sign larger */
+        font-size: 30px; 
         padding: 0;
         display: flex;
         align-items: center;
@@ -153,7 +153,7 @@ body {
     }
 
     .btn-post::before {
-        content: "+"; /* Show only the plus sign */
+        content: "+"; 
         font-size: 25px;
         font-weight: 200;
     }
@@ -163,9 +163,9 @@ body {
     }
 
     .logout {
-        width: 50px; /* Adjust width to fit the + sign */
+        width: 50px; 
         height: 50px;
-        font-size: 30px; /* Make the plus sign larger */
+        font-size: 30px;
         padding: 0;
         display: flex;
         align-items: center;
@@ -174,7 +174,7 @@ body {
     }
 
     .logout::before {
-        content: "x"; /* Show only the plus sign */
+        content: "x"; 
         font-size: 25px;
         font-weight: 200;
     }

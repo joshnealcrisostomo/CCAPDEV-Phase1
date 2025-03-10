@@ -20,7 +20,6 @@ const Report = require('../model/reportSchema.js')
 // MongoDB connection URI
 const uri = "mongodb+srv://patricklim:Derp634Derp@apdevcluster.chzne.mongodb.net/?retryWrites=true&w=majority&appName=APDEVcluster";
 
-// MongoDB client
 let client;
 
 // Connect to MongoDB
@@ -53,7 +52,6 @@ const storage = multer.diskStorage({
     }
 });
 
-  // File filter for images
 const fileFilter = (req, file, cb) => {
     if (file.mimetype.startsWith('image/')) {
         cb(null, true);
@@ -67,8 +65,6 @@ const upload = multer({
     limits: { fileSize: 5 * 1024 * 1024 },
     fileFilter: fileFilter
 });
-
-
 
 // Dashboard router
 router.get('/dashboard', async (req, res) => {
@@ -268,7 +264,6 @@ router.get('/search', async (req, res) => {
         
         let query = {};
         
-        // Build search query
         if (keyword) {
             const regex = new RegExp(keyword, 'i');
             if (searchEntirePost) {
@@ -284,7 +279,6 @@ router.get('/search', async (req, res) => {
             query.tags = tag;
         }
         
-        // Set sort options
         let sortOptions = {};
         if (sortBy === 'Last Post Date') {
             sortOptions = { createdAt: sortOrder };
@@ -296,7 +290,6 @@ router.get('/search', async (req, res) => {
         
         const searchResults = await Post.find(query).sort(sortOptions).populate('author');
         
-        // Render the full explore layout with search results
         res.render('explore', {
             posts: searchResults,
             isSearchResults: true,
@@ -477,7 +470,6 @@ router.post('/createPost', upload.single('postImage'), async (req, res) => {
             tags,
         } = req.body;
         
-        // Get the image path from multer
         const postImage = req.file ? `/postImages/${req.file.filename}` : '';
         
         const userId = req.session.user._id;
@@ -553,8 +545,6 @@ router.post("/comments", async (req, res) => {
         res.status(500).json({ success: false, message: "Internal server error" });
     }
 });
-
-
 
 // READ comments for a post
 router.get('/comments/:postId', async (req, res) => { 
@@ -680,7 +670,6 @@ router.get("/profile/comments", async (req, res) => {
             return res.redirect("/login");
         }
 
-        // Fetch comments made by the logged-in user
         const comments = await Comment.find({ username: req.session.user.username })
             .populate({
                 path: "postId",
@@ -894,7 +883,6 @@ router.get('/admin/content/comments', async (req, res) => {
             return res.status(500).send('<div class="error-message">Error fetching reports</div>');
         }
         
-        // Render the reports table content
         res.render('partials/adminComments', {
             layout: false,
             reports: result.reports
@@ -908,7 +896,6 @@ router.get('/admin/content/comments', async (req, res) => {
 // Router for user reports
 router.get('/admin/content/users', async (req, res) => {
     try {
-        // To 
         res.send('<h3>User Reports</h3><div class="no-reports">User reports feature coming soon</div>');
     } catch (error) {
         console.error('Error in users content route:', error);
@@ -999,11 +986,10 @@ router.get('/admin/content/:tab', async (req, res) => {
             case 'usersReport':
                 filters.reportedItemType = 'User';
                 break;
-            default: // postsReport
+            default:
                 filters.reportedItemType = 'Post';
         }
         
-        // Get filtered reports from database
         const result = await getAllReports(filters);
         
         if (!result.success) {
@@ -1011,7 +997,6 @@ router.get('/admin/content/:tab', async (req, res) => {
             return res.status(500).send(`Error fetching ${tab} reports`);
         }
         
-        // Render appropriate partial with reports from database
         switch (tab) {
             case 'commentsReport':
                 res.render('../partials/adminComments', { reports: result.reports });
@@ -1051,22 +1036,18 @@ router.get('/report/:id', async (req, res) => {
             reportedItem = user;
             reportedItemType = 'User';
         } else {
-            // Check if it's a Post
             const post = await Post.findById(id).populate('author').exec();
 
             if (post) {
                 reportedItem = post;
                 reportedItemType = 'Post';
             } else {
-                // Check if it's a Comment
                 const comment = await Comment.findById(id).exec();
 
                 if (comment) {
                     reportedItem = comment;
                     reportedItemType = 'Comment';
-                    // Find the user based on the username field.
                     const user = await User.findOne({ username: comment.username });
-                    // add the user object to the comment object.
                     if (user) {
                         reportedItem.author = user;
                     }
@@ -1123,7 +1104,6 @@ router.post('/report/:id', async (req, res) => {
             reportedItemType = 'User';
             authorId = user._id;
         } else {
-            // Check if Post
             const post = await Post.findById(id).populate('author').exec();
 
             if (post) {
@@ -1131,13 +1111,11 @@ router.post('/report/:id', async (req, res) => {
                 reportedItemType = 'Post';
                 authorId = post.author._id;
             } else {
-                // Check if Comment
-                const comment = await Comment.findById(id).exec(); // Removed populate
+                const comment = await Comment.findById(id).exec();
 
                 if (comment) {
                     reportedItemId = id;
                     reportedItemType = 'Comment';
-                    // Fetch the user based on the username field.
                     const user = await User.findOne({ username: comment.username });
                     if (user) {
                         authorId = user._id;

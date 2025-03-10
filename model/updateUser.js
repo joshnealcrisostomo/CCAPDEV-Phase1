@@ -1,5 +1,3 @@
-// updateUser.js
-
 const { MongoClient } = require('mongodb');
 
 const uri = "mongodb+srv://patricklim:Derp634Derp@apdevcluster.chzne.mongodb.net/?retryWrites=true&w=majority&appName=APDEVcluster";
@@ -21,7 +19,7 @@ async function updateUser(username, displayName, bio, profilePic, headerPic) {
             { username: username },
             { $set: updateFields }
         );
-
+w
         if (result.matchedCount === 0) {
             return { success: false, message: 'User not found' };
         }

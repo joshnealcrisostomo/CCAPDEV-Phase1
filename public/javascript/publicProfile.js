@@ -1,4 +1,3 @@
-// Event listener for return button
 document.querySelector('.return-btn').addEventListener('click', function() {
     window.history.back();
 });

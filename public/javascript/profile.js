@@ -169,8 +169,6 @@ document.addEventListener("DOMContentLoaded", function () {
         .catch(error => console.error("Error loading header image:", error));
 });
 
-
-
 document.addEventListener("click", function (event) {
     if (event.target.classList.contains("delete-comment-btn")) {
         handleDeleteComment.call(event.target, event);

@@ -225,10 +225,10 @@ main{
 }
 
 .notificationCard:hover {
-    border-color: #B04898; /* Change border color on hover */
-    background-color: #f4f4f4; /* Light gray background on hover */
-    transform: scale(1.02); /* Slightly increase size */
-    box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.2); /* Stronger shadow */
+    border-color: #B04898;
+    background-color: #f4f4f4; 
+    transform: scale(1.02);
+    box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 .notificationCard img{

@@ -27,7 +27,7 @@ body {
     flex-direction: column;
     border: 0.5px solid #292623;
     border-top: 0px;
-    overflow-y: auto; /* Ensures the content is scrollable if it overflows */
+    overflow-y: auto; 
 }
 
 .middle-panel h2 {
@@ -118,11 +118,11 @@ body {
 }
 
 .cancel-comment-btn {
-    background-color: #B22222; /* Red color for cancel */
+    background-color: #B22222;
 }
 
 .cancel-comment-btn:hover {
-    background-color: #8B0000; /* Darker red for hover */
+    background-color: #8B0000; 
 }
 
 .drafts-btn {

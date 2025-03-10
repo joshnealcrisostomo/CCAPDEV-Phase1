@@ -38,10 +38,10 @@ router.post('/admin/report/:id/delete', async (req, res) => {
 router.post('/admin/comment-report/:id/approve', async (req, res) => {
     try {
         const reportId = req.params.id;
-        const updateResult = await updateReport(reportId, { status: 'Resolved' }); // Delete comment
+        const updateResult = await updateReport(reportId, { status: 'Resolved' });
 
         if (updateResult.success) {
-            res.redirect('/admin'); // Redirect to reports page
+            res.redirect('/admin');
         } else {
             res.status(500).send('Failed to approve comment report.');
         }
@@ -58,7 +58,7 @@ router.post('/admin/comment-report/:id/delete', async (req, res) => {
         const deleteResult = await deleteReport(reportId);
 
         if (deleteResult.success) {
-            res.redirect('/admin'); // Redirect to reports page
+            res.redirect('/admin');
         } else {
             res.status(500).send('Failed to delete comment report.');
         }

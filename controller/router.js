@@ -3,6 +3,7 @@ const router = express.Router();
 const { MongoClient } = require('mongodb');
 const multer = require('multer');
 const path = require('path'); 
+const bcrypt = require("bcrypt");
 
 const { getAllReports, getReportById } = require('../model/crudReport.js');
 const authController = require('../model/registerUser.js');
@@ -358,21 +359,30 @@ router.post('/loginPost', async (req, res) => {
     const { username, password, rememberMe } = req.body; 
 
     try {
-        if (username === '@admin' && password === 'admin123') {
-            req.session.isLoggedIn = true;
-            req.session.loggedInUser = username;
-            req.session.user = { username: 'admin' };
+        if (username === '@admin') {
+            console.log(password);
+            User.findOne({ username: '@admin' }).then(console.log);
 
-            if (rememberMe) {
-                req.session.cookie.maxAge = 1000 * 60 * 60 * 24 * 21; // 3 weeks
-            } else {
-                req.session.cookie.expires = false; 
+            const user = await User.findOne({ username: '@admin' });
+            const isPasswordValid = await bcrypt.compare(password, user.password);
+
+            if (isPasswordValid) {
+                req.session.isLoggedIn = true;
+                req.session.loggedInUser = username;
+                req.session.user = { username: 'admin' };
+
+                if (rememberMe) {
+                    req.session.cookie.maxAge = 1000 * 60 * 60 * 24 * 21; // 3 weeks
+                } else {
+                    req.session.cookie.expires = false; 
+                }
+
+                return res.json({ success: true, redirect: '/admin' });
             }
-
-            return res.json({ success: true, redirect: '/admin' });
         }
 
         const result = await loginUser(username, password);
+        
         if (result.success) {
             req.session.isLoggedIn = true;
             req.session.loggedInUser = username;
@@ -393,7 +403,6 @@ router.post('/loginPost', async (req, res) => {
         res.status(500).json({ success: false, message: 'Internal server error' });
     }
 });
-
 
 // Logout route
 router.get('/logout', (req, res) => {

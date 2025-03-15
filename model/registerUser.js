@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
 const uri = "mongodb+srv://patricklim:Derp634Derp@apdevcluster.chzne.mongodb.net/?retryWrites=true&w=majority&appName=APDEVcluster";
 const User = require('./UserSchema.js');
 
@@ -10,11 +11,15 @@ async function registerUser(email, displayName, username, password, bio, profile
         if (existingUser) {
             return { success: false, message: 'User already exists' };
         }
+        
+        // Hash the password with a salt of 10 rounds
+        const hashedPassword = await bcrypt.hash(password, 10);
+        
         const newUser = new User({
             email,
             displayName,
             username,
-            password,
+            password: hashedPassword, // Store the hashed password instead of plaintext
             bio: bio || 'No bio yet.',
             profilePic: profilePic || 'https://i.pinimg.com/originals/a6/58/32/a65832155622ac173337874f02b218fb.png'
         });

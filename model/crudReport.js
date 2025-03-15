@@ -96,9 +96,13 @@ async function getAllReports(filters = {}) {
     if (filters.authorId && ObjectId.isValid(filters.authorId)) {
       query.author = filters.authorId;
     }
-
+    
     const reports = await Report.find(query)
       .populate('author', 'username email')
+      .populate({
+        path: 'reportedItemId',
+        refPath: 'reportedItemType'  // This will use the reportedItemType value to determine which model to use
+      })
       .sort({ createdAt: -1 });
     
     return { success: true, reports };

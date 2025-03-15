@@ -13,7 +13,7 @@
         <tbody>
             {{#each reports}}
                 <tr data-status="{{status}}" data-post-id="{{_id}}">
-                    <td><a href="/adminViewPost/{{reportedItemId}}" class="post-link">{{reportedItemId}}</a></td>
+                    <td><a href="/adminViewPost/{{reportedItemId._id}}" class="post-link">{{reportedItemId._id}}</a></td>
                     <td><a href="/adminProfile/{{author.username}}">{{author.username}}</a></td>
                     <td>{{reason}}</td>
                     <td><span class="badge {{status}}-badge">{{status}}</span></td>

@@ -16,7 +16,7 @@
                 </button>
             </div>
             <div class="title">
-                <h3>Transportation Types</h3>
+                <h3>Post Tags</h3>
                 <span>
                     <div class="filter-icon">
                         <img src="/icons/filter.png" alt="filter-icon">
@@ -25,39 +25,29 @@
             </div>
             <div class="transpo-types">
                 <div class="transpo-option">
-                    <input type="checkbox" id="Tricycle" class="switch">
-                    <label for="Tricycle"></label>
-                    <p>Tricycle</p>
+                    <input type="checkbox" id="Commute" class="switch">
+                    <label for="Commute"></label>
+                    <p>Commute</p>
                 </div>
                 <div class="transpo-option">
-                    <input type="checkbox" id="UVExpress" class="switch">
-                    <label for="UVExpress"></label>
-                    <p>UV Express</p>
+                    <input type="checkbox" id="Price" class="switch">
+                    <label for="Price"></label>
+                    <p>Price</p>
                 </div>
                 <div class="transpo-option">
-                    <input type="checkbox" id="Jeep" class="switch">
-                    <label for="Jeep"></label>
-                    <p>Jeep</p>
+                    <input type="checkbox" id="Route" class="switch">
+                    <label for="Route"></label>
+                    <p>Route</p>
                 </div>
                 <div class="transpo-option">
-                    <input type="checkbox" id="E-Jeep" class="switch">
-                    <label for="E-Jeep"></label>
-                    <p>E-Jeep</p>
+                    <input type="checkbox" id="Location" class="switch">
+                    <label for="Location"></label>
+                    <p>Location</p>
                 </div>
                 <div class="transpo-option">
-                    <input type="checkbox" id="Bus" class="switch">
-                    <label for="Bus"></label>
-                    <p>Bus</p>
-                </div>
-                <div class="transpo-option">
-                    <input type="checkbox" id="P2P" class="switch">
-                    <label for="P2P"></label>
-                    <p>Point-To-Point Bus</p>
-                </div>
-                <div class="transpo-option">
-                    <input type="checkbox" id="Train" class="switch">
-                    <label for="Train"></label>
-                    <p>Train</p>
+                    <input type="checkbox" id="Weather" class="switch">
+                    <label for="Weather"></label>
+                    <p>Weather</p>
                 </div>
             </div>
             {{#if isLoggedIn}}
@@ -80,5 +70,22 @@
             window.location.href = '/welcome';
         });
     </script>    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check the boxes for tags that were previously selected
+            const urlParams = new URLSearchParams(window.location.search);
+            const tagParam = urlParams.get('tags');
+            
+            if (tagParam) {
+                const selectedTags = tagParam.split(',');
+                selectedTags.forEach(tag => {
+                    const checkbox = document.getElementById(tag);
+                    if (checkbox) {
+                        checkbox.checked = true;
+                    }
+                });
+            }
+        }); 
+    </script>
 </body>
 </html>

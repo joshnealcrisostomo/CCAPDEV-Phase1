@@ -69,8 +69,17 @@ const upload = multer({
 
 // Dashboard router
 router.get('/dashboard', async (req, res) => {
-    try {        
-        let posts = await Post.find()
+    try {
+        let query = {};
+        
+        // Check if tags filter is provided in query parameters
+        if (req.query.tags) {
+            const selectedTags = req.query.tags.split(',');
+            // Filter posts that have any of the selected tags
+            query.tags = { $in: selectedTags };
+        }
+        
+        let posts = await Post.find(query)
                               .populate('author')
                               .sort({ createdAt: -1 })
                               .exec();
@@ -81,6 +90,7 @@ router.get('/dashboard', async (req, res) => {
             title: 'ByaHero!',
             isLoggedIn: req.session.isLoggedIn || false,
             loggedInUser: req.session.loggedInUser || '',
+            selectedTags: req.query.tags ? req.query.tags.split(',') : []
         });
     } catch (error) {
         console.error('Error fetching posts for dashboard:', error);

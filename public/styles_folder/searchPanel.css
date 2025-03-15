@@ -20,7 +20,6 @@ body {
     padding: 20px;
     display: flex;
     flex-direction: column;
-    align-items: center;
     margin-right: 60px;
     margin-left: 10px;
 }
@@ -64,6 +63,7 @@ body {
 }
 
 .title {
+    margin-left: 10px;
     margin-top: 35px;
     display: flex;
     align-items: center; 
@@ -72,13 +72,14 @@ body {
 }
 
 .filter-icon img {
-    margin-left: 20px;
+    margin-left: 10px;
     width: 20px;
     height: 20px;
     display: block;
 }
 
 .transpo-types {
+    margin-left: 15px;
     display: flex;
     flex-direction: column; 
     gap: 20px; 

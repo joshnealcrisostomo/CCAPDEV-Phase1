@@ -115,5 +115,37 @@
             {{> searchPanel}}
         </div>
     </div>
+    <script>
+        // Tag filtering functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const tagCheckboxes = document.querySelectorAll('.switch');
+            
+            // Add event listener to each checkbox
+            tagCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    filterPostsByTags();
+                });
+            });
+            
+            // Function to filter posts based on selected tags
+            function filterPostsByTags() {
+                const selectedTags = [];
+                
+                // Get all selected tags
+                tagCheckboxes.forEach(checkbox => {
+                    if (checkbox.checked) {
+                        selectedTags.push(checkbox.id);
+                    }
+                });
+                
+                // Redirect to dashboard with selected tags as query parameters
+                if (selectedTags.length > 0) {
+                    window.location.href = '/dashboard?tags=' + selectedTags.join(',');
+                } else {
+                    window.location.href = '/dashboard';
+                }
+            }
+        });
+    </script>
 </body>
 </html>

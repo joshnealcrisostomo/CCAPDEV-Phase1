@@ -67,6 +67,15 @@ const upload = multer({
     fileFilter: fileFilter
 });
 
+// Sign up route
+router.get('/about', (req, res) => {
+    res.render('about', {
+        layout: 'about',
+        title: 'About Page',
+        isLoggedIn: !!req.session.user
+    });
+});
+
 // Dashboard router
 router.get('/dashboard', async (req, res) => {
     try {
@@ -75,6 +84,7 @@ router.get('/dashboard', async (req, res) => {
         // Check if tags filter is provided in query parameters
         if (req.query.tags) {
             const selectedTags = req.query.tags.split(',');
+            
             // Filter posts that have any of the selected tags
             query.tags = { $in: selectedTags };
         }
@@ -418,7 +428,7 @@ router.post('/loginPost', async (req, res) => {
 router.get('/logout', (req, res) => {
     req.session.destroy(err => {
         if (err) console.error('Error logging out:', err);
-        res.redirect('/login');
+        res.redirect('/dashboard');
     });
 });
 

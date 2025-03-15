@@ -1,0 +1,38 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #DFDAC8;
+}
+
+.container {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    max-width: 1300px;
+}
+
+.middle-panel {
+    flex: 1;
+    height: 100%;
+    overflow-y: auto;
+    background: #DFDAC8;
+    padding: 0px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    border: 0.5px solid #292623;
+    transition: all 0.1s;
+    border-top: 0px;
+    width: 100%;
+}

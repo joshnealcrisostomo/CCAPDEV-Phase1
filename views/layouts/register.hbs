@@ -54,6 +54,18 @@
                 <br>
                 <button type="submit" class="btn-login">Sign Up</button>
             </form>
+            <a href="#" class="password-requirements-link" id="password-requirements-link">View password requirements</a>
+
+            <div id="password-requirements-panel" class="password-requirements-panel hidden">
+                <h3>Password Requirements:</h3>
+                <ul>
+                    <li>At least 8 characters long</li>
+                    <li>Must include at least one uppercase letter</li>
+                    <li>Must include at least one lowercase letter</li>
+                    <li>Must include at least one number</li>
+                    <li>Must include at least one special character</li>
+                </ul>
+            </div>
         </div>
     </div>
 
@@ -81,6 +93,13 @@
         // Default values for new users
         const defaultBio = 'No bio yet.';
         const defaultProfilePic = 'https://i.pinimg.com/originals/a6/58/32/a65832155622ac173337874f02b218fb.png';
+
+        const passwordValidation = validatePassword(password);
+        if (!passwordValidation.isValid) {
+            // Display validation errors
+            alert('Password does not meet the requirements.');
+            return;
+        }
 
         // Check if passwords match
         if (password !== confirmPassword) {
@@ -122,6 +141,51 @@
                 alert('Registration failed. Please try again.');
             });
     });
+
+    document.getElementById('password-requirements-link').addEventListener('click', function(event) {
+        event.preventDefault();
+        const panel = document.getElementById('password-requirements-panel');
+        panel.classList.toggle('hidden');
+    });
+
+    function validatePassword(password) {
+        // Define the requirements
+        const minLength = 8;
+        const hasUppercase = /[A-Z]/.test(password);
+        const hasLowercase = /[a-z]/.test(password);
+        const hasNumber = /[0-9]/.test(password);
+        const hasSpecialChar = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password);
+        
+        // Create an array to store validation errors
+        const errors = [];
+        
+        // Check each requirement
+        if (password.length < minLength) {
+            errors.push("Password must be at least 8 characters long");
+        }
+        
+        if (!hasUppercase) {
+            errors.push("Password must include at least one uppercase letter");
+        }
+        
+        if (!hasLowercase) {
+            errors.push("Password must include at least one lowercase letter");
+        }
+        
+        if (!hasNumber) {
+            errors.push("Password must include at least one number");
+        }
+        
+        if (!hasSpecialChar) {
+            errors.push("Password must include at least one special character");
+        }
+        
+        // Return validation result
+        return {
+            isValid: errors.length === 0,
+            errors: errors
+        };
+    }
     </script>
 </body>
 </html>

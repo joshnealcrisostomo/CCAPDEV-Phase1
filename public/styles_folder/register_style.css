@@ -68,6 +68,7 @@ body {
     align-items: center;
     box-shadow: 4px 0 8px rgba(0, 0, 0, 0.1);
     transition: all 0.3s;
+    overflow-y: auto;
 }
 
 .right-panel h2 {
@@ -179,6 +180,48 @@ body {
     border-radius: 5px;
 }
 
+.password-requirements-link {
+    display: block;
+    text-align: center;
+    margin-top: 10px;
+    color: #0C5FB3;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.password-requirements-link:hover {
+    text-decoration: underline;
+}
+
+.password-requirements-panel {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 15px;
+    margin-top: 10px;
+    width: 75%;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.password-requirements-panel h3 {
+    font-size: 16px;
+    margin-bottom: 10px;
+    color: #292623;
+}
+
+.password-requirements-panel ul {
+    padding-left: 20px;
+}
+
+.password-requirements-panel li {
+    font-size: 14px;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+.hidden {
+    display: none;
+}
 
 @media (max-width: 700px) {
     .left-panel {

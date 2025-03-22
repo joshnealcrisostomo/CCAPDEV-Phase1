@@ -86,6 +86,17 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
+    function attachVoteListeners() {
+        document.querySelectorAll('.comment-actions .vote-btn').forEach(btn => {
+            btn.removeEventListener('click', handleVote);
+            btn.addEventListener('click', handleVote);
+        });
+    }
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        attachVoteListeners();
+    });
+
     // Comment Button Functionality
     async function fetchComments() {
         let postId = window.location.pathname.split("/").pop();
@@ -103,7 +114,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     commentsContainer.appendChild(commentHTML);
                 });
             }
-    
+
+            attachVoteListeners();
         } catch (error) {
             console.error("❌ Error fetching comments:", error);
         }
@@ -112,9 +124,11 @@ document.addEventListener("DOMContentLoaded", function () {
     function generateCommentHTML(comment, loggedInUser) {
         let isAuthor = loggedInUser && loggedInUser === comment.username;
         let isLoggedIn = !!loggedInUser;
+        let isUpvoted = comment.upvotedBy && comment.upvotedBy.includes(loggedInUser);
     
         let commentDiv = document.createElement("div");
         commentDiv.classList.add("comment");
+        commentDiv.setAttribute('data-comment-id', comment._id);
     
         let dotsMenuHTML = "";
         if (isLoggedIn) {
@@ -142,7 +156,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 <p>${comment.content}</p>
             </div>
             <div class="comment-actions">
-                <button class="vote-btn upvote">▲</button>
+                <button class="vote-btn upvote ${isUpvoted ? 'upvoted' : ''}">▲</button>
                 <span class="vote-count">${comment.votes}</span>
                 <button class="vote-btn downvote">▼</button>
                 ${isLoggedIn ? '<button class="action-btn">Reply</button>' : ''}
@@ -247,7 +261,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
-// Add this code to add event listeners for delete comment buttons
 document.addEventListener('click', async function(event) {
     // Check if clicked element is a delete comment button
     if (event.target.classList.contains('delete-comment-btn') || 
@@ -350,20 +363,16 @@ async function handleVote(event) {
     const isPostVote = this.closest('.post-actions');
     const isCommentVote = this.closest('.comment-actions');
     const isUpvote = this.querySelector('img[alt="upvote"]') || this.classList.contains('upvote');
-    const postId = this.getAttribute('data-post-id');
-
-    if (!postId) {
-        console.error("Post ID not found");
-        return;
-    }
-
-    let commentId;
-
-    if (isCommentVote) {
-        commentId = this.closest('.comment').getAttribute('data-comment-id');
-    }
-
+    
+    // For post votes
     if (isPostVote) {
+        const postId = this.getAttribute('data-post-id');
+        
+        if (!postId) {
+            console.error("Post ID not found");
+            return;
+        }
+        
         try {
             const voteContainer = this.closest('.vote-container');
             const voteCount = voteContainer.querySelector('.vote-count');
@@ -399,13 +408,25 @@ async function handleVote(event) {
             console.error("❌ Error voting:", error);
             alert("❌ Network error. Please try again.");
         }
-    } else if (isCommentVote) {
+    } 
+    // For comment votes
+    else if (isCommentVote) {
+        const commentId = this.closest('.comment').getAttribute('data-comment-id');
+        
+        if (!commentId) {
+            console.error("Comment ID not found");
+            return;
+        }
+        
         try {
-            const voteContainer = this.closest('.comment-actions').querySelector('.vote-container');
             const voteCount = this.closest('.comment-actions').querySelector('.vote-count');
-            const isCurrentlyUpvoted = voteContainer.classList.contains('upvoted');
-
-            const response = await fetch(isUpvote ? `/upvoteComment/${postId}/${commentId}` : `/downvoteComment/${postId}/${commentId}`, {
+            
+            // Get the state of the button
+            const upvoteBtn = this.closest('.comment-actions').querySelector('.upvote');
+            const isCurrentlyUpvoted = upvoteBtn && upvoteBtn.classList.contains('active');
+            
+            const endpoint = isUpvote ? '/upvoteComment/' : '/downvoteComment/';
+            const response = await fetch(`${endpoint}${commentId}`, {
                 method: "POST",
                 credentials: "include",
             });
@@ -413,26 +434,39 @@ async function handleVote(event) {
 
             if (response.ok) {
                 voteCount.textContent = data.votes;
-
+                
+                // Update UI to reflect vote state
                 if (isUpvote) {
+                    const upvoteBtn = this.closest('.comment-actions').querySelector('.upvote');
+                    const downvoteBtn = this.closest('.comment-actions').querySelector('.downvote');
+                    
                     if (isCurrentlyUpvoted) {
-                        voteContainer.classList.remove('upvoted');
-                        voteCount.classList.remove('upvoted');
+                        upvoteBtn.classList.remove('active');
                     } else {
-                        voteContainer.classList.add('upvoted');
-                        voteCount.classList.add('upvoted');
+                        upvoteBtn.classList.add('active');
+                        downvoteBtn.classList.remove('active');
                     }
                 } else {
+                    const upvoteBtn = this.closest('.comment-actions').querySelector('.upvote');
+                    const downvoteBtn = this.closest('.comment-actions').querySelector('.downvote');
+                    
                     if (isCurrentlyUpvoted) {
-                        voteContainer.classList.remove('upvoted');
-                        voteCount.classList.remove('upvoted');
+                        upvoteBtn.classList.remove('active');
+                    }
+                    
+                    // Toggle downvote active state
+                    if (downvoteBtn.classList.contains('active')) {
+                        downvoteBtn.classList.remove('active');
+                    } else {
+                        downvoteBtn.classList.add('active');
+                        upvoteBtn.classList.remove('active');
                     }
                 }
             } else {
                 alert(`❌ ${data.message}`);
             }
         } catch (error) {
-            console.error("❌ Error voting:", error);
+            console.error("❌ Error voting on comment:", error);
             alert("❌ Network error. Please try again.");
         }
     }

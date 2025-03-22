@@ -331,6 +331,7 @@ textarea {
     background-color: rgb(255, 232, 201);
     border-radius: 10px; 
     padding: 5px 5px; 
+    border: 1px solid rgba(128, 0, 0, 0.2);
 }
 
 .vote-count.upvoted {
@@ -418,6 +419,19 @@ a {
 
 .Weather-tag {
     background-color: #34495e;
+}
+
+.vote-btn.upvote.upvoted {
+    color: #7193FF; 
+}
+
+.vote-btn.downvote.upvoted {
+    color: #FF4500; 
+}
+
+.comment-actions .vote-count {
+    margin: 0 5px;
+    font-weight: bold;
 }
 
 @media (max-width: 800px) {

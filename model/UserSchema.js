@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const uri = "mongodb+srv://patricklim:Derp634Derp@apdevcluster.chzne.mongodb.net/?retryWrites=true&w=majority&appName=APDEVcluster";
 
 const userSchema = new mongoose.Schema({
   email: {
@@ -40,7 +39,11 @@ const userSchema = new mongoose.Schema({
   upvotedPosts: [{ 
     type: mongoose.Schema.Types.ObjectId, 
     ref: 'Post' 
-  }]
+  }],
+  upvotedComments: [{ 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: 'Comment' 
+  }],
 });
 
 const User = mongoose.model('User', userSchema);

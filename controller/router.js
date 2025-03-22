@@ -463,7 +463,6 @@ router.get('/post/:postId', async (req, res) => {
 
         const isAuthor = req.session.user && post.author._id.toString() === req.session.user._id;
 
-        console.log(post);
         res.render('post', {
             post: post.toObject(),
             author: post.author.toObject(),
@@ -1256,6 +1255,95 @@ router.post('/downvotePost/:postId', async (req, res) => {
         res.json({ success: true, votes: post.votes });
     } catch (error) {
         console.error('Error downvoting post:', error);
+        res.status(500).json({ success: false, message: 'Internal server error' });
+    }
+});
+
+// Upvote comment
+router.post('/upvoteComment/:commentId', async (req, res) => {
+    if (!req.session.user) {
+        return res.status(401).json({ success: false, message: 'Unauthorized' });
+    }
+    
+    const { commentId } = req.params;
+    const userId = req.session.user._id;
+    
+    try {
+        const comment = await Comment.findById(commentId);
+        if (!comment) {
+            return res.status(404).json({ success: false, message: 'Comment not found' });
+        }
+        
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+        
+        if (!user.upvotedComments) {
+            user.upvotedComments = [];
+        }
+        
+        const upvotedIndex = user.upvotedComments.indexOf(commentId);
+        if (upvotedIndex === -1) {
+            // User hasn't upvoted this comment before
+            user.upvotedComments.push(commentId);
+            comment.votes += 1;
+        } else {
+            // User is removing their upvote
+            user.upvotedComments.splice(upvotedIndex, 1);
+            comment.votes -= 1;
+        }
+        
+        await comment.save();
+        await user.save();
+        
+        res.json({ success: true, votes: comment.votes });
+    } catch (error) {
+        console.error('Error upvoting comment:', error);
+        res.status(500).json({ success: false, message: 'Internal server error' });
+    }
+});
+
+// Downvote comment
+router.post('/downvoteComment/:commentId', async (req, res) => {
+    if (!req.session.user) {
+        return res.status(401).json({ success: false, message: 'Unauthorized' });
+    }
+    
+    const { commentId } = req.params;
+    const userId = req.session.user._id;
+    
+    try {
+        const comment = await Comment.findById(commentId);
+        if (!comment) {
+            return res.status(404).json({ success: false, message: 'Comment not found' });
+        }
+        
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+        
+        const upvotedIndex = user.upvotedComments.indexOf(commentId);
+        if (upvotedIndex !== -1) {
+            // If the user had upvoted, remove the upvote
+            user.upvotedComments.splice(upvotedIndex, 1);
+            if (comment.votes > 0) {
+                comment.votes -= 1;
+            }
+        } else {
+            // Just decrease the vote if it's positive
+            if (comment.votes > 0) {
+                comment.votes -= 1;
+            }
+        }
+        
+        await comment.save();
+        await user.save();
+        
+        res.json({ success: true, votes: comment.votes });
+    } catch (error) {
+        console.error('Error downvoting comment:', error);
         res.status(500).json({ success: false, message: 'Internal server error' });
     }
 });

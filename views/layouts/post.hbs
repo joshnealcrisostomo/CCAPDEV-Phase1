@@ -107,7 +107,7 @@
 
                 <div class="comments-section">
                     {{#each post.comments}}
-                    <div class="comment">
+                    <div class="comment" data-comment-id="{{_id}}">
                         <div class="user-comment">
                             <strong><a href="/profile/{{username}}">{{username}}</a></strong>
                             <span>{{createdAt}}</span>
@@ -116,22 +116,21 @@
                             <p>{{content}}</p>
                         </div>
                         <div class="comment-actions">
-                            <button class="vote-btn upvote">▲</button>
-                            <span class="vote-count">{{votes}}</span>
+                            <button class="vote-btn upvote {{#if (isUpvoted _id ../../upvotedComments)}}upvoted{{/if}}">▲</button>
+                            <span class="vote-count {{#if (isUpvoted _id ../../upvotedComments)}}upvoted{{/if}}">{{votes}}</span>
                             <button class="vote-btn downvote">▼</button>
-                            {{#if ../isLoggedIn}}
+                            {{#if ../../isLoggedIn}}
                             <button class="action-btn">Reply</button>
                             {{/if}}
                             <button class="action-btn">Share</button>
                             {{#if edited}}
-                                <span class="post-edited"> Edited </span>
+                                <span class="post-edited"> Edited </span>   
                             {{/if}}
                         </div>
-
                         {{#if comments.length}}
                         <div class="nested-comments">
                             {{#each comments}}
-                            <div class="comment nested-comment">
+                            <div class="comment nested-comment" data-comment-id="{{_id}}">
                                 <div class="user-comment">
                                     <strong><a href="/profile/{{username}}">{{username}}</a></strong>
                                     <span>{{createdAt}}</span>
@@ -140,13 +139,16 @@
                                     <p>{{content}}</p>
                                 </div>
                                 <div class="comment-actions">
-                                    <button class="vote-btn upvote">▲</button>
-                                    <span class="vote-count">{{votes}}</span>
+                                    <button class="vote-btn upvote {{#if (isUpvoted _id ../../../upvotedComments)}}upvoted{{/if}}">▲</button>
+                                    <span class="vote-count {{#if (isUpvoted _id ../../../upvotedComments)}}upvoted{{/if}}">{{votes}}</span>
                                     <button class="vote-btn downvote">▼</button>
-                                    {{#if ../../isLoggedIn}}
+                                    {{#if ../../../isLoggedIn}}
                                     <button class="action-btn">Reply</button>
                                     {{/if}}
                                     <button class="action-btn">Share</button>
+                                    {{#if edited}}
+                                        <span class="post-edited"> Edited </span>
+                                    {{/if}}
                                 </div>
                             </div>
                             {{/each}}

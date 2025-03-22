@@ -1,9 +1,11 @@
+require('dotenv').config();
+
 const mongoose = require('mongoose');
 const { ObjectId } = require("mongodb");
 const Post = require('./postSchema'); 
 const User = require('./UserSchema');
 
-const uri = "mongodb+srv://patricklim:Derp634Derp@apdevcluster.chzne.mongodb.net/?retryWrites=true&w=majority&appName=APDEVcluster";
+const uri = process.env.MONGODB_URI;
 
 mongoose.connect(uri);
 

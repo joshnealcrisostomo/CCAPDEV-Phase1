@@ -1,6 +1,8 @@
+require('dotenv').config();
+
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
-const uri = "mongodb+srv://patricklim:Derp634Derp@apdevcluster.chzne.mongodb.net/?retryWrites=true&w=majority&appName=APDEVcluster";
+const uri = process.env.MONGODB_URI;
 const User = require('./UserSchema.js');
 
 mongoose.connect(uri);

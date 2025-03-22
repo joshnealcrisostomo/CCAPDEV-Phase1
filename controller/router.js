@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const express = require('express');
 const router = express.Router();
 const { MongoClient } = require('mongodb');
@@ -19,7 +21,7 @@ const adminRouter = require('../controller/adminRouter.js');
 const Report = require('../model/reportSchema.js')
 
 // MongoDB connection URI
-const uri = "mongodb+srv://patricklim:Derp634Derp@apdevcluster.chzne.mongodb.net/?retryWrites=true&w=majority&appName=APDEVcluster";
+const uri = process.env.MONGODB_URI;
 
 let client;
 

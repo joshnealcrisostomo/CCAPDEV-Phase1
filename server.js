@@ -1,5 +1,7 @@
+require('dotenv').config();
+
 const mongoose = require("mongoose");
-const uri = "mongodb+srv://patricklim:Derp634Derp@apdevcluster.chzne.mongodb.net/?retryWrites=true&w=majority&appName=APDEVcluster";
+const uri = process.env.MONGODB_URI;
 const { deleteUser } = require("./model/deleteUser.js");
 
 const express = require("express");
@@ -23,7 +25,7 @@ mongoose.connect(uri)
     });
 
 app.use(session({
-    secret: 'your-secret-key',
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     cookie: { secure: false } 

@@ -147,6 +147,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 <button class="vote-btn downvote">▼</button>
                 ${isLoggedIn ? '<button class="action-btn">Reply</button>' : ''}
                 <button class="action-btn">Share</button>
+                ${comment.edited ? '<span class="post-edited"> Edited </span>' : ''}
             </div>
         `;
     

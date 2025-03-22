@@ -1,4 +1,5 @@
 const Comment = require("./commentSchema");
+const { ObjectId } = require("mongodb");
 const Post = require("./postSchema");
 
 async function addComment(postId, username, content) {
@@ -69,4 +70,31 @@ async function deleteComment(commentId) {
     }
 }
 
-module.exports = { addComment, getComments, deleteComment };
+async function updateComment(commentId, content) {
+    try {
+        if (!ObjectId.isValid(commentId)) {
+            console.log("CommentId is not a valid ObjectId: ", commentId);
+            throw new Error('Invalid comment ID format');
+        }
+
+        const comment = await Comment.findById(commentId);
+
+        if (!comment) {
+            throw new Error('Comment not found');
+        }
+
+        comment.content = content;
+        comment.updatedAt = Date.now();
+        comment.edited = true;
+
+        await comment.save();
+
+        console.log('Comment updated successfully!');
+        return { success: true, message: 'Comment updated successfully', comment };
+    } catch (error) {
+        console.error('Error in updateComment:', error);
+        return { success: false, message: error.message || 'Internal server error' };
+    }
+}
+
+module.exports = { addComment, getComments, deleteComment, updateComment };

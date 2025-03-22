@@ -123,11 +123,14 @@
                             <button class="action-btn">Reply</button>
                             {{/if}}
                             <button class="action-btn">Share</button>
+                            {{#if edited}}
+                                <span class="post-edited"> Edited </span>
+                            {{/if}}
                         </div>
 
-                        {{#if nestedComments.length}}
+                        {{#if comments.length}}
                         <div class="nested-comments">
-                            {{#each nestedComments}}
+                            {{#each comments}}
                             <div class="comment nested-comment">
                                 <div class="user-comment">
                                     <strong><a href="/profile/{{username}}">{{username}}</a></strong>

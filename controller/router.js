@@ -447,7 +447,7 @@ router.get('/welcome', (req, res) => {
 router.get('/post/:postId', async (req, res) => {
     try {
         const postId = req.params.postId;
-        const post = await Post.findById(postId).populate('author').populate('comments.author');
+        const post = await Post.findById(postId).populate('author').populate('comments');
 
         if (!post) {
             return res.status(404).send('Post not found');
@@ -463,6 +463,7 @@ router.get('/post/:postId', async (req, res) => {
 
         const isAuthor = req.session.user && post.author._id.toString() === req.session.user._id;
 
+        console.log(post);
         res.render('post', {
             post: post.toObject(),
             author: post.author.toObject(),
@@ -594,34 +595,38 @@ router.post('/updateComment/:id', async (req, res) => {
         }
 
         const commentId = req.params.id;
-        let { commentText, postId } = req.body; 
+        const { commentText, postId } = req.body;
 
-        const comment = await Comment.findById(commentId);
-        if (!comment) {
+        const commentFromDb = await Comment.findById(commentId);
+        if (!commentFromDb) {
             return res.status(404).send('❌ Comment not found');
         }
 
-        if (comment.username !== req.session.user.username) {
+        if (commentFromDb.username !== req.session.user.username) {
             return res.status(403).send('❌ You are not authorized to edit this comment');
         }
 
-        comment.content = commentText;
-        await comment.save();
+        const result = await updateComment(commentId, commentText);
 
-        if (!postId) {
-            console.log("⚠️ postId missing from request. Fetching from database...");
-            postId = comment.postId;
+        if (result.success) {
+            if (!postId) {
+                console.log("⚠️ postId missing from request. Fetching from database...");
+                postId = commentFromDb.postId;
+            }
+
+            if (!postId) {
+                console.log("Still no Post ID. Redirecting to dashboard.");
+                return res.redirect('/dashboard');
+            }
+
+            console.log("✅ Redirecting to post:", `/post/${postId}`);
+            res.redirect(`/post/${postId}`);
+        } else {
+            console.error("❌ Error updating comment:", result.message);
+            return res.status(500).send(`Server error: ${result.message}`);
         }
-
-        if (!postId) {
-            console.log("Still no Post ID. Redirecting to dashboard.");
-            return res.redirect('/dashboard');
-        }
-
-        console.log("✅ Redirecting to post:", `/post/${postId}`);
-        res.redirect(`/post/${postId}`);
     } catch (error) {
-        console.error('❌ Error updating comment:', error);
+        console.error('❌ Error in updateComment route:', error);
         res.status(500).send('Server error');
     }
 });

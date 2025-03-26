@@ -55,19 +55,21 @@ const storage = multer.diskStorage({
     }
 });
 
-const fileFilter = (req, file, cb) => {
-    if (file.mimetype.startsWith('image/')) {
-        cb(null, true);
-    } else {
-        cb(new Error('Only images are allowed'), false);
+// Configure multer for file upload
+const upload = multer({
+    limits: {
+        fileSize: 5 * 1024 * 1024 // 5MB file size limit
+    },
+    fileFilter: (req, file, cb) => {
+        // Allow only image files
+        if (file.mimetype.startsWith('image/')) {
+            cb(null, true);
+        } else {
+            cb(new Error('Not an image! Please upload an image.'), false);
+        }
     }
-};
-
-const upload = multer({ 
-    storage: storage,
-    limits: { fileSize: 5 * 1024 * 1024 },
-    fileFilter: fileFilter
 });
+
 
 // Sign up route
 router.get('/about', (req, res) => {
@@ -144,93 +146,40 @@ router.get('/profile/:username', async (req, res) => {
         const loggedInUser = req.session.user ? req.session.user.username : '';
         const isOwnProfile = req.session.user && req.session.user.username === viewedUser.username;
 
-        if (isOwnProfile) {
-            res.render('profile.hbs', {
-                displayName: viewedUser.displayName,
-                username: viewedUser.username,
-                profilePic: viewedUser.profilePic,
-                headerPic: viewedUser.headerPic || '../public/headerPictures/default.jpg',
-                bio: viewedUser.bio,
-                posts: userPosts,
-                comments: formattedComments,
-                layout: 'profile',
-                title: `${viewedUser.displayName}'s Profile`,
-                isLoggedIn: !!req.session.user,
-                loggedInUser,
-                viewedUser
-            });
+        // Improved profile picture handling
+        let profilePic, headerPic;
+        
+        // Profile Picture
+        if (viewedUser.profilePic) {
+            // Check if it's already a full base64 data URL
+            if (viewedUser.profilePic.startsWith('data:image/')) {
+                profilePic = viewedUser.profilePic;
+            } else {
+                // If it's just a base64 string, convert to data URL
+                profilePic = `data:image/png;base64,${viewedUser.profilePic}`;
+            }
         } else {
-            res.render('publicProfile.hbs', {
-                displayName: viewedUser.displayName,
-                username: viewedUser.username,
-                profilePic: viewedUser.profilePic,
-                headerPic: viewedUser.headerPic || '../public/headerPictures/default.jpg', 
-                bio: viewedUser.bio,
-                posts: userPosts,
-                comments: formattedComments,
-                layout: 'publicProfile',
-                title: `${viewedUser.displayName}'s Profile`,
-                isLoggedIn: !!req.session.user,
-                loggedInUser,
-                viewedUser
-            });
+            // Fallback to default image
+            profilePic = '/public/profilePictures/default.jpg';
         }
-    } catch (error) {
-        console.error('Error fetching user profile:', error);
-        res.status(500).send('Internal server error');
-    }
-});
 
-
-// Profile router
-router.get('/profile/:username', async (req, res) => {
-    let { username } = req.params;
-    if (!username.startsWith('@')) username = '@' + username;
-
-    try {
-        const db = await connect();
-        const usersCollection = db.collection('users');
-        const viewedUser = await usersCollection.findOne({ username });
-
-        if (!viewedUser) return res.status(404).send('User not found');
-
-        const userPosts = await Post.find({ author: viewedUser._id })
-            .populate('author')
-            .sort({ createdAt: -1 })
-            .exec();
-
-        const userComments = await Comment.find({ username: viewedUser.username })
-            .populate({
-                path: 'postId',
-                model: 'Post',
-                select: 'postTitle _id'
-            })
-            .sort({ createdAt: -1 })
-            .exec();
-
-        const formattedComments = userComments.map(comment => ({
-            commentId: comment._id.toString(),
-            postId: comment.postId
-        }));
-
-        const loggedInUser = req.session.user ? req.session.user.username : '';
-        const isOwnProfile = req.session.user && req.session.user.username === viewedUser.username;
-
-        // profilePic & headerPic (Base64)
-        const profilePic = viewedUser.profilePic 
-            ? `data:image/png;base64,${viewedUser.profilePic}`
-            : '../public/profilePictures/default.jpg'; // Fallback for missing image
-
-        const headerPic = viewedUser.headerPic 
-            ? `data:image/png;base64,${viewedUser.headerPic}`
-            : '../public/headerPictures/default.jpg'; // Fallback for missing image
+        // Header Picture (similar logic)
+        if (viewedUser.headerPic) {
+            if (viewedUser.headerPic.startsWith('data:image/')) {
+                headerPic = viewedUser.headerPic;
+            } else {
+                headerPic = `data:image/png;base64,${viewedUser.headerPic}`;
+            }
+        } else {
+            headerPic = '/public/headerPictures/default.jpg';
+        }
 
         if (isOwnProfile) {
             res.render('profile.hbs', {
                 displayName: viewedUser.displayName,
                 username: viewedUser.username,
-                profilePic, 
-                headerPic, 
+                profilePic,
+                headerPic,
                 bio: viewedUser.bio,
                 posts: userPosts,
                 comments: formattedComments,
@@ -244,7 +193,7 @@ router.get('/profile/:username', async (req, res) => {
             res.render('publicProfile.hbs', {
                 displayName: viewedUser.displayName,
                 username: viewedUser.username,
-                profilePic, 
+                profilePic,
                 headerPic, 
                 bio: viewedUser.bio,
                 posts: userPosts,
@@ -261,7 +210,6 @@ router.get('/profile/:username', async (req, res) => {
         res.status(500).send('Internal server error');
     }
 });
-
 
 // Explore route
 router.get('/explore', async (req, res) => {
@@ -833,6 +781,45 @@ router.get('/editProfile', async (req, res) => {
     } catch (error) {
         console.error('Error fetching user for edit profile:', error);
         res.status(500).send('Internal server error');
+    }
+});
+
+// Route to update profile
+router.post('/updateProfile', upload.fields([
+    { name: 'profilePic', maxCount: 1 },
+    { name: 'headerPic', maxCount: 1 }
+]), async (req, res) => {
+    try {
+        const { username, displayName, bio } = req.body;
+        const updateFields = { displayName, bio };
+
+        // Process profile picture
+        if (req.files && req.files['profilePic']) {
+            const profilePicFile = req.files['profilePic'][0];
+            updateFields.profilePic = `data:${profilePicFile.mimetype};base64,${profilePicFile.buffer.toString('base64')}`;
+        }
+
+        // Process header picture
+        if (req.files && req.files['headerPic']) {
+            const headerPicFile = req.files['headerPic'][0];
+            updateFields.headerPic = `data:${headerPicFile.mimetype};base64,${headerPicFile.buffer.toString('base64')}`;
+        }
+
+        // Update user in database
+        const updatedUser = await User.findOneAndUpdate(
+            { username: username },
+            { $set: updateFields },
+            { new: true }
+        );
+
+        if (!updatedUser) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+
+        res.redirect(`/profile/${username}`);
+    } catch (error) {
+        console.error('Error updating profile:', error);
+        res.status(500).json({ success: false, message: 'Internal server error' });
     }
 });
 

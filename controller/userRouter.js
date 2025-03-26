@@ -2,36 +2,14 @@ const express = require("express");
 const router = express.Router();
 const { deleteUser } = require("../model/deleteUser.js");
 const { updateUser } = require('../model/updateUser.js');
-const { ObjectId } = require("mongodb");
-
+const { MongoClient } = require("mongodb");
 const multer = require('multer');
-const path = require('path');
 
-// Storage Configuration for Profile & Header Pictures
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        if (file.fieldname === "profilePic") {
-            cb(null, 'public/profilePictures/'); // Profile pictures go here
-        } else if (file.fieldname === "headerPic") {
-            cb(null, 'public/headerPictures/'); // Header pictures go here
-        }
-    },
-    filename: function (req, file, cb) {
-        cb(null, Date.now() + path.extname(file.originalname));
-    }
-});
+const uri = process.env.MONGODB_URI;
 
-//  File Filter
-const fileFilter = (req, file, cb) => {
-    if (file.mimetype.startsWith('image/')) {
-        cb(null, true);
-    } else {
-        cb(new Error('Only images are allowed'), false);
-    }
-};
-
-// Multer Upload Configuration (Profile & Header)
-const upload = multer({ storage, fileFilter });
+// Multer setup: Store files in memory 
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
 
 // DELETE: Delete User Account
 router.delete("/deleteAccount", async (req, res) => {
@@ -74,12 +52,23 @@ router.post('/updateProfile', upload.fields([
 
         const { username, displayName, bio } = req.body;
 
-        const profilePic = req.files['profilePic'] ? `/profilePictures/${req.files['profilePic'][0].filename}` : null;
-        const headerPic = req.files['headerPic'] ? `/headerPictures/${req.files['headerPic'][0].filename}` : null;
+        let profilePic = null;
+        let headerPic = null;
 
-        console.log("Profile Pic Path:", profilePic);
-        console.log("Header Pic Path:", headerPic);
+        // Convert profile picture to Base64 if uploaded
+        if (req.files['profilePic']) {
+            profilePic = req.files['profilePic'][0].buffer.toString("base64");
+        }
 
+        // Convert header picture to Base64 if uploaded
+        if (req.files['headerPic']) {
+            headerPic = req.files['headerPic'][0].buffer.toString("base64");
+        }
+
+        console.log("Profile Pic Base64:", profilePic ? "Stored" : "Not provided");
+        console.log("Header Pic Base64:", headerPic ? "Stored" : "Not provided");
+
+        // Update user in MongoDB
         const result = await updateUser(username, displayName, bio, profilePic, headerPic);
 
         if (result.success) {
@@ -95,6 +84,32 @@ router.post('/updateProfile', upload.fields([
     }
 });
 
+// get user data
+router.get("/getUserData", async (req, res) => {
+    try {
+        const { username } = req.query;
+        const client = new MongoClient(uri);
+        await client.connect();
+        const db = client.db("test");
+        const usersCollection = db.collection("users");
 
+        const user = await usersCollection.findOne({ username: username });
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        res.json({
+            displayName: user.displayName,
+            bio: user.bio,
+            profilePic: user.profilePic || null, 
+            headerPic: user.headerPic || null
+        });
+
+    } catch (error) {
+        console.error("❌ Error fetching profile data:", error);
+        res.status(500).send("Server error");
+    } 
+});
 
 module.exports = router;

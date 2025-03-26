@@ -155,6 +155,7 @@ async function handleDeleteComment(event) {
     }
 }
 
+// ✅ Modified Section: Fetch and Display Base64 Profile & Header Images
 document.addEventListener("DOMContentLoaded", function () {
     fetch("/getUserData")
         .then(response => response.json())
@@ -162,11 +163,17 @@ document.addEventListener("DOMContentLoaded", function () {
             if (data.headerPic) {
                 const headerImage = document.getElementById("profile-header-pic");
                 if (headerImage) {
-                    headerImage.src = data.headerPic;
+                    headerImage.src = `data:image/png;base64,${data.headerPic}`;
+                }
+            }
+            if (data.profilePic) {
+                const profileImage = document.getElementById("profile-pic");
+                if (profileImage) {
+                    profileImage.src = `data:image/png;base64,${data.profilePic}`;
                 }
             }
         })
-        .catch(error => console.error("Error loading header image:", error));
+        .catch(error => console.error("❌ Error loading profile images:", error));
 });
 
 document.addEventListener("click", function (event) {

@@ -1,11 +1,10 @@
 require('dotenv').config();
-
 const { MongoClient } = require('mongodb');
 
 const uri = process.env.MONGODB_URI;
 
 async function updateUser(username, displayName, bio, profilePic, headerPic) {
-    console.log("updateUser called with:", username, displayName, bio, profilePic, headerPic);
+    console.log("updateUser called with:", username, displayName, bio, !!profilePic, !!headerPic);
     const client = new MongoClient(uri);
 
     try {
@@ -14,14 +13,20 @@ async function updateUser(username, displayName, bio, profilePic, headerPic) {
         const usersCollection = db.collection('users');
 
         const updateFields = { displayName, bio };
-        if (profilePic) updateFields.profilePic = profilePic;
-        if (headerPic) updateFields.headerPic = headerPic;
+
+        // Store images in Base64
+        if (profilePic) {
+            updateFields.profilePic = profilePic;
+        }
+        if (headerPic) {
+            updateFields.headerPic = headerPic;
+        }
 
         const result = await usersCollection.updateOne(
             { username: username },
             { $set: updateFields }
         );
-w
+
         if (result.matchedCount === 0) {
             return { success: false, message: 'User not found' };
         }
@@ -36,3 +41,4 @@ w
 }
 
 module.exports = { updateUser };
+

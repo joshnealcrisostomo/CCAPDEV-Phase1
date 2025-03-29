@@ -113,7 +113,10 @@ router.get('/dashboard', async (req, res) => {
 });
 
 // Profile router
+//profile/:username', async (req, res) 
+
 router.get('/profile/:username', async (req, res) => {
+    //lerouter.get('/t { username } = req.params;
     let { username } = req.params;
     if (!username.startsWith('@')) username = '@' + username;
 
@@ -210,6 +213,79 @@ router.get('/profile/:username', async (req, res) => {
         res.status(500).send('Internal server error');
     }
 });
+
+
+// Profile menu navigation
+router.get('/profile/:username/content/:tab', async (req, res) => {
+    let { username, tab } = req.params;
+
+    if (!username.startsWith('@')) {
+        username = '@' + username;
+    }
+
+    try {
+        const db = await connect();
+        const usersCollection = db.collection('users');
+        const viewedUser = await usersCollection.findOne({ username });
+
+        if (!viewedUser) {
+            return res.status(404).send('User not found');
+        }
+
+        const isOwnProfile = req.session.user && req.session.user.username === viewedUser.username;
+
+        if(isOwnProfile) {
+            switch (tab) {
+                case 'comments':
+                    const userComments = await Comment.find({ username: viewedUser.username })
+                                                .sort({ createdAt: -1 })
+                                                .exec();
+                    res.render('../partials/profileComments', { comments: userComments, viewedUser });
+                    break;
+                case 'upvoted':
+                    const upvotes = await Post.find({ _id: { $in: viewedUser.upvotedPosts || [] } })
+                                                 .populate('author')
+                                                 .exec();
+                    res.render('../partials/profileUpvoted', { upvoted: upvotes });
+                    break;
+                default:
+                    const userPosts = await Post.find({ author: viewedUser._id })
+                                              .populate('author')
+                                              .sort({ createdAt: -1 })
+                                              .exec();
+                    res.render('../partials/profilePosts', { posts: userPosts, Post });
+            }
+        } else {
+            switch (tab) {
+                case 'comments':
+                    const userComments = await Comment.find({ username: viewedUser.username })
+                                                .sort({ createdAt: -1 })
+                                                .exec();
+                    res.render('../partials/pubProfileComments', { comments: userComments, viewedUser });
+                    break;
+                case 'upvoted':
+                    const upvotes = await Post.find({ _id: { $in: viewedUser.upvotedPosts || [] } })
+                                                 .populate('author')
+                                                 .exec();
+                    res.render('../partials/pubProfileUpvoted', { upvoted: upvotes });
+                    break;
+                default:
+                    const userPosts = await Post.find({ author: viewedUser._id })
+                                              .populate('author')
+                                              .sort({ createdAt: -1 })
+                                              .exec();
+                    res.render('../partials/pubProfilePosts', { posts: userPosts, Post });
+            }
+        }
+
+
+    } catch (error) {
+        console.error('Error fetching user profile content:', error);
+        res.status(500).send('Internal server error');
+    }
+});
+
+
 
 // Explore route
 router.get('/explore', async (req, res) => {

@@ -33,12 +33,12 @@
                         </button>
                     </div>
                     <div class="edit-header-overlay">
-                        <img src="data:image/png;base64,{{{headerPic}}}" alt="Header Image"> <!--display existing header pic -->
+                        <img src="{{headerPic}}" id="profile-header-pic" onerror="this.style.display='none'"> <!--display existing header pic -->
                         <input type="file" name="headerPic" id="header-pic-input" accept="image/*" style="display: none;">
                     </div>
 
                     <div class="edit-pfp">
-                        <img src="data:image/png;base64,{{{profilePic}}}" alt="Profile Picture"> <!--display existing profile pic -->
+                        <img src="{{profilePic}}" alt="Profile picture"> <!--display existing profile pic -->
                         <div class="edit-pfp-overlay"></div>
                         <button type="button" class="edit-for-pfp">
                             <img src="/icons/edit_pic.png" alt="edit-icon">

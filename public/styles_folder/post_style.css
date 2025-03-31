@@ -291,7 +291,7 @@ textarea {
 .reply-btn {
     background: none;
     border: none;
-    color: #0079d3;
+    color: #292623;
     cursor: pointer;
     font-size: 14px;
     padding: 5px;
@@ -299,6 +299,7 @@ textarea {
 
 .reply-btn:hover {
     text-decoration: underline;
+    color: #0079d3;
 }
 
 .nested-comment{
@@ -492,6 +493,39 @@ a {
     margin: 0 5px;
     font-weight: bold;
 }
+
+.replies-container {
+    border-left: 2px solid #ccc; /* Simple vertical line */
+    margin-left: 15px;
+    padding-left: 10px;
+}
+
+.reply {
+    padding: 3px 5px; 
+    border-bottom: 1px solid #ddd; 
+    margin-top: 3px;
+    margin-left: 20px;
+    padding-left: 20px;
+    margin-bottom: 10px;
+}
+
+.toggle-replies-btn {
+    background: none;
+    border: none;
+    color: #292623;
+    cursor: pointer;
+    font-size: 14px;
+    margin-top: 5px;
+    margin-left: 20px;
+    padding-left: 20px;
+    margin-bottom: 10px;
+}
+
+.toggle-replies-btn:hover {
+    text-decoration: underline;
+    color: #0079d3;
+}
+
 
 @media (max-width: 800px) {
     .middle-panel {

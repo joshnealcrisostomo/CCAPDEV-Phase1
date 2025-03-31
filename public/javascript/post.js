@@ -265,13 +265,50 @@ document.addEventListener("click", function (event) {
                     } else {
                         console.log("✅ Reply successfully stored in MongoDB:", result);
                         replyContainer.remove();
-
-                        // Append new reply to the UI
+                    
+                        // Create a new reply element dynamically
                         let newReplyDiv = document.createElement("div");
-                        newReplyDiv.textContent = replyText;
                         newReplyDiv.classList.add("reply");
                         newReplyDiv.style.marginLeft = "30px";
-                        commentContainer.appendChild(newReplyDiv);
+                        newReplyDiv.innerHTML = `
+                            <div class="user-comment">
+                                <strong>${result.username}</strong>
+                                <span>${new Date(result.createdAt).toLocaleString()}</span>
+                            </div>
+                            <div class="main-comment">
+                                <p>${result.content}</p>
+                            </div>
+                            <div class="comment-actions">
+                                <button class="vote-btn upvote">▲</button>
+                                <span class="vote-count">0</span>
+                                <button class="vote-btn downvote">▼</button>
+                            </div>
+                        `;
+                    
+                        let repliesContainer = commentContainer.querySelector(".replies");
+                        
+                        if (!repliesContainer) {
+                            repliesContainer = document.createElement("div");
+                            repliesContainer.classList.add("replies");
+                            repliesContainer.style.display = "block";
+                            commentContainer.appendChild(repliesContainer);
+                        }
+                    
+                        // Append new reply
+                        repliesContainer.appendChild(newReplyDiv);
+                    
+                        // Update Show Replies button text
+                        let toggleButton = commentContainer.querySelector(".toggle-replies-btn");
+                        if (!toggleButton) {
+                            toggleButton = document.createElement("button");
+                            toggleButton.classList.add("toggle-replies-btn");
+                            toggleButton.textContent = "Hide Replies";
+                            toggleButton.setAttribute("data-comment-id", commentId);
+                            commentContainer.appendChild(toggleButton);
+                        } else {
+                            let replyCount = repliesContainer.children.length;
+                            toggleButton.textContent = `Hide Replies (${replyCount})`;
+                        }
                     }
                 }
             });

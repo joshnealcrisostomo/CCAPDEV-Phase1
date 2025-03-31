@@ -19,6 +19,7 @@ const { addComment, getComments, updateComment, deleteComment } = require('../mo
 const Comment = require( '../model/commentSchema.js');
 const adminRouter = require('../controller/adminRouter.js');
 const Report = require('../model/reportSchema.js')
+const { addReply, getReplies, deleteReply, updateReply} = require("../model/crudReply.js");
 
 // MongoDB connection URI
 const uri = process.env.MONGODB_URI;
@@ -620,6 +621,26 @@ router.get('/comments/:postId', async (req, res) => {
 
     res.json(response);
 });
+
+// READ replies for a comment
+router.get('/replies/:commentId', async (req, res) => { 
+    try {
+        const { commentId } = req.params;
+
+        // Fetch all replies linked to this comment
+        const replies = await Reply.find({ commentId });
+
+        if (!replies.length) {
+            return res.status(404).json({ success: false, message: "No replies found for this comment" });
+        }
+
+        res.json({ success: true, replies });
+    } catch (error) {
+        console.error("❌ Error fetching replies:", error);
+        res.status(500).json({ success: false, message: "Server error" });
+    }
+});
+
 
 // Update comment
 router.post('/updateComment/:id', async (req, res) => {
@@ -1421,6 +1442,55 @@ router.post('/downvoteComment/:commentId', async (req, res) => {
         res.status(500).json({ success: false, message: 'Internal server error' });
     }
 });
+
+//reply API
+router.post("/add-reply", async (req, res) => {
+    try {
+        const { commentId, username, content } = req.body;
+
+        console.log("🟢 Received data:", { commentId, username, content })
+
+        if (!commentId || !username || !content) {
+            return res.status(400).json({ error: "Missing required fields" });
+        }
+
+        const savedReply = await addReply(commentId, username, content);
+        res.json(savedReply);
+    } catch (error) {
+        console.error("Error adding reply:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
+
+router.get("/get-replies/:commentId", async (req, res) => {
+    try {
+        const { commentId } = req.params;
+        console.log(`🟢 Fetching replies for commentId: ${commentId}`);
+
+        const comment = await Comment.findById(commentId)
+            .populate({
+                path: "replies",
+                model: "Reply",
+                options: { sort: { createdAt: -1 } }
+            })
+            .exec();
+
+        if (!comment) {
+            console.log("🛑 Comment not found!");
+            return res.status(404).json({ error: "Comment not found" });
+        }
+
+        console.log("🟢 Replies fetched successfully:", comment.replies);
+        res.json({ replies: comment.replies });  // Ensure response has a 'replies' key
+    } catch (error) {
+        console.error("🚨 Error fetching replies:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
+
+
+
+
 
 router.use('/', adminRouter);
 

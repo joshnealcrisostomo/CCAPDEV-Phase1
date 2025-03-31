@@ -26,67 +26,290 @@ window.addEventListener('click', function(event) {
     }
 });
 
-document.addEventListener("DOMContentLoaded", function () {
-    document.querySelectorAll(".action-btn").forEach(button => {
-        if (button.textContent.trim() === "Reply") {
-            button.addEventListener("click", function () {
-                let commentContainer = this.closest(".comment");
-                let existingReplyContainer = commentContainer.querySelector(".reply-input-container");
+//---------------------------------------------------trial code-----------------------------------------------------------------------
+/*
+document.addEventListener("click", function (event) {
+    console.log("✅ Click detected on:", event.target); // This should log EVERY click
 
-                if (existingReplyContainer) {
-                    existingReplyContainer.remove();
+    if (event.target.classList.contains("reply-btn")) {
+        const commentId = event.target.getAttribute("data-comment-id");
+        console.log("🎯 Reply button clicked! Comment ID:", commentId);
+    }
+
+});
+*/
+
+/*
+document.addEventListener("click", function (event) {
+    const button = event.target;
+    
+    if (button.classList.contains("reply-btn") && button.textContent.trim() === "Reply") {
+        console.log("Reply button clicked");
+        button.addEventListener("click", function () {
+            console.log("✅ Reply button clicked!"); //added
+
+            let commentContainer = this.closest(".comment");
+            console.log("Comment container found:", commentContainer); //added
+
+            let existingReplyContainer = commentContainer.querySelector(".reply-input-container");
+            console.log("Existing reply container:", existingReplyContainer); // added
+
+            if (existingReplyContainer) {
+                console.log("🚨 Removing existing reply input!"); //added
+                existingReplyContainer.remove();
+            } else {
+                console.log("🛠️ Creating new reply input!"); //added
+                let replyContainer = document.createElement("div");
+                replyContainer.classList.add("reply-input-container");
+                replyContainer.style.marginLeft = "30px";
+                replyContainer.style.marginTop = "10px";
+
+                let replyInput = document.createElement("textarea");
+                replyInput.placeholder = "Write a reply...";
+                replyInput.style.width = "80%";
+                replyInput.style.height = "36px";
+                replyInput.style.border = "1px solid #c7b9b9";
+                replyInput.style.borderRadius = "40px";
+                replyInput.style.padding = "10px";
+                replyInput.style.resize = "none";
+
+                let submitButton = document.createElement("button");
+                submitButton.textContent = "Reply";
+                submitButton.classList.add("add-comment-btn");
+                submitButton.style.marginLeft = "10px";
+                submitButton.style.position = "relative";
+                submitButton.style.top = "-15px";
+
+                replyContainer.appendChild(replyInput);
+                replyContainer.appendChild(submitButton);
+                commentContainer.appendChild(replyContainer);
+
+                console.log("✅ Reply input box added successfully!"); //added
+
+                replyInput.addEventListener("input", function () {
+                    this.style.height = "36px"; 
+                    if (this.scrollHeight > this.clientHeight) {
+                        this.style.height = Math.min(this.scrollHeight, 150) + "px"; 
+                    }
+
+                    if (this.scrollHeight >= 100) {
+                        this.style.overflowY = "auto";
+                    } else {
+                        this.style.overflowY = "hidden";
+                    }
+                });
+
+                submitButton.addEventListener("click", function () {
+                    let replyText = replyInput.value.trim();
+                    if (replyText) {
+                        console.log("✅ Reply Submitted:", replyText) // added
+                        console.log("Reply Submitted:", replyText);
+                        replyContainer.remove();
+                    }
+                });
+            }
+        });
+    }
+});
+*/
+
+/*
+document.addEventListener("click", function (event) {
+    const button = event.target;
+    
+    if (button.classList.contains("reply-btn") && button.textContent.trim() === "Reply") {
+        console.log("✅ Reply button clicked!");
+
+        let commentContainer = button.closest(".comment");
+        console.log("📝 Comment container found:", commentContainer);
+
+        let commentId = button.getAttribute("data-comment-id"); //get comment id
+
+        let existingReplyContainer = commentContainer.querySelector(".reply-input-container");
+        console.log("🔍 Existing reply container:", existingReplyContainer);
+
+        if (existingReplyContainer) {
+            console.log("🚨 Removing existing reply input!");
+            existingReplyContainer.remove();
+        } else {
+            console.log("🛠️ Creating new reply input!");
+
+            // Create reply container div
+            let replyContainer = document.createElement("div");
+            replyContainer.classList.add("reply-input-container");
+            replyContainer.style.marginLeft = "30px";
+            replyContainer.style.marginTop = "10px";
+
+            // Create reply input textarea
+            let replyInput = document.createElement("textarea");
+            replyInput.placeholder = "Write a reply...";
+            replyInput.style.width = "80%";
+            replyInput.style.height = "36px";
+            replyInput.style.border = "1px solid #c7b9b9";
+            replyInput.style.borderRadius = "40px";
+            replyInput.style.padding = "10px";
+            replyInput.style.resize = "none";
+
+            // Create submit button
+            let submitButton = document.createElement("button");
+            submitButton.textContent = "Reply";
+            submitButton.classList.add("add-comment-btn");
+            submitButton.style.marginLeft = "10px";
+            submitButton.style.position = "relative";
+            submitButton.style.top = "-15px";
+
+            // Append elements to reply container
+            replyContainer.appendChild(replyInput);
+            replyContainer.appendChild(submitButton);
+            commentContainer.appendChild(replyContainer);
+
+            console.log("✅ Reply input box added successfully!");
+
+            // Auto-expand textarea on input
+            replyInput.addEventListener("input", function () {
+                this.style.height = "36px";
+                if (this.scrollHeight > this.clientHeight) {
+                    this.style.height = Math.min(this.scrollHeight, 150) + "px";
+                }
+
+                if (this.scrollHeight >= 100) {
+                    this.style.overflowY = "auto";
                 } else {
-                    let replyContainer = document.createElement("div");
-                    replyContainer.classList.add("reply-input-container");
-                    replyContainer.style.marginLeft = "30px";
-                    replyContainer.style.marginTop = "10px";
+                    this.style.overflowY = "hidden";
+                }
+            });
 
-                    let replyInput = document.createElement("textarea");
-                    replyInput.placeholder = "Write a reply...";
-                    replyInput.style.width = "80%";
-                    replyInput.style.height = "36px";
-                    replyInput.style.border = "1px solid #c7b9b9";
-                    replyInput.style.borderRadius = "40px";
-                    replyInput.style.padding = "10px";
-                    replyInput.style.resize = "none";
-
-                    let submitButton = document.createElement("button");
-                    submitButton.textContent = "Reply";
-                    submitButton.classList.add("add-comment-btn");
-                    submitButton.style.marginLeft = "10px";
-                    submitButton.style.position = "relative";
-                    submitButton.style.top = "-15px";
-
-                    replyContainer.appendChild(replyInput);
-                    replyContainer.appendChild(submitButton);
-                    commentContainer.appendChild(replyContainer);
-
-                    replyInput.addEventListener("input", function () {
-                        this.style.height = "36px"; 
-                        if (this.scrollHeight > this.clientHeight) {
-                            this.style.height = Math.min(this.scrollHeight, 150) + "px"; 
-                        }
-
-                        if (this.scrollHeight >= 100) {
-                            this.style.overflowY = "auto";
-                        } else {
-                            this.style.overflowY = "hidden";
-                        }
-                    });
-
-                    submitButton.addEventListener("click", function () {
-                        let replyText = replyInput.value.trim();
-                        if (replyText) {
-                            console.log("Reply Submitted:", replyText);
-                            replyContainer.remove();
-                        }
-                    });
+            // Submit reply event
+            submitButton.addEventListener("click", function () {
+                let replyText = replyInput.value.trim();
+                if (replyText) {
+                    console.log("✅ Reply Submitted:", replyText);
+                    replyContainer.remove();
                 }
             });
         }
+    }
+});
+*/
+
+document.addEventListener("click", function (event) {
+    const button = event.target;
+    
+    if (button.classList.contains("reply-btn") && button.textContent.trim() === "Reply") {
+        console.log("✅ Reply button clicked!");
+
+        let commentContainer = button.closest(".comment");
+        let commentId = button.getAttribute("data-comment-id"); // Get comment ID
+        console.log("📝 Comment ID:", commentId);
+
+        let existingReplyContainer = commentContainer.querySelector(".reply-input-container");
+
+        if (existingReplyContainer) {
+            console.log("🚨 Removing existing reply input!");
+            existingReplyContainer.remove();
+        } else {
+            console.log("🛠️ Creating new reply input!");
+
+            let replyContainer = document.createElement("div");
+            replyContainer.classList.add("reply-input-container");
+            replyContainer.style.marginLeft = "30px";
+            replyContainer.style.marginTop = "10px";
+
+            let replyInput = document.createElement("textarea");
+            replyInput.placeholder = "Write a reply...";
+            replyInput.style.width = "80%";
+            replyInput.style.height = "36px";
+            replyInput.style.border = "1px solid #c7b9b9";
+            replyInput.style.borderRadius = "40px";
+            replyInput.style.padding = "10px";
+            replyInput.style.resize = "none";
+
+            let submitButton = document.createElement("button");
+            submitButton.textContent = "Reply";
+            submitButton.classList.add("add-comment-btn");
+            submitButton.style.marginLeft = "10px";
+            submitButton.style.position = "relative";
+            submitButton.style.top = "-15px";
+
+            replyContainer.appendChild(replyInput);
+            replyContainer.appendChild(submitButton);
+            commentContainer.appendChild(replyContainer);
+
+            console.log("✅ Reply input box added successfully!");
+
+            replyInput.addEventListener("input", function () {
+                this.style.height = "36px";
+                if (this.scrollHeight > this.clientHeight) {
+                    this.style.height = Math.min(this.scrollHeight, 150) + "px";
+                }
+                this.style.overflowY = this.scrollHeight >= 100 ? "auto" : "hidden";
+            });
+
+            // Submit reply event
+            submitButton.addEventListener("click", async function () {
+                let replyText = replyInput.value.trim();
+                let username = document.body.getAttribute('data-username') || "Anonymous";
+                if (replyText) {
+                    console.log("✅ Reply Submitted:", replyText);
+
+                    // Send reply to backend
+                    const response = await fetch("/add-reply", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ commentId, username, content: replyText })
+                    });
+
+                    const result = await response.json();
+                    if (result.error) {
+                        console.error("❌ Error submitting reply:", result.error);
+                    } else {
+                        console.log("✅ Reply successfully stored in MongoDB:", result);
+                        replyContainer.remove();
+
+                        // Append new reply to the UI
+                        let newReplyDiv = document.createElement("div");
+                        newReplyDiv.textContent = replyText;
+                        newReplyDiv.classList.add("reply");
+                        newReplyDiv.style.marginLeft = "30px";
+                        commentContainer.appendChild(newReplyDiv);
+                    }
+                }
+            });
+        }
+    }
+});
+
+document.addEventListener("click", function (event) {
+    if (event.target.classList.contains("toggle-replies-btn")) {
+        let commentId = event.target.getAttribute("data-comment-id");
+        let repliesDiv = document.querySelector(`.comment[data-comment-id='${commentId}'] .replies`);
+
+        if (repliesDiv) {
+            if (repliesDiv.style.display === "none") {
+                repliesDiv.style.display = "block";
+                event.target.textContent = "Hide Replies";
+            } else {
+                repliesDiv.style.display = "none";
+                event.target.textContent = `Show Replies (${repliesDiv.children.length})`;
+            }
+        }
+    }
+});
+
+
+
+
+//----------------------------------------------end of trial code----------------------------------------------------------------------
+
+console.log("✅ start");//added
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".action-btn").forEach(button => {
+        console.log("✅ action btn is clicked");//added
+
     });
 
     function attachVoteListeners() {
+        console.log("vote vote"); // added
         document.querySelectorAll('.comment-actions .vote-btn').forEach(btn => {
             btn.removeEventListener('click', handleVote);
             btn.addEventListener('click', handleVote);
@@ -120,6 +343,29 @@ document.addEventListener("DOMContentLoaded", function () {
             console.error("❌ Error fetching comments:", error);
         }
     }
+
+
+    // reply
+    async function fetchReplies(commentId) {
+        try {
+            console.log(`🔄 Fetching replies for commentId: ${commentId}`);
+            const response = await fetch(`/get-replies/${commentId}`);
+            const data = await response.json();
+    
+            if (!data.replies || !Array.isArray(data.replies)) {
+                console.log("⚠️ No replies found or invalid data format", data);
+                return [];
+            }
+    
+            console.log("✅ Replies fetched:", data.replies);
+            return data.replies;
+        } catch (error) {
+            console.error("🚨 Error fetching replies:", error);
+            return [];
+        }
+    }
+
+    
     
     function generateCommentHTML(comment, loggedInUser) {
         let isAuthor = loggedInUser && loggedInUser === comment.username;
@@ -143,7 +389,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 </div>
             `;
         }
-    
+        
+        /*
         commentDiv.innerHTML = `
             <div class="user-comment">
                 <strong>${comment.username}</strong>
@@ -159,11 +406,111 @@ document.addEventListener("DOMContentLoaded", function () {
                 <button class="vote-btn upvote ${isUpvoted ? 'upvoted' : ''}">▲</button>
                 <span class="vote-count">${comment.votes}</span>
                 <button class="vote-btn downvote">▼</button>
-                ${isLoggedIn ? '<button class="action-btn">Reply</button>' : ''}
+                
+                ${isLoggedIn ? `<button class="action-btn reply-btn" data-comment-id="${comment._id}">Reply</button>` : ''}
+
                 <button class="action-btn">Share</button>
                 ${comment.edited ? '<span class="post-edited"> Edited </span>' : ''}
             </div>
+
+            <!-- Replies Section (Nested Inside) -->
+            <div class="replies">
+            
+                ${comment.replies.map(reply => `
+                    <div class="reply">
+                        <div class="user-comment">
+                            <strong>${reply.username}</strong>
+                            <div class="comment-header-right">
+                                <span>${new Date(reply.createdAt).toLocaleString()}</span>
+                                <div class="dots-container">
+                                    <div class="dots">⋮</div>
+                                    <div class="dots-menu">
+                                        <a href="#" class="edit-reply-btn" data-reply-id="${reply._id}">Edit</a>
+                                        <a href="#" class="delete-reply-btn" data-reply-id="${reply._id}">Delete</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="main-comment">
+                            <p>${reply.content}</p>
+                        </div>
+                        <div class="comment-actions">
+                            <button class="vote-btn upvote ${reply.isUpvoted ? 'upvoted' : ''}">▲</button>
+                            <span class="vote-count">${reply.votes}</span>
+                            <button class="vote-btn downvote">▼</button>
+                            
+                            ${isLoggedIn ? `<button class="action-btn reply-btn" data-reply-id="${reply._id}">Reply</button>` : ''}
+
+                            <button class="action-btn">Share</button>
+                            ${reply.edited ? '<span class="post-edited"> Edited </span>' : ''}
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
         `;
+        */
+
+        commentDiv.innerHTML = `
+        <div class="user-comment">
+            <strong>${comment.username}</strong>
+            <div class="comment-header-right">
+                <span>${new Date(comment.createdAt).toLocaleString()}</span>
+                ${dotsMenuHTML}
+            </div>
+        </div>
+        <div class="main-comment">
+            <p>${comment.content}</p>
+        </div>
+        <div class="comment-actions">
+            <button class="vote-btn upvote ${isUpvoted ? 'upvoted' : ''}">▲</button>
+            <span class="vote-count">${comment.votes}</span>
+            <button class="vote-btn downvote">▼</button>
+            
+            ${isLoggedIn ? `<button class="action-btn reply-btn" data-comment-id="${comment._id}">Reply</button>` : ''}
+            
+            <button class="action-btn">Share</button>
+            ${comment.edited ? '<span class="post-edited"> Edited </span>' : ''}
+        </div>
+
+        <!-- Show Replies Button -->
+        ${comment.replies.length > 0 ? `<button class="toggle-replies-btn" data-comment-id="${comment._id}">Show Replies (${comment.replies.length})</button>` : ''}
+        
+        <!-- Replies Section (Initially Hidden) -->
+        <div class="replies" style="display: none;">
+            ${comment.replies.map(reply => `
+                <div class="reply">
+                    <div class="user-comment">
+                        <strong>${reply.username}</strong>
+                        <div class="comment-header-right">
+                            <span>${new Date(reply.createdAt).toLocaleString()}</span>
+                            <div class="dots-container">
+                                <div class="dots">⋮</div>
+                                <div class="dots-menu">
+                                    <a href="#" class="edit-reply-btn" data-reply-id="${reply._id}">Edit</a>
+                                    <a href="#" class="delete-reply-btn" data-reply-id="${reply._id}">Delete</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="main-comment">
+                        <p>${reply.content}</p>
+                    </div>
+                    <div class="comment-actions">
+                        <button class="vote-btn upvote ${reply.isUpvoted ? 'upvoted' : ''}">▲</button>
+                        <span class="vote-count">${reply.votes}</span>
+                        <button class="vote-btn downvote">▼</button>
+                        
+                        ${isLoggedIn ? `<button class="action-btn reply-btn" data-reply-id="${reply._id}">Reply</button>` : ''}
+
+                        <button class="action-btn">Share</button>
+                        ${reply.edited ? '<span class="post-edited"> Edited </span>' : ''}
+                    </div>
+                </div>
+            `).join('')}
+        </div>
+    `;
+
+
     
         if (comment.nestedComments && comment.nestedComments.length > 0) {
             let nestedCommentsDiv = document.createElement("div");
@@ -243,6 +590,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 });
+
 
 document.addEventListener("DOMContentLoaded", function () {
     const commentTextArea = document.querySelector(".add-comment-section textarea");

@@ -105,58 +105,75 @@
                     </select>
                 </div>
 
+                
                 <div class="comments-section">
-                    {{#each post.comments}}
-                    <div class="comment" data-comment-id="{{_id}}">
-                        <div class="user-comment">
-                            <strong><a href="/profile/{{username}}">{{username}}</a></strong>
-                            <span>{{createdAt}}</span>
-                        </div>
-                        <div class="main-comment">
-                            <p>{{content}}</p>
-                        </div>
-                        <div class="comment-actions">
-                            <button class="vote-btn upvote {{#if (isUpvoted _id ../../upvotedComments)}}upvoted{{/if}}">▲</button>
-                            <span class="vote-count {{#if (isUpvoted _id ../../upvotedComments)}}upvoted{{/if}}">{{votes}}</span>
-                            <button class="vote-btn downvote">▼</button>
-                            {{#if ../../isLoggedIn}}
-                            <button class="action-btn">Reply</button>
-                            {{/if}}
-                            <button class="action-btn">Share</button>
-                            {{#if edited}}
-                                <span class="post-edited"> Edited </span>   
-                            {{/if}}
-                        </div>
-                        {{#if comments.length}}
-                        <div class="nested-comments">
-                            {{#each comments}}
-                            <div class="comment nested-comment" data-comment-id="{{_id}}">
-                                <div class="user-comment">
-                                    <strong><a href="/profile/{{username}}">{{username}}</a></strong>
-                                    <span>{{createdAt}}</span>
-                                </div>
-                                <div class="main-comment">
-                                    <p>{{content}}</p>
-                                </div>
-                                <div class="comment-actions">
-                                    <button class="vote-btn upvote {{#if (isUpvoted _id ../../../upvotedComments)}}upvoted{{/if}}">▲</button>
-                                    <span class="vote-count {{#if (isUpvoted _id ../../../upvotedComments)}}upvoted{{/if}}">{{votes}}</span>
-                                    <button class="vote-btn downvote">▼</button>
-                                    {{#if ../../../isLoggedIn}}
-                                    <button class="action-btn">Reply</button>
-                                    {{/if}}
-                                    <button class="action-btn">Share</button>
-                                    {{#if edited}}
-                                        <span class="post-edited"> Edited </span>
-                                    {{/if}}
-                                </div>
+                {{#each post.comments}}
+                <div class="comment" data-comment-id="{{_id}}">
+                    <div class="user-comment">
+                        <strong><a href="/profile/{{username}}">{{username}}</a></strong>
+                        <span>{{createdAt}}</span>
+                        {{#if ../../isLoggedIn}}
+                        <div class="comment-dots-container">
+                            <div class="comment-dots">⋮</div>
+                            <div class="comment-dots-menu">
+                                <a href="#" class="edit-comment-btn" data-comment-id="{{_id}}">Edit</a>
+                                <a href="#" class="delete-comment-btn" data-comment-id="{{_id}}">Delete</a>
                             </div>
-                            {{/each}}
                         </div>
                         {{/if}}
                     </div>
-                    {{/each}}
+                    <div class="main-comment">
+                        <p>{{content}}</p>
+                    </div>
+                    <div class="comment-actions">
+                        <button class="vote-btn upvote">▲</button>
+                        <span class="vote-count">{{votes}}</span>
+                        <button class="vote-btn downvote">▼</button>
+                        {{#if ../../isLoggedIn}}
+                        <button class="action-btn reply-btn" data-comment-id="{{_id}}">Reply</button>
+                        {{/if}}
+                    </div>
+
+                    {{#if comments.length}}
+                    <div class="nested-comments">
+                        {{#each comments}}
+                        <div class="comment nested-comment" data-comment-id="{{_id}}">
+                            <div class="user-comment">
+                                <strong><a href="/profile/{{username}}">{{username}}</a></strong>
+                                <span>{{createdAt}}</span>
+                                {{#if ../../../isLoggedIn}}
+                                <div class="comment-dots-container">
+                                    <div class="comment-dots">⋮</div>
+                                    <div class="comment-dots-menu">
+                                        <a href="#" class="edit-comment-btn" data-comment-id="{{_id}}">Edit</a>
+                                        <a href="#" class="delete-comment-btn" data-comment-id="{{_id}}">Delete</a>
+                                    </div>
+                                </div>
+                                {{/if}}
+                            </div>
+                            <div class="main-comment">
+                                <p>{{content}}</p>
+                            </div>
+                            <div class="comment-actions">
+                                <button class="vote-btn upvote">▲</button>
+                                <span class="vote-count">{{votes}}</span>
+                                <button class="vote-btn downvote">▼</button>
+                                {{#if ../../../isLoggedIn}}
+                                <button class="action-btn reply-btn" data-comment-id="{{_id}}">Reply</button>
+                                {{/if}}
+                            </div>
+                        </div>
+                        {{/each}}
+                    </div>
+                    {{/if}}
                 </div>
+                {{/each}}
+            </div>
+
+
+
+
+
             </div>
 
         </div>

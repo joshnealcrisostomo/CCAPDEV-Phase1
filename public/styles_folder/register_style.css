@@ -160,7 +160,7 @@ body {
 .password-group {
     display: flex;
     justify-content: space-between;
-    gap: 0px;
+    gap: 10px;
 }
 
 .password-field {
@@ -221,6 +221,10 @@ body {
 
 .hidden {
     display: none;
+}
+
+.password-container {
+    flex: 1;
 }
 
 @media (max-width: 700px) {

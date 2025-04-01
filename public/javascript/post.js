@@ -252,63 +252,101 @@ document.addEventListener("click", function (event) {
                 if (replyText) {
                     console.log("✅ Reply Submitted:", replyText);
 
-                    // Send reply to backend
-                    const response = await fetch("/add-reply", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ commentId, username, content: replyText })
-                    });
+                    try {
+                        // Send reply to backend
+                        const response = await fetch("/add-reply", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ commentId, username, content: replyText })
+                        });
 
-                    const result = await response.json();
-                    if (result.error) {
-                        console.error("❌ Error submitting reply:", result.error);
-                    } else {
-                        console.log("✅ Reply successfully stored in MongoDB:", result);
-                        replyContainer.remove();
-                    
-                        // Create a new reply element dynamically
-                        let newReplyDiv = document.createElement("div");
-                        newReplyDiv.classList.add("reply");
-                        newReplyDiv.style.marginLeft = "30px";
-                        newReplyDiv.innerHTML = `
-                            <div class="user-comment">
-                                <strong>${result.username}</strong>
-                                <span>${new Date(result.createdAt).toLocaleString()}</span>
-                            </div>
-                            <div class="main-comment">
-                                <p>${result.content}</p>
-                            </div>
-                            <div class="comment-actions">
-                                <button class="vote-btn upvote">▲</button>
-                                <span class="vote-count">0</span>
-                                <button class="vote-btn downvote">▼</button>
-                            </div>
-                        `;
-                    
-                        let repliesContainer = commentContainer.querySelector(".replies");
-                        
-                        if (!repliesContainer) {
-                            repliesContainer = document.createElement("div");
-                            repliesContainer.classList.add("replies");
-                            repliesContainer.style.display = "block";
-                            commentContainer.appendChild(repliesContainer);
-                        }
-                    
-                        // Append new reply
-                        repliesContainer.appendChild(newReplyDiv);
-                    
-                        // Update Show Replies button text
-                        let toggleButton = commentContainer.querySelector(".toggle-replies-btn");
-                        if (!toggleButton) {
-                            toggleButton = document.createElement("button");
-                            toggleButton.classList.add("toggle-replies-btn");
-                            toggleButton.textContent = "Hide Replies";
-                            toggleButton.setAttribute("data-comment-id", commentId);
-                            commentContainer.appendChild(toggleButton);
+                        const result = await response.json();
+                        if (result.error) {
+                            console.error("❌ Error submitting reply:", result.error);
                         } else {
-                            let replyCount = repliesContainer.children.length;
-                            toggleButton.textContent = `Hide Replies (${replyCount})`;
+                            console.log("✅ Reply successfully stored in MongoDB:", result);
+                            replyContainer.remove();
+                            
+                            // Refresh all replies from the server instead of manually adding just one
+                            let repliesContainer = commentContainer.querySelector(".replies");
+                            if (!repliesContainer) {
+                                repliesContainer = document.createElement("div");
+                                repliesContainer.classList.add("replies");
+                                repliesContainer.style.display = "block";
+                                commentContainer.appendChild(repliesContainer);
+                            }
+                            
+                            // Fetch all replies for this comment and update the display
+                            const updatedReplies = await fetchReplies(commentId);
+                            
+                            // Update Show Replies button text and ensure it exists
+                            let toggleButton = commentContainer.querySelector(".toggle-replies-btn");
+                            if (!toggleButton) {
+                                toggleButton = document.createElement("button");
+                                toggleButton.classList.add("toggle-replies-btn");
+                                toggleButton.textContent = `Hide Replies (${updatedReplies.length})`;
+                                toggleButton.setAttribute("data-comment-id", commentId);
+                                commentContainer.appendChild(toggleButton);
+                            } else {
+                                toggleButton.textContent = `Hide Replies (${updatedReplies.length})`;
+                            }
+                            
+                            // Trigger the toggle button click to refresh the replies display
+                            if (repliesContainer.style.display !== "block") {
+                                toggleButton.click();
+                            } else {
+                                // If replies are already visible, update them manually
+                                const isLoggedIn = !!document.body.getAttribute('data-username');
+                                
+                                repliesContainer.innerHTML = updatedReplies.map(reply => {
+                                    // Format date safely
+                                    let dateString = "Unknown date";
+                                    try {
+                                        if (reply.createdAt) {
+                                            dateString = new Date(reply.createdAt).toLocaleString();
+                                        }
+                                    } catch (e) {
+                                        console.error("Error formatting date:", e);
+                                    }
+                                    
+                                    // Handle username safely
+                                    const username = reply.username || "Anonymous";
+                                    
+                                    return `
+                                        <div class="reply">
+                                            <div class="user-comment">
+                                                <strong>${username}</strong>
+                                                <div class="comment-header-right">
+                                                    <span>${dateString}</span>
+                                                    <div class="dots-container">
+                                                        <div class="dots">⋮</div>
+                                                        <div class="dots-menu">
+                                                            <a href="#" class="edit-reply-btn" data-reply-id="${reply._id}">Edit</a>
+                                                            <a href="#" class="delete-reply-btn" data-reply-id="${reply._id}">Delete</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="main-comment">
+                                                <p>${reply.content}</p>
+                                            </div>
+                                            <div class="comment-actions">
+                                                <button class="vote-btn upvote ${reply.isUpvoted ? 'upvoted' : ''}">▲</button>
+                                                <span class="vote-count">${reply.votes || 0}</span>
+                                                <button class="vote-btn downvote">▼</button>
+                                                
+                                                ${isLoggedIn ? `<button class="action-btn reply-btn" data-reply-id="${reply._id}">Reply</button>` : ''}
+
+                                                <button class="action-btn">Share</button>
+                                                ${reply.edited ? '<span class="post-edited"> Edited </span>' : ''}
+                                            </div>
+                                        </div>
+                                    `;
+                                }).join('');
+                            }
                         }
+                    } catch (error) {
+                        console.error("❌ Network error submitting reply:", error);
                     }
                 }
             });
@@ -320,11 +358,63 @@ document.addEventListener("click", function (event) {
     if (event.target.classList.contains("toggle-replies-btn")) {
         let commentId = event.target.getAttribute("data-comment-id");
         let repliesDiv = document.querySelector(`.comment[data-comment-id='${commentId}'] .replies`);
-
+        let commentContainer = document.querySelector(`.comment[data-comment-id='${commentId}']`);
+        let isLoggedIn = !!document.body.getAttribute('data-username');
+        
         if (repliesDiv) {
             if (repliesDiv.style.display === "none") {
-                repliesDiv.style.display = "block";
-                event.target.textContent = "Hide Replies";
+                // Fetch fresh replies from server when showing replies
+                fetchReplies(commentId).then(replies => {
+                    // Update the replies container with fresh data
+                    repliesDiv.innerHTML = replies.map(reply => {
+                        // Format date safely
+                        let dateString = "Unknown date";
+                        try {
+                            if (reply.createdAt) {
+                                dateString = new Date(reply.createdAt).toLocaleString();
+                            }
+                        } catch (e) {
+                            console.error("Error formatting date:", e);
+                        }
+                        
+                        // Handle username safely
+                        const username = reply.username || "Anonymous";
+                        
+                        return `
+                            <div class="reply">
+                                <div class="user-comment">
+                                    <strong>${username}</strong>
+                                    <div class="comment-header-right">
+                                        <span>${dateString}</span>
+                                        <div class="dots-container">
+                                            <div class="dots">⋮</div>
+                                            <div class="dots-menu">
+                                                <a href="#" class="edit-reply-btn" data-reply-id="${reply._id}">Edit</a>
+                                                <a href="#" class="delete-reply-btn" data-reply-id="${reply._id}">Delete</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="main-comment">
+                                    <p>${reply.content}</p>
+                                </div>
+                                <div class="comment-actions">
+                                    <button class="vote-btn upvote ${reply.isUpvoted ? 'upvoted' : ''}">▲</button>
+                                    <span class="vote-count">${reply.votes || 0}</span>
+                                    <button class="vote-btn downvote">▼</button>
+                                    
+                                    ${isLoggedIn ? `<button class="action-btn reply-btn" data-reply-id="${reply._id}">Reply</button>` : ''}
+
+                                    <button class="action-btn">Share</button>
+                                    ${reply.edited ? '<span class="post-edited"> Edited </span>' : ''}
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                    
+                    repliesDiv.style.display = "block";
+                    event.target.textContent = "Hide Replies";
+                });
             } else {
                 repliesDiv.style.display = "none";
                 event.target.textContent = `Show Replies (${repliesDiv.children.length})`;
@@ -333,7 +423,24 @@ document.addEventListener("click", function (event) {
     }
 });
 
-
+// Add this function to your frontend JavaScript
+async function fetchReplies(commentId) {
+    try {
+        const response = await fetch(`/get-replies/${commentId}`);
+        const data = await response.json();
+        
+        if (data.error) {
+            console.error("Error fetching replies:", data.error);
+            return [];
+        }
+        
+        console.log("Replies fetched:", data.replies);
+        return data.replies;
+    } catch (error) {
+        console.error("Error in fetchReplies:", error);
+        return [];
+    }
+}
 
 
 //----------------------------------------------end of trial code----------------------------------------------------------------------
@@ -381,6 +488,17 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
+    // Helper function to safely format dates
+    function formatDate(dateString) {
+        if (!dateString) return "Unknown date";
+        
+        try {
+            return new Date(dateString).toLocaleString();
+        } catch (e) {
+            console.error("Error formatting date:", e, "for date string:", dateString);
+            return "Invalid date";
+        }
+    }
 
     // reply
     async function fetchReplies(commentId) {
@@ -401,18 +519,17 @@ document.addEventListener("DOMContentLoaded", function () {
             return [];
         }
     }
-
     
-    
+    // Update the generateCommentHTML function to use fetchReplies
     function generateCommentHTML(comment, loggedInUser) {
         let isAuthor = loggedInUser && loggedInUser === comment.username;
         let isLoggedIn = !!loggedInUser;
         let isUpvoted = comment.upvotedBy && comment.upvotedBy.includes(loggedInUser);
-    
+
         let commentDiv = document.createElement("div");
         commentDiv.classList.add("comment");
         commentDiv.setAttribute('data-comment-id', comment._id);
-    
+
         let dotsMenuHTML = "";
         if (isLoggedIn) {
             dotsMenuHTML = `
@@ -426,72 +543,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 </div>
             `;
         }
-        
-        /*
-        commentDiv.innerHTML = `
-            <div class="user-comment">
-                <strong>${comment.username}</strong>
-                <div class="comment-header-right">
-                    <span>${new Date(comment.createdAt).toLocaleString()}</span>
-                    ${dotsMenuHTML}
-                </div>
-            </div>
-            <div class="main-comment">
-                <p>${comment.content}</p>
-            </div>
-            <div class="comment-actions">
-                <button class="vote-btn upvote ${isUpvoted ? 'upvoted' : ''}">▲</button>
-                <span class="vote-count">${comment.votes}</span>
-                <button class="vote-btn downvote">▼</button>
-                
-                ${isLoggedIn ? `<button class="action-btn reply-btn" data-comment-id="${comment._id}">Reply</button>` : ''}
-
-                <button class="action-btn">Share</button>
-                ${comment.edited ? '<span class="post-edited"> Edited </span>' : ''}
-            </div>
-
-            <!-- Replies Section (Nested Inside) -->
-            <div class="replies">
-            
-                ${comment.replies.map(reply => `
-                    <div class="reply">
-                        <div class="user-comment">
-                            <strong>${reply.username}</strong>
-                            <div class="comment-header-right">
-                                <span>${new Date(reply.createdAt).toLocaleString()}</span>
-                                <div class="dots-container">
-                                    <div class="dots">⋮</div>
-                                    <div class="dots-menu">
-                                        <a href="#" class="edit-reply-btn" data-reply-id="${reply._id}">Edit</a>
-                                        <a href="#" class="delete-reply-btn" data-reply-id="${reply._id}">Delete</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="main-comment">
-                            <p>${reply.content}</p>
-                        </div>
-                        <div class="comment-actions">
-                            <button class="vote-btn upvote ${reply.isUpvoted ? 'upvoted' : ''}">▲</button>
-                            <span class="vote-count">${reply.votes}</span>
-                            <button class="vote-btn downvote">▼</button>
-                            
-                            ${isLoggedIn ? `<button class="action-btn reply-btn" data-reply-id="${reply._id}">Reply</button>` : ''}
-
-                            <button class="action-btn">Share</button>
-                            ${reply.edited ? '<span class="post-edited"> Edited </span>' : ''}
-                        </div>
-                    </div>
-                `).join('')}
-            </div>
-        `;
-        */
 
         commentDiv.innerHTML = `
         <div class="user-comment">
             <strong>${comment.username}</strong>
             <div class="comment-header-right">
-                <span>${new Date(comment.createdAt).toLocaleString()}</span>
+                <span>${formatDate(comment.createdAt)}</span>
                 ${dotsMenuHTML}
             </div>
         </div>
@@ -509,58 +566,29 @@ document.addEventListener("DOMContentLoaded", function () {
             ${comment.edited ? '<span class="post-edited"> Edited </span>' : ''}
         </div>
 
-        <!-- Show Replies Button -->
-        ${comment.replies.length > 0 ? `<button class="toggle-replies-btn" data-comment-id="${comment._id}">Show Replies (${comment.replies.length})</button>` : ''}
+        <!-- Show Replies Button - always create it but update count -->
+        <button class="toggle-replies-btn" data-comment-id="${comment._id}">
+            ${comment.replies && comment.replies.length > 0 ? 
+            `Show Replies (${comment.replies.length})` : 
+            'Show Replies (0)'}
+        </button>
         
-        <!-- Replies Section (Initially Hidden) -->
-        <div class="replies" style="display: none;">
-            ${comment.replies.map(reply => `
-                <div class="reply">
-                    <div class="user-comment">
-                        <strong>${reply.username}</strong>
-                        <div class="comment-header-right">
-                            <span>${new Date(reply.createdAt).toLocaleString()}</span>
-                            <div class="dots-container">
-                                <div class="dots">⋮</div>
-                                <div class="dots-menu">
-                                    <a href="#" class="edit-reply-btn" data-reply-id="${reply._id}">Edit</a>
-                                    <a href="#" class="delete-reply-btn" data-reply-id="${reply._id}">Delete</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="main-comment">
-                        <p>${reply.content}</p>
-                    </div>
-                    <div class="comment-actions">
-                        <button class="vote-btn upvote ${reply.isUpvoted ? 'upvoted' : ''}">▲</button>
-                        <span class="vote-count">${reply.votes}</span>
-                        <button class="vote-btn downvote">▼</button>
-                        
-                        ${isLoggedIn ? `<button class="action-btn reply-btn" data-reply-id="${reply._id}">Reply</button>` : ''}
+        <!-- Empty Replies Section (Will be populated when button is clicked) -->
+        <div class="replies" style="display: none;"></div>
+        `;
 
-                        <button class="action-btn">Share</button>
-                        ${reply.edited ? '<span class="post-edited"> Edited </span>' : ''}
-                    </div>
-                </div>
-            `).join('')}
-        </div>
-    `;
-
-
-    
         if (comment.nestedComments && comment.nestedComments.length > 0) {
             let nestedCommentsDiv = document.createElement("div");
             nestedCommentsDiv.classList.add("nested-comments");
-    
+
             comment.nestedComments.forEach(nestedComment => {
                 let nestedCommentHTML = generateCommentHTML(nestedComment, loggedInUser);
                 nestedCommentsDiv.appendChild(nestedCommentHTML);
             });
-    
+
             commentDiv.appendChild(nestedCommentsDiv);
         }
-    
+
         return commentDiv;
     }
     

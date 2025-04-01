@@ -483,7 +483,12 @@ router.get('/welcome', (req, res) => {
 router.get('/post/:postId', async (req, res) => {
     try {
         const postId = req.params.postId;
-        const post = await Post.findById(postId).populate('author').populate('comments');
+        const post = await Post.findById(postId)
+        .populate('author')
+        .populate({
+            path: 'comments',
+            populate: { path: 'replies' } // Populate nested replies
+        });
 
         if (!post) {
             return res.status(404).send('Post not found');
@@ -1481,10 +1486,6 @@ router.get("/get-replies/:commentId", async (req, res) => {
         res.status(500).json({ error: "Internal server error" });
     }
 });
-
-
-
-
 
 router.use('/', adminRouter);
 

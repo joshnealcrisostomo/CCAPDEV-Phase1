@@ -34,7 +34,7 @@ mongoose.connect(uri)
             ttl: 14 * 24 * 60 * 60, // Time to live (14 days by default)
         }),
         cookie: {
-            secure: true,  
+            secure: false,  
             httpOnly: true,
             maxAge: 1000 * 60 * 60 * 24 * 7 // Cookie expires in 1 week
         }

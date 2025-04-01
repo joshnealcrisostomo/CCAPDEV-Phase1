@@ -36,7 +36,6 @@ mongoose.connect(uri)
         cookie: {
             secure: false,  
             httpOnly: true,
-            maxAge: 1000 * 60 * 60 * 24 * 7 // Cookie expires in 1 week
         }
     }));
 

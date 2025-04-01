@@ -430,6 +430,7 @@ router.post('/loginPost', async (req, res) => {
                 req.session.isLoggedIn = true;
                 req.session.loggedInUser = username;
                 req.session.user = { username: 'admin' };
+                req.session.userId = user._id;
 
                 if (rememberMe) {
                     req.session.cookie.maxAge = 1000 * 60 * 60 * 24 * 21; // 3 weeks
@@ -447,6 +448,7 @@ router.post('/loginPost', async (req, res) => {
             req.session.isLoggedIn = true;
             req.session.loggedInUser = username;
             req.session.user = result.user;
+            req.session.userId = result.user._id;
 
             if (rememberMe) {
                 req.session.cookie.maxAge = 1000 * 60 * 60 * 24 * 21; // 3 weeks

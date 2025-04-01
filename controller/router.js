@@ -113,9 +113,6 @@ router.get('/dashboard', async (req, res) => {
     }
 });
 
-// Profile router
-//profile/:username', async (req, res) 
-
 router.get('/profile/:username', async (req, res) => {
     //lerouter.get('/t { username } = req.params;
     let { username } = req.params;
@@ -164,7 +161,7 @@ router.get('/profile/:username', async (req, res) => {
             }
         } else {
             // Fallback to default image
-            profilePic = '/public/profilePictures/default.jpg';
+            profilePic = 'https://i.pinimg.com/originals/a6/58/32/a65832155622ac173337874f02b218fb.png';
         }
 
         // Header Picture (similar logic)

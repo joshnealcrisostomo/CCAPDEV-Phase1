@@ -45,7 +45,10 @@ app.use(methodOverride("_method"));
 // Middleware to parse JSON bodies
 app.use(express.json({ limit: "10mb" })); 
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
-app.use(cors());
+app.use(cors({
+    origin: 'https://byahero-group-8.onrender.com', // Specify your frontend URL
+    credentials: true,  // Allow cookies to be sent
+}));
 
 // Set up Handlebars as the view engine
 app.set("view engine", "hbs");

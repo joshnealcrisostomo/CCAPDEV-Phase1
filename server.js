@@ -11,8 +11,6 @@ const hbs = require("hbs");
 const methodOverride = require("method-override");
 const session = require('express-session');
 
-
-
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -35,9 +33,9 @@ app.use(session({
 app.use(methodOverride("_method"));
 
 // Middleware to parse JSON bodies
-app.use(express.json());
+app.use(express.json({ limit: "10mb" })); 
+app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 app.use(cors());
-app.use(express.urlencoded({ extended: true }));
 
 // Set up Handlebars as the view engine
 app.set("view engine", "hbs");

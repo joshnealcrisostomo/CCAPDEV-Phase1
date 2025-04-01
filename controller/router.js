@@ -5,7 +5,7 @@ const router = express.Router();
 const { MongoClient } = require('mongodb');
 const multer = require('multer');
 const path = require('path'); 
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 
 const { getAllReports, getReportById } = require('../model/crudReport.js');
 const authController = require('../model/registerUser.js');

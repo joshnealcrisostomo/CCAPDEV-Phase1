@@ -1,7 +1,7 @@
 require('dotenv').config();
 
 const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const uri = process.env.MONGODB_URI;
 const User = require('./UserSchema.js');
 

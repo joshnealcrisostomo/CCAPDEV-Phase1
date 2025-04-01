@@ -84,6 +84,8 @@ router.get('/about', (req, res) => {
 // Dashboard router
 router.get('/dashboard', async (req, res) => {
     try {
+        console.log('Session on dashboard:', req.session);
+
         let query = {};
         
         // Check if tags filter is provided in query parameters
@@ -99,11 +101,14 @@ router.get('/dashboard', async (req, res) => {
                               .sort({ createdAt: -1 })
                               .exec();
         
+        console.log(req.session.isLoggedIn);
+        console.log(req.session.loggedInUser);
+        
         res.render('dashboard', {
             posts,
             layout: 'dashboard',
             title: 'ByaHero!',
-            isLoggedIn: req.session.isLoggedIn || false,
+            isLoggedIn: req.session.isLoggedIn,
             loggedInUser: req.session.loggedInUser || '',
             selectedTags: req.query.tags ? req.query.tags.split(',') : []
         });
@@ -448,6 +453,10 @@ router.post('/loginPost', async (req, res) => {
             } else {
                 req.session.cookie.expires = false; 
             }
+
+            console.log(req.session.user);
+            console.log(req.session.isLoggedIn);
+            console.log(req.session.loggedInUser);
 
             res.json({ success: true, redirect: '/dashboard' });
         } else {

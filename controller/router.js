@@ -524,41 +524,35 @@ router.get('/createPost', (req, res) => {
     });
 });
 
-// Create Post
-router.post('/createPost', upload.single('postImage'), async (req, res) => {
+router.post('/createPost', async (req, res) => {
     try {
         if (!req.session.isLoggedIn) {
             return res.status(403).json({ success: false, message: 'Unauthorized' });
         }
-        
-        const {
-            postTitle,
-            postContent,
-            tags,
-        } = req.body;
-        
-        const postImage = req.file ? `/postImages/${req.file.filename}` : '';
-        
+
+        const { postTitle, postContent, tags, postImage } = req.body;
         const userId = req.session.user._id;
-        
+
         const result = await createPost(
-        postTitle, 
-        postContent, 
-        postImage,
-        tags, 
-        userId
+            postTitle, 
+            postContent, 
+            postImage, 
+            tags, 
+            userId
         );
-        
+
         if (result.success) {
-        return res.status(201).json(result);
+            return res.status(201).json(result);
         } else {
-        return res.status(400).json(result);
+            return res.status(400).json(result);
         }
     } catch (error) {
         console.error('Error in /createPost:', error);
         res.status(500).json({ success: false, message: 'Internal server error' });
     }
 });
+
+
 
 // Delete post router
 router.delete('/deletePost', async (req, res) => {

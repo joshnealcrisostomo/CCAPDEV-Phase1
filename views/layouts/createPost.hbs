@@ -110,41 +110,76 @@
                 const postusername = document.getElementById('loggedInUsername')?.value;
                 const displayName = document.getElementById('loggedInDisplayName')?.value;
                 const posterpfp = document.getElementById('loggedInPfp')?.value;
-                const imageFile = document.getElementById('image-upload').files[0];    
+                const imageFile = document.getElementById('image-upload').files[0];
 
                 if (!postTitle || !postContent) {
                     alert("Post title and content cannot be empty!");
                     return;
                 }
 
-                const formData = new FormData();
-                
-                formData.append('postTitle', postTitle);
-                formData.append('postContent', postContent);
-                formData.append('tags', tags);
-                formData.append('postusername', postusername);
-                formData.append('displayName', displayName);
-                formData.append('posterpfp', posterpfp);
-                
-
+                let base64Image = "";
                 if (imageFile) {
-                    formData.append('postImage', imageFile);
-                }
+                    const reader = new FileReader();
+                    reader.readAsDataURL(imageFile);
+                    reader.onload = async function () {
+                        base64Image = reader.result; 
 
-                const response = await fetch('/createPost', {
-                    method: 'POST',
-                    body: formData,
-                });
+                        const postData = {
+                            postTitle,
+                            postContent,
+                            tags,
+                            postusername,
+                            displayName,
+                            posterpfp,
+                            postImage: base64Image 
+                        };
 
-                const data = await response.json();
-                console.log(data);
+                        const response = await fetch('/createPost', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(postData),
+                        });
 
-                if (data.success) {
-                    window.location.href = "/dashboard"; 
+                        const data = await response.json();
+                        console.log(data);
+
+                        if (data.success) {
+                            window.location.href = "/dashboard"; 
+                        } else {
+                            alert("Failed to create post: " + data.message);
+                        }
+                    };
                 } else {
-                    alert("Failed to create post: " + data.message);
+                    // If no image, send post without an image
+                    const postData = {
+                        postTitle,
+                        postContent,
+                        tags,
+                        postusername,
+                        displayName,
+                        posterpfp,
+                        postImage: "" // Empty string if no image
+                    };
+
+                    const response = await fetch('/createPost', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(postData),
+                    });
+
+                    const data = await response.json();
+                    console.log(data);
+
+                    if (data.success) {
+                        window.location.href = "/dashboard"; 
+                    } else {
+                        alert("Failed to create post: " + data.message);
+                    }
                 }
             });
+
+
+
 
             // Image upload and preview
             const imageUpload = document.getElementById("image-upload");

@@ -31,7 +31,7 @@ mongoose.connect(uri)
         store: MongoStore.create({
             mongoUrl: process.env.MONGODB_URI,
             collectionName: 'sessions',
-            ttl: 14 * 24 * 60 * 60, // Time to live (14 days by default)
+            ttl: 21 * 24 * 60 * 60, // Time to live (14 days by default)
         }),
         cookie: {
             secure: false,  

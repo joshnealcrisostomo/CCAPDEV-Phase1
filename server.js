@@ -10,6 +10,7 @@ const path = require("path");
 const hbs = require("hbs");
 const methodOverride = require("method-override");
 const session = require('express-session');
+const MongoStore = require('connect-mongo');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -23,12 +24,21 @@ mongoose.connect(uri)
     console.error("❌ MongoDB connection error:", err);
     });
 
-app.use(session({
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false,
-    cookie: { secure: false } 
-}));
+    app.use(session({
+        secret: process.env.SESSION_SECRET,
+        resave: false,
+        saveUninitialized: false,
+        store: MongoStore.create({
+            mongoUrl: process.env.MONGODB_URI,
+            collectionName: 'sessions',
+            ttl: 14 * 24 * 60 * 60, // Time to live (14 days by default)
+        }),
+        cookie: {
+            secure: true,  
+            httpOnly: true,
+            maxAge: 1000 * 60 * 60 * 24 * 7 // Cookie expires in 1 week
+        }
+    }));
 
 app.use(methodOverride("_method"));
 
